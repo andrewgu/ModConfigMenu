@@ -5,16 +5,18 @@ XCOM 2 Mod Config Menu: a shared settings menu for Xcom 2 mods.
 # Capabilities
 
 This project aims to do three things:
+
 1. Centralize mod configurations in an easy place for users to access.
 2. Provide UI abstractions so that you don't have to write any UI code to add an in-game settings page to your mod.
 3. Fail gracefully if a user has not installed the Mod Config Menu, but still tries to run a mod that uses this.
 
 We accomplish this through:
+
 1. a set of interfaces defining the API (`ModConfigMenuAPI`)
 2. a UIScreenListener that listens for the settings screen that this mod creates
 3. boilerplate conditional code that only executes the dependent code if the mod is installed
 
-This all comes at one very big cost though: **The interfaces defined in ModConfigMenuAPI must be copied character for character in every mod.** If we revise the API after its initial release, we will release it as a separate package, i.e. ModConfigMenuAPI2, to preserve backward compatibility.
+This all comes at one very big cost though: **The interfaces defined in ModConfigMenuAPI must be copied character for character in every mod.** If we revise the API after its initial release, we will release it as a separate package, i.e. ModConfigMenuAPI2, to preserve backward compatibility. Also, seriously, don't touch `XComModConfigMenu.ini`. Those settings are hiding some *interesting* behaviors in XCOM 2's UI scripting.
 
 # Testing/Usage
 

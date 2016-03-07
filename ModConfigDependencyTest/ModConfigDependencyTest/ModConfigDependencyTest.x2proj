@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Guid>fa9b04b1-c447-4ce3-b608-d6f7a7d0e648</Guid>
+    <Name>Mod Config Dependency Test</Name>
+    <Description>Just a test for building against dependent libraries.</Description>
+    <SteamPublishID>0</SteamPublishID>
+    <AssemblyName>ExampleClassOverride</AssemblyName>
+    <RootNamespace>ExampleClassOverride</RootNamespace>
+    <ProjectGuid>{3f350978-33e7-493a-993b-92c1b54bf591}</ProjectGuid>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="Config\XComEditor.ini" />
+    <Content Include="Config\XComEngine.ini" />
+    <Content Include="ModPreview.jpg" />
+    <Content Include="ReadMe.txt" />
+    <Content Include="Src\ModConfigDependencyTest\Classes\UIConfig.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigDependencyTest\Classes\UIStub.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenuAPI\Classes\MCM_API.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenuAPI\Classes\MCM_API_Instance.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenuAPI\Classes\MCM_API_Setting.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenuAPI\Classes\MCM_API_SettingsPage.uc">
+      <SubType>Content</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Config\" />
+    <Folder Include="Content\" />
+    <Folder Include="Localization\" />
+    <Folder Include="Src\" />
+    <Folder Include="Src\ModConfigDependencyTest" />
+    <Folder Include="Src\ModConfigDependencyTest\Classes" />
+    <Folder Include="Src\ModConfigMenuAPI" />
+    <Folder Include="Src\ModConfigMenuAPI\Classes" />
+  </ItemGroup>
+  <Import Project="$(MSBuildLocalExtensionPath)\XCOM2.targets" />
+</Project>

@@ -24,8 +24,11 @@ Three general steps to get this working:
 2. In your own mod project, copy the ModConfigMenuAPI source package. The `MCM_API_*` files should be in the path `$(ProjectDir)/Src/ModConfigMenuAPI/Classes`
 3. Add these magic lines to `Config/XComEngine.ini` in your mod:
 
+    ```
     [UnrealEd.EditorEngine]
     +EditPackages=ModConfigMenuAPI
+    ```
+
 
 After doing these things, your project should be able to build and run.
 
@@ -34,15 +37,17 @@ For a working example of how to use the mod for the actual settings page, see th
 1. Create a UIScreenListener subclass that listens for `ScreenClass = class'MCM_OptionsScreen';` Note that this will throw a warning because MCM_OptionsScreen is not defined anywhere in your mod project.
 2. Use this boilerplate to inject the settings page code only if ModConfigMenu is installed:
 
+    ```
     event OnInit(UIScreen Screen)
     {
         local MCM_API APIInst;
         APIInst = MCM_API(Screen);
         if (APIInst != None)
-        {
+         {
             APIInst.RegisterClientMod(0, 1, ClientModCallback);
         }
     }
+    ```
 
 3. All of your code that depends on the Mod Config Menu should go into ClientModCallback.
 

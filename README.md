@@ -4,29 +4,9 @@ XCOM 2 Mod Config Menu: a project to build a shared settings menu for Xcom 2 mod
 
 # License
 
-Copyright (c) 2016 Andrew Gu
+If it's not covered by Firaxis, then it's covered by the MIT License:
 
-If it's not mentioned here, and if it's not defined by XCOM 2's EULA or any other copyright licenses controlled by Firaxis, then it's under the MIT License shown below.
-
-You may:
-
-* You may freely use this project's API to create and distribute mods.
-
-* With the authors' collective permission and attribution to this project, copy/fork/clone/improve this code to release a similar configuration menu mod.
-
-* With attribution to this project, adapt this code to use in similar games.
-
-* With attribution to this project, use assets or code from this project in other projects.
-
-You may not:
-
-* Upload this file to other sites.
-
-# Authors
-
-* Andrew Gu
-
-# The MIT License (MIT)
+The MIT License (MIT)
 
 Copyright (c) 2016 Andrew Gu
 

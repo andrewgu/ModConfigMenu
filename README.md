@@ -23,6 +23,7 @@ Three general steps to get this working:
 1. Build the ModConfigMenu project. Just open the `.XCOM_sln` file and build. You may wish to disable the self-test built into ModConfigMenu. To do this, find the config file `XComModConfigMenu.ini` and change the line `ENABLE_TEST_HARNESS=True` to `ENABLE_TEST_HARNESS=False`.
 2. In your own mod project, copy the ModConfigMenuAPI source package. The `MCM_API_*` files should be in the path `$(ProjectDir)/Src/ModConfigMenuAPI/Classes`
 3. Add these magic lines to `Config/XComEngine.ini` in your mod:
+
     [UnrealEd.EditorEngine]
     +EditPackages=ModConfigMenuAPI
 
@@ -32,6 +33,7 @@ For a working example of how to use the mod for the actual settings page, see th
 
 1. Create a UIScreenListener subclass that listens for `ScreenClass = class'MCM_OptionsScreen';` Note that this will throw a warning because MCM_OptionsScreen is not defined anywhere in your mod project.
 2. Use this boilerplate to inject the settings page code only if ModConfigMenu is installed:
+
     event OnInit(UIScreen Screen)
     {
         local MCM_API APIInst;
@@ -41,6 +43,7 @@ For a working example of how to use the mod for the actual settings page, see th
             APIInst.RegisterClientMod(0, 1, ClientModCallback);
         }
     }
+
 3. All of your code that depends on the Mod Config Menu should go into ClientModCallback.
 
 # License

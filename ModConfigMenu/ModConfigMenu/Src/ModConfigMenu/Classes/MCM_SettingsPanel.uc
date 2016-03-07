@@ -115,10 +115,11 @@ function MCM_API_Setting AddSetting(name SettingName)
 	Item.Show();
 	Item.EnableNavigation();
 
+	// Because we're inserting backwards.
 	SettingsList.MoveItemToTop(Item);
-	//Item.SetY(SettingItemStartY + SettingIndex * class'UIMechaListItem'.default.Height);
 
-	SettingItems.AddItem(Item);
+	// Also because we're inserting backwards.
+	SettingItems.InsertItem(0, Item);
 	return Item;
 }
 

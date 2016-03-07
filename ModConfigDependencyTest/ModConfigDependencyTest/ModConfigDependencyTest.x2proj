@@ -12,6 +12,9 @@
   <ItemGroup>
     <Content Include="Config\XComEditor.ini" />
     <Content Include="Config\XComEngine.ini" />
+    <Content Include="Config\XComMCDT_Demo.ini">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="ModPreview.jpg" />
     <Content Include="ReadMe.txt" />
     <Content Include="Src\ModConfigDependencyTest\Classes\UIConfig.uc">

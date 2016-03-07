@@ -1,6 +1,9 @@
-class UIConfig extends UIScreenListener;
+class UIConfig extends UIScreenListener config(MCDT_Demo);
 
 var MCM_API APIInst;
+var MCM_API_SettingsPage CheckboxPage, SliderPage;
+
+var config bool MCDT_CHECKBOX_FLAG;
 
 event OnInit(UIScreen Screen)
 {
@@ -40,10 +43,13 @@ function ClientModCallback(MCM_API_Instance ConfigAPI, int GameMode)
 		`log("Is in main menu, attempting to make page.");
 		
 		Page1 = ConfigAPI.NewSettingsPage("MCDT_Test_1");
-		Page1.EnableSaveAndCancelButtons(SaveButtonClicked, RevertButtonClicked);
+		Page1.EnableResetToDefaultButton(ResetButtonClicked);
+		SliderPage = Page1;
 
 		Page2 = ConfigAPI.NewSettingsPage("MCDT_Test_2");
-		Page2.EnableResetToDefaultButton(ResetButtonClicked);
+		Page2.EnableSaveAndCancelButtons(SaveButtonClicked, RevertButtonClicked);
+		CheckboxPage = Page2;
+
 
 		P1S = Page1.MakeSettings(Page1Settings);
 		P2S = Page2.MakeSettings(Page2Settings);
@@ -51,7 +57,7 @@ function ClientModCallback(MCM_API_Instance ConfigAPI, int GameMode)
 		P1S[0].InitAsSlider("Test Setting", 1, 100, 10, 50, SliderChangeHandler);
 		P1S[1].InitAsButton("Button setting", "Button", ButtonHandler);
 
-		P2S[0].InitAsCheckbox("Test Setting", True, CheckboxChangeHandler);
+		P2S[0].InitAsCheckbox("Test Setting", MCDT_CHECKBOX_FLAG, CheckboxChangeHandler);
 		P2S[1].InitAsSpinner("Spinner setting", DropdownOptions, "e", DropdownHandler);
 		P2S[2].InitAsDropdown("Dropdown setting", DropdownOptions, "ij", DropdownHandler);
 
@@ -63,16 +69,29 @@ function ClientModCallback(MCM_API_Instance ConfigAPI, int GameMode)
 function SaveButtonClicked(MCM_API_SettingsPage Page)
 {
 	`log("MCDT: Save button clicked on page " $ string(Page.GetPageID()));
+	if (CheckboxPage == Page)
+	{
+		MCDT_CHECKBOX_FLAG = Page.GetSettingByName('Test Checkbox Setting').GetCheckboxValue();
+		SaveConfig();
+	}
 }
 
 function RevertButtonClicked(MCM_API_SettingsPage Page)
 {
 	`log("MCDT: Revert button clicked on page " $ string(Page.GetPageID()));
+	if (CheckboxPage == Page)
+	{
+		Page.GetSettingByName('Test Checkbox Setting').SetCheckboxValue(MCDT_CHECKBOX_FLAG, true);
+	}
 }
 
 function ResetButtonClicked(MCM_API_SettingsPage Page)
 {
 	`log("MCDT: Reset button clicked on page " $ string(Page.GetPageID()));
+	if (SliderPage == Page)
+	{
+		Page.GetSettingByName('Test Slider Setting').SetSliderValue(50, true);
+	}
 }
 
 function CheckboxChangeHandler(MCM_API_Setting Setting)
@@ -110,4 +129,5 @@ function DropdownHandler(MCM_API_Setting Setting)
 defaultproperties
 {
 	ScreenClass = class'MCM_OptionsScreen';
+	//MCDT_CHECKBOX_FLAG = true;
 }

@@ -29,13 +29,16 @@ function SetEditable(bool IsEditable);
 function int GetSettingType();
 
 // Choose one, once.
+// Superd22 : 1/ Added string description
+// 2/ Every param other than Label should be optional.	
+ 
 // Pure labels won't change.
 function InitAsLabel(string Label);
-function InitAsButton(string Label, string ButtonLabel, delegate<SettingChangedHandler> ChangeHandler);
-function InitAsCheckbox(string Label, bool InitialChecked, delegate<SettingChangedHandler> ChangeHandler);
-function InitAsSlider(string Label, float min, float max, float step, float InitialValue, delegate<SettingChangedHandler> ChangeHandler);
-function InitAsSpinner(string Label, array<string> Options, string InitialOption, delegate<SettingChangedHandler> ChangeHandler);
-function InitAsDropdown(string Label, array<string> Options, string InitialOption, delegate<SettingChangedHandler> ChangeHandler);
+function InitAsButton(string Label,optional string Description,optional string ButtonLabel,optional delegate<SettingChangedHandler> ChangeHandler);
+function InitAsCheckbox(string Label,optional string Description,optional bool InitialChecked,optional delegate<SettingChangedHandler> ChangeHandler);
+function InitAsSlider(string Label,optional string Description,optional float min,optional float max,optional float step,optional float InitialValue,optional delegate<SettingChangedHandler> ChangeHandler);
+function InitAsSpinner(string Label,optional string Description,optional array<string> Options,optional string InitialOption,optional delegate<SettingChangedHandler> ChangeHandler);
+function InitAsDropdown(string Label,optional string Description,optional array<string> Options,optional string InitialOption,optional delegate<SettingChangedHandler> ChangeHandler);
 
 // Gives way to retrieve current value by query rather than get a push by callback
 function bool GetCheckboxValue();
@@ -55,3 +58,6 @@ function SetDropdownValue(string Selection, bool SuppressEvent);
 function SetSliderBounds(float min, float max, float step, float newValue, bool SuppressEvent);
 function SetSpinnerOptions(array<string> NewOptions, string InitialSelection, bool SuppressEvent);
 function SetDropdownOptions(array<string> NewOptions, string InitialSelection, bool SuppressEvent);
+
+// Adds/Updates Description
+function SetDescription(string Description);

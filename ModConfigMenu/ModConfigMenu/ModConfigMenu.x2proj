@@ -15,6 +15,9 @@
     <Content Include="Config\XComModConfigMenu.ini">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Content\MCM.upk">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Localization\ModConfigMenu.int">
       <SubType>Content</SubType>
     </Content>
@@ -48,6 +51,9 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\ModConfigMenu\Classes\MCM_TestHarness.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenu\Classes\MCM_UISettingSeparator.uc">
       <SubType>Content</SubType>
     </Content>
   </ItemGroup>

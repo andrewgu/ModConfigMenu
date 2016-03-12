@@ -15,7 +15,7 @@ var int SettingsPageID;
 
 var UIList SettingsList;
 
-var UIMechaListItem TitleLine;
+var MCM_UISettingSeparator TitleLine;
 var UIButton ResetButton;
 var UIButton RevertButton;
 var UIButton ApplyButton;
@@ -40,9 +40,9 @@ simulated function UIPanel InitPanel(optional name InitName, optional name InitL
 	SettingsList.SetSelectedNavigation();
 	SettingsList.Navigator.LoopSelection = true;
 
-	TitleLine = Spawn(class'UIMechaListItem', SettingsList.itemContainer);
-	TitleLine.InitListItem();
-	TitleLine.UpdateDataDescription("Mod Settings Page");
+	TitleLine = Spawn(class'MCM_UISettingSeparator', SettingsList.itemContainer);
+	TitleLine.InitSeparator();
+	TitleLine.UpdateTitle("Mod Settings Page");
 	TitleLine.SetY(0);
 	TitleLine.Show();
 	TitleLine.EnableNavigation();
@@ -99,10 +99,10 @@ function int GetPageId()
 {
 	return SettingsPageID;
 }
-
+// To do : probably add description to this function too ? Super d
 simulated function SetPageTitle(string title)
 {
-	TitleLine.UpdateDataDescription(title);
+	TitleLine.UpdateTitle(title);
 }
 
 // Call in bottom-up order.

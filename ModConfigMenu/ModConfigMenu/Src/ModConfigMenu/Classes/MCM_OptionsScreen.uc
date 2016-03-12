@@ -22,7 +22,8 @@ var localized string m_strSaveAndExit;
 var MCM_OptionsMenuListener ParentListener;
 
 var UIPanel Container;
-var UIBGBox BG;
+var UIImage BG;
+var UIImage VSeparator;
 var UIX2PanelHeader TitleHeader;
 
 //var UIPanel TabsPanel;
@@ -98,9 +99,13 @@ simulated function CreateSkeleton()
     TotalHeight = HEADER_HEIGHT + OPTIONS_HEIGHT + FOOTER_HEIGHT;
     
     Container = Spawn(class'UIPanel', self).InitPanel('').SetPosition(PANEL_X, PANEL_Y).SetSize(TotalWidth, TotalHeight);
-    BG = Spawn(class'UIBGBox', Container).InitBG('', 0, 0, Container.width, Container.height);
-
-    TitleHeader = Spawn(class'UIX2PanelHeader', Container);
+    
+	BG = Spawn(class'UIImage', Container).InitImage(,"img:///MCM.gfx.MainBackground");
+	
+	VSeparator = Spawn(class'UIImage', Container).InitImage(,"img:///MCM.gfx.MainVerticalSeparator");
+	VSeparator.SetPosition(TABLIST_WIDTH,HEADER_HEIGHT);
+    
+	TitleHeader = Spawn(class'UIX2PanelHeader', Container);
 	TitleHeader.InitPanelHeader('', m_strTitle, m_strSubtitle);
 	TitleHeader.SetHeaderWidth(Container.width - 20);
 	TitleHeader.SetPosition(10, 10);

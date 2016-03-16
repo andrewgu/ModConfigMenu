@@ -23,6 +23,10 @@ function ClientModCallback(MCM_API_Instance ConfigAPI, int GameMode)
 	if (GameMode == eGameMode_MainMenu || GameMode == eGameMode_Strategy)
 	{
 		Page = ConfigAPI.NewSettingsPage("Example", eSettingEventMode_OnSave);
+
+        Page.SetSaveHandler(SaveHandler);
+        Page.SetCancelHandler(CancelHandler);
+        Page.EnableResetButton(ResetHandler);
         
         `BasicLabel(Page, ThrowawayLabelName, "This is a label.", "Tooltip")
         `BasicButton(Page, ThrowawayButtonName, "This is a button.", "Tooltip", "Click Me")

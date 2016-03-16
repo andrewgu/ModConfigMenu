@@ -18,7 +18,7 @@ function SetSaveHandler(delegate<SaveStateHandler> SaveHandler);
 function SetCancelHandler(delegate<SaveStateHandler> CancelHandler);
 
 // By default Reset button is not visible, you can choose to use it.
-function EnableResetToDefaultButton(delegate<SaveStateHandler> ResetHandler);
+function EnableResetButton(delegate<SaveStateHandler> ResetHandler);
 
 // It's done this way because of some UI issues where dropdowns don't behave unless you initialize
 // the settings UI widgets from bottom up.

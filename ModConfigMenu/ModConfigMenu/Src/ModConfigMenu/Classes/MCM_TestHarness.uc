@@ -1,5 +1,7 @@
 class MCM_TestHarness extends UIScreenListener config(ModConfigMenu);
 
+`include(ModConfigMenu/Src/ModConfigMenuAPI/MCM_API_Includes.uci)
+
 var config bool ENABLE_TEST_HARNESS;
 
 var MCM_API APIInst;
@@ -13,12 +15,13 @@ event OnInit(UIScreen Screen)
 	}
 
 	`log("MCM Test Harness: Attempt init.");
-	APIInst = MCM_API(Screen);
-	if (APIInst != None)
-	{
-		`log("MCM Test Harness: Attempt register.");
-		APIInst.RegisterClientMod(0, 1, ClientModCallback);
-	}
+    `CheckVersionAndRegister(Screen, ClientModCallback);
+	//APIInst = MCM_API(Screen);
+	//if (APIInst != None)
+	//{
+	//	`log("MCM Test Harness: Attempt register.");
+	//	APIInst.RegisterClientMod(0, 1, ClientModCallback);
+	//}
 }
 
 function ClientModCallback(MCM_API_Instance ConfigAPI, int GameMode)

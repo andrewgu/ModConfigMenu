@@ -15,30 +15,30 @@
 	}
 
 `define GenerateSettingName(Varname) `{Varname}_BasicSetting
-`define GenerateHandlerName(Varname) `{Varname}_BasicHandler
+`define GenerateSaveHandlerName(Varname) `{Varname}_BasicHandler
 
 `define BasicLabel(Page, Varname, Label, Tooltip)\
 	`{Page}.AddLabel(`GenerateSettingName(`Varname), `Label, `Tooltip);
 `define BasicButton(Page, Varname, Label, Tooltip, ButtonLabel)\
-	`{Page}.AddButton(`GenerateSettingName(`Varname), `Label, `Tooltip, `ButtonLabel, `GenerateHandlerName(`Varname));
+	`{Page}.AddButton(`GenerateSettingName(`Varname), `Label, `Tooltip, `ButtonLabel, , `GenerateSaveHandlerName(`Varname));
 `define BasicCheckbox(Page, Varname, Label, Tooltip)\
-	`{Page}.AddCheckbox(`GenerateSettingName(`Varname), `Label, `Tooltip, `Varname, `GenerateHandlerName(`Varname));
+	`{Page}.AddCheckbox(`GenerateSettingName(`Varname), `Label, `Tooltip, `Varname, , `GenerateSaveHandlerName(`Varname));
 `define BasicSlider(Page, Varname, Label, Tooltip, SliderMin, SliderMax, SliderStep)\
-	`{Page}.AddSlider(`GenerateSettingName(`Varname), `Label, `Tooltip, `SliderMin, `SliderMax, `SliderStep, `Varname, `GenerateHandlerName(`Varname));
+	`{Page}.AddSlider(`GenerateSettingName(`Varname), `Label, `Tooltip, `SliderMin, `SliderMax, `SliderStep, `Varname, , `GenerateSaveHandlerName(`Varname));
 `define BasicSpinner(Page, Varname, Label, Tooltip, Options)\
-	`{Page}.AddSpinner(`GenerateSettingName(`Varname), `Label, `Tooltip, `Options, `Varname, `GenerateHandlerName(`Varname));
+	`{Page}.AddSpinner(`GenerateSettingName(`Varname), `Label, `Tooltip, `Options, `Varname, , `GenerateSaveHandlerName(`Varname));
 `define BasicDropdown(Page, Varname, Label, Tooltip, Options)\
-	`{Page}.AddDropdown(`GenerateSettingName(`Varname), `Label, `Tooltip, `Options, `Varname, `GenerateHandlerName(`Varname));
+	`{Page}.AddDropdown(`GenerateSettingName(`Varname), `Label, `Tooltip, `Options, `Varname, , `GenerateSaveHandlerName(`Varname));
 
 // Button handler works a bit differently because you want to implement the handler yourself.
 `define BasicButtonHandler(Varname)\
-	function `GenerateHandlerName(`Varname)(MCM_API_Setting Setting, name SettingName)
+	function `GenerateSaveHandlerName(`Varname)(MCM_API_Setting Setting, name SettingName)
 
-`define BasicCheckboxHandler(Varname)\
-	function `GenerateHandlerName(`Varname)(MCM_API_Setting Setting, name SettingName, bool SettingValue) {`Varname = SettingValue;}
-`define BasicSliderHandler(Varname)\
-	function `GenerateHandlerName(`Varname)(MCM_API_Setting Setting, name SettingName, float SettingValue) {`Varname = SettingValue;}
-`define BasicSpinnerHandler(Varname)\
-	function `GenerateHandlerName(`Varname)(MCM_API_Setting Setting, name SettingName, string SettingValue) {`Varname = SettingValue;}
-`define BasicDropdownHandler(Varname)\
-	function `GenerateHandlerName(`Varname)(MCM_API_Setting Setting, name SettingName, string SettingValue) {`Varname = SettingValue;}
+`define BasicCheckboxSaveHandler(Varname)\
+	function `GenerateSaveHandlerName(`Varname)(MCM_API_Setting Setting, name SettingName, bool SettingValue) {`Varname = SettingValue;}
+`define BasicSliderSaveHandler(Varname)\
+	function `GenerateSaveHandlerName(`Varname)(MCM_API_Setting Setting, name SettingName, float SettingValue) {`Varname = SettingValue;}
+`define BasicSpinnerSaveHandler(Varname)\
+	function `GenerateSaveHandlerName(`Varname)(MCM_API_Setting Setting, name SettingName, string SettingValue) {`Varname = SettingValue;}
+`define BasicDropdownSaveHandler(Varname)\
+	function `GenerateSaveHandlerName(`Varname)(MCM_API_Setting Setting, name SettingName, string SettingValue) {`Varname = SettingValue;}

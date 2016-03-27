@@ -22,7 +22,7 @@ function ClientModCallback(MCM_API_Instance ConfigAPI, int GameMode)
 
 	if (GameMode == eGameMode_MainMenu || GameMode == eGameMode_Strategy)
 	{
-		Page = ConfigAPI.NewSettingsPage("Example", eSettingEventMode_OnSave);
+		Page = ConfigAPI.NewSettingsPage("Example");
 
         Page.SetSaveHandler(SaveHandler);
         Page.SetCancelHandler(CancelHandler);
@@ -44,10 +44,10 @@ function ClientModCallback(MCM_API_Instance ConfigAPI, int GameMode)
     `log("MCM: Button setting clicked.");
 }
 
-`BasicCheckboxHandler(CheckboxVar)
-`BasicSliderHandler(SliderVar)
-`BasicSpinnerHandler(SpinnerVar)
-`BasicDropdownHandler(DropdownVar)
+`BasicCheckboxSaveHandler(CheckboxVar)
+`BasicSliderSaveHandler(SliderVar)
+`BasicSpinnerSaveHandler(SpinnerVar)
+`BasicDropdownSaveHandler(DropdownVar)
 
 function SaveHandler(MCM_API_SettingsPage Page)
 {

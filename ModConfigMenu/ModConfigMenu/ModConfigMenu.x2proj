@@ -44,6 +44,9 @@
     <Content Include="Src\ModConfigMenuAPI\Classes\MCM_API_Setting.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\ModConfigMenuAPI\Classes\MCM_API_SettingsGroup.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\ModConfigMenuAPI\Classes\MCM_API_SettingsPage.uc">
       <SubType>Content</SubType>
     </Content>
@@ -54,6 +57,9 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\ModConfigMenuAPI\MCM_API_Includes.uci">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenu\Classes\MCM_ExampleTestHarness.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\ModConfigMenu\Classes\MCM_OptionsMenuListener.uc">

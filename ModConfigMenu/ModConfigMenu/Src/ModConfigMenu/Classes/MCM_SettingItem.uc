@@ -1,4 +1,7 @@
-class MCM_SettingItem extends UIMechaListItem implements(MCM_API_Setting) config(ModConfigMenu);
+class MCM_SettingItem extends Object;
+
+
+/*class MCM_SettingItem extends UIMechaListItem implements(MCM_API_Setting) config(ModConfigMenu);
 
 var name SettingName;
 var int SettingType;
@@ -340,4 +343,4 @@ function SpinnerChangedCallback(UIListItemSpinner spinnerControl, int direction)
 	{
 		ChangedHandler(self);
 	}
-}
+}*/

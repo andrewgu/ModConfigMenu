@@ -18,7 +18,7 @@ var int DESC_Y;
 // @param string Label : Title of the header
 // @param string Description : A description to show below (couple lines)
 simulated function MCM_UISettingSeparator InitSeparator(optional name InitName,optional string Label,optional string HelperText) {
-	local UIList List; 	
+	//local UIList List; 	
 						 
 	SetWidth(540);
 	SetHeight(60);
@@ -34,6 +34,8 @@ simulated function MCM_UISettingSeparator InitSeparator(optional name InitName,o
 	Title.SetPosition(TITLE_X,TITLE_Y);
 
 	Description = Spawn(class'UIScrollingText', self).InitScrollingText(,HelperText, Width-DESC_X,DESC_X,DESC_Y);		
+
+    return self;
 }
 
 // Set the Title (after init.)

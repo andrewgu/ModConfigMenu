@@ -19,8 +19,8 @@ function SetLabel(string NewLabel);
 function string GetLabel();
 
 // When you mouse-over the setting.
-function SetTooltip(string Tooltip);
-function string GetTooltip();
+function SetHoverTooltip(string Tooltip);
+function string GetHoverTooltip();
 
 // Lets you show an option but disable it because it shouldn't be configurable.
 // For example, if you don't want to allow tweaking during a mission.

@@ -1,6 +1,6 @@
 class MCM_ExampleTestHarness extends UIScreenListener config(ModConfigMenu);
 
-`include(ModConfigMenu/Src/ModConfigMenuAPI/MCM_API_Includes.uci)
+/*`include(ModConfigMenu/Src/ModConfigMenuAPI/MCM_API_Includes.uci);
 
 // Doesn't have to be config vars but this would work.
 config var bool CheckboxVar;
@@ -65,4 +65,4 @@ function ResetHandler(MCM_API_SettingsPage Page)
 	`log("MCM: Reset button clicked on page " $ string(Page.GetPageID()));
 }
 
-`MCM_API_Boilerplate(ClientModCallback);
+`MCM_API_Boilerplate(ClientModCallback);*/

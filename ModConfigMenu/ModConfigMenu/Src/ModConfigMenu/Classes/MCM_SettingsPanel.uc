@@ -17,15 +17,13 @@ var UIList SettingsList;
 
 var MCM_UISettingSeparator TitleLine;
 var UIButton ResetButton;
-var UIButton RevertButton;
-var UIButton ApplyButton;
 
-var array<MCM_SettingItem> SettingItems;
-var float SettingItemStartY;
+var array<MCM_SettingGroup> SettingGroups;
+//var float SettingItemStartY;
 
 var delegate<SaveStateHandler> ResetHandler;
-var delegate<SaveStateHandler> ApplyHandler;
-var delegate<SaveStateHandler> RevertHandler;
+var delegate<SaveStateHandler> CancelHandler;
+var delegate<SaveStateHandler> SaveHandler;
 
 delegate SettingChangedHandler(MCM_API_Setting Setting);
 delegate SaveStateHandler(MCM_API_SettingsPage SettingsPage);
@@ -42,30 +40,21 @@ simulated function UIPanel InitPanel(optional name InitName, optional name InitL
 
 	TitleLine = Spawn(class'MCM_UISettingSeparator', SettingsList.itemContainer);
 	TitleLine.InitSeparator();
-	TitleLine.UpdateTitle("Mod Settings Page");
+	TitleLine.UpdateTitle("Mod Settings");
 	TitleLine.SetY(0);
 	TitleLine.Show();
 	TitleLine.EnableNavigation();
 
-	SettingItemStartY = TitleLine.Height;
-
-	RevertButton = Spawn(class'UIButton', self);
-	RevertButton.InitButton(, m_strRevertButton, OnRevertClicked);
-	RevertButton.SetPosition(REVERT_BUTTON_X, PANEL_HEIGHT - FOOTER_HEIGHT + 3); //Relative to this screen panel
-	RevertButton.Hide();
-	RevertHandler = none;
-
-	ApplyButton = Spawn(class'UIButton', self);
-	ApplyButton.InitButton(, m_strApplyButton, OnApplyClicked);
-	ApplyButton.SetPosition(APPLY_BUTTON_X, PANEL_HEIGHT - FOOTER_HEIGHT + 3); //Relative to this screen panel
-	ApplyButton.Hide();
-	ApplyHandler = none;
+	//SettingItemStartY = TitleLine.Height;
 
 	ResetButton = Spawn(class'UIButton', self);
 	ResetButton.InitButton(, m_strResetButton, OnResetClicked);
 	ResetButton.SetPosition(RESET_BUTTON_X, PANEL_HEIGHT - FOOTER_HEIGHT + 3); //Relative to this screen panel
 	ResetButton.Hide();
+
 	ResetHandler = none;
+    SaveHandler = none;
+    CancelHandler = none;
 
 	return self;
 }
@@ -75,22 +64,24 @@ simulated function OnInit()
 	super.OnInit();
 }
 
-function OnRevertClicked(UIButton kButton)
-{
-	if (RevertHandler != none)
-		RevertHandler(self);
-}
-
-function OnApplyClicked(UIButton kButton)
-{
-	if (ApplyHandler != none)
-		ApplyHandler(self);
-}
-
-function OnResetClicked(UIButton kButton)
+simulated function OnResetClicked(UIButton kButton)
 {
 	if (ResetHandler != none)
 		ResetHandler(self);
+}
+
+// Helpers for MCM_OptionsScreen ================================================================
+
+simulated function TriggerSaveEvent()
+{
+    if (SaveHandler != none)
+        SaveHandler(self);
+}
+
+simulated function TriggerCancelEvent()
+{
+    if (CancelHandler != none)
+        CancelHandler(self);
 }
 
 // MCM_API_SettingsPage implementation ===========================================
@@ -99,94 +90,73 @@ function int GetPageId()
 {
 	return SettingsPageID;
 }
+
 // To do : probably add description to this function too ? Super d
-simulated function SetPageTitle(string title)
+function SetPageTitle(string title)
 {
 	TitleLine.UpdateTitle(title);
 }
 
-// Call in bottom-up order.
-function MCM_API_Setting AddSetting(name SettingName)
+function SetSaveHandler(delegate<SaveStateHandler> _SaveHandler)
 {
-	local MCM_SettingItem Item;
+    local MCM_SettingGroup grp;
+    foreach SettingGroups(grp)
+    {
+        grp.TriggerSaveEvents();
+    }
 
-	Item = Spawn(class'MCM_SettingItem', SettingsList.itemContainer);
-	Item.InitSettingsItem(SettingName);
-	Item.Show();
-	Item.EnableNavigation();
-
-	// Because we're inserting backwards.
-	SettingsList.MoveItemToTop(Item);
-
-	// Also because we're inserting backwards.
-	SettingItems.InsertItem(0, Item);
-	return Item;
+    SaveHandler = _SaveHandler;
 }
 
-function array<MCM_API_Setting> MakeSettings(array<name> SettingNames)
+function SetCancelHandler(delegate<SaveStateHandler> _CancelHandler)
 {
-	local name sName;
-	local int iter;
-	local array<MCM_API_Setting> SettingBuffer;
-	
-	SettingBuffer.Length = SettingNames.Length;
-
-	for (iter = SettingNames.Length-1; iter >= 0; iter--)
-	{
-		sName = SettingNames[iter];
-		SettingBuffer[iter] = AddSetting(sName);
-	}
-
-	// Make sure title line is at top.
-	SettingsList.MoveItemToTop(TitleLine);
-
-	return SettingBuffer;
+    CancelHandler = _CancelHandler;
 }
 
-// Will return None if setting by that name isn't found.
-function MCM_API_Setting GetSettingByName(name SettingName)
+function EnableResetButton(delegate<SaveStateHandler> _ResetHandler)
 {
-	local MCM_SettingItem Iter;
-
-	foreach SettingItems(Iter)
-	{
-		if (Iter.SettingName == SettingName)
-			return Iter;
-	}
-	
-	return None;
+    ResetHandler = _ResetHandler;
+    ResetButton.Show();
 }
 
-function MCM_API_Setting GetSettingByIndex(int Index)
+// Groups let you visually cluster settings.
+function MCM_API_SettingsGroup AddGroup(name GroupName, string GroupLabel)
 {
-	if (Index >= 0 && Index < SettingItems.Length)
-	{
-		return SettingItems[Index];
-	}
-	else
-	{
-		return none;
-	}
+    local MCM_SettingGroup Grp;
+
+    Grp = Spawn(class'MCM_SettingGroup', self).InitSettingGroup(GroupName, GroupLabel);
+    SettingGroups.AddItem(Grp);
+
+    return Grp;
 }
 
-function int GetNumberOfSettings()
+function MCM_API_SettingsGroup GetGroup(name GroupName)
 {
-	return SettingItems.Length;
+    local MCM_SettingGroup iter;
+
+    foreach SettingGroups(iter)
+    {
+        if (iter.GroupName == GroupName)
+            return iter;
+    }
+
+    return none;
 }
 
-// By default Save/Cancel buttons are not visible, you can choose to use them.
-function EnableSaveAndCancelButtons(delegate<SaveStateHandler> SaveHandler, delegate<SaveStateHandler> CancelHandler)
+// Assumes that groups are iterated in reverse order and items in groups are inserted in reverse order.
+function OnSettingsLineInitialized(UIMechaListItem NextItem)
 {
-	ApplyHandler = SaveHandler;
-	RevertHandler = CancelHandler;
-
-	ApplyButton.Show();
-	RevertButton.Show();
+    SettingsList.MoveItemToTop(NextItem);
 }
 
-// By default Reset button is not visible, you can choose to use it.
-function EnableResetToDefaultButton(delegate<SaveStateHandler> Handler)
+function ShowSettings()
 {
-	ResetHandler = Handler;
-	ResetButton.Show();
+    // This is where magic happens.
+    local int groupIndex;
+
+    for (groupIndex = SettingGroups.Length - 1; groupIndex >= 0; groupIndex--) 
+    {
+        SettingGroups[groupIndex].InstantiateItems(OnSettingsLineInitialized, SettingsList);
+    }
 }
+

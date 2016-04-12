@@ -18,6 +18,7 @@ var config int API_MINOR_VERSION;
 var localized string m_strTitle;
 var localized string m_strSubtitle;
 var localized string m_strSaveAndExit;
+var localized string m_strCancel;
 
 var MCM_OptionsMenuListener ParentListener;
 
@@ -26,21 +27,18 @@ var UIImage BG;
 var UIImage VSeparator;
 var UIX2PanelHeader TitleHeader;
 
-//var UIPanel TabsPanel;
 var UIList TabsList;
 var int SettingsPageCounter;
 var int SelectedPageID;
-//var array<MCM_UIListItemString_SelfContained> SettingsButtons;
 var array<MCM_SettingsTab> SettingsTabs;
 var array<MCM_SettingsPanel> SettingsPanels;
 var UIButton SaveAndExitButton;
+var UIButton CancelButton;
 
 var int CurrentGameMode;
-//var array<delegate<ClientModCallback> > ClientModCallbacks;
 
 delegate ClientModCallback(MCM_API_Instance ConfigAPI, int GameMode);
 delegate OnClickedDelegate(UIButton Button);
-//delegate SettingsTabDelegate(MCM_UIListItemString_SelfContained Caller);
 delegate SettingsTabDelegate(MCM_SettingsTab Caller, int PageID);
 delegate CustomSettingsPageCallback(UIScreen ParentScreen, int PageID);
 
@@ -118,60 +116,48 @@ simulated function CreateSkeleton()
 
     // Save and exit button    
     SaveAndExitButton = Spawn(class'UIButton', Container);
-	SaveAndExitButton.InitButton(, m_strSaveAndExit, SaveAndExit);
+	SaveAndExitButton.InitButton(, m_strSaveAndExit, OnSaveAndExit);
 	SaveAndExitButton.SetPosition(Container.width - 190, Container.height - 40); //Relative to this screen panel
+
+    CancelButton = Spawn(class'UIButton', Container);
+	CancelButton.InitButton(, m_strCancel, OnCancel);
+	CancelButton.SetPosition(Container.width - 190, Container.height - 40); //Relative to this screen panel
 
     Navigator.SetSelected(TabsList);
     TabsList.Navigator.SelectFirstAvailableIfNoCurrentSelection();
 }
 
-simulated function TabClickedHandler(MCM_SettingsTab Caller, int PageID)
-{
-	`log("MCM Tab clicked: " $ string(PageID));
-	//TabsList.SetSelectedItem(kButton, true);
-	ChoosePanelByPageID(PageID);
-}
+// Special button handlers ========================================================================
 
-simulated function AddTabsListButton(string TabLabel, int PageID, delegate<SettingsTabDelegate> callback)
+simulated function OnSaveAndExit(UIButton kButton)
 {
-    local MCM_SettingsTab Item; 
-    Item = Spawn(class'MCM_SettingsTab', TabsList.ItemContainer).InitSettingsTab(PageID, TabLabel);
-	Item.OnClickHandler = TabClickedHandler;
+    local MCM_SettingsPanel TmpPage;
+    
+    // Save all.
+    foreach SettingsPanels(TmpPage)
+    {
+        TmpPage.TriggerSaveEvent();
+    }
 
-	SettingsTabs.AddItem(Item);
-}
-
-simulated function SaveAndExit(UIButton kButton)
-{
     Movie.Stack.Pop(self);
 }
 
-// MCM_API implementation ========================================================================
-
-function bool RegisterClientMod(int major, int minor, delegate<ClientModCallback> SetupHandler)
+simulated function OnCancel(UIButton kButton)
 {
-	if (major == API_MAJOR_VERSION && minor <= API_MINOR_VERSION)
-	{
-		SetupHandler(self, CurrentGameMode);
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+    local MCM_SettingsPanel TmpPage;
+    
+    // Cancel all.
+    foreach SettingsPanels(TmpPage)
+    {
+        TmpPage.TriggerCancelEvent();
+    }
+
+    Movie.Stack.Pop(self);
 }
 
-function bool HasUnsavedChanges()
-{
-	return true;
-}
 
-function bool WarnAboutUnsavedChanges()
-{
-	return true;
-}
+// Helpers for MCM_API_Instance ===================================================================
 
-// MCM_API_Instance implementation ===============================================================
 simulated function MCM_SettingsPanel GetPanelByPageID(int PageID)
 {
 	local MCM_SettingsPanel TmpPage;
@@ -187,37 +173,16 @@ simulated function MCM_SettingsPanel GetPanelByPageID(int PageID)
 
 simulated function ChoosePanelByPageID(int PageID)
 {
-	local MCM_SettingsPanel CurrentSettingsPage;
+	//local MCM_SettingsPanel CurrentSettingsPage;
 	local MCM_SettingsTab TmpButton;
 	local MCM_SettingsPanel TmpPage;
-
-	CurrentSettingsPage = GetPanelByPageID(SelectedPageID);
 
 	// Are we changing pages? Do nothing if not changing pages.
 	if (PageID != SelectedPageID)
 	{
-		// Okay, we're changing pages.
-		if (CurrentSettingsPage != none && HasUnsavedChanges())
-		{
-			if (WarnAboutUnsavedChanges())
-			{
-				// User decided to discard and continue.
-				CurrentSettingsPage.RevertHandler(CurrentSettingsPage);
-				SelectedPageID = PageID;
-			}
-			else
-			{
-				// User decided to come back. So we need to do nothing.
-				`log("MCM: User aborted tab switch.");
-				// SelectedPageID = SelectedPageID;
-			}
-		}
-		else
-		{
-			SelectedPageID = PageID;
-		}
-
-		// Now choose the panel.
+		SelectedPageID = PageID;
+		
+        // Now choose the panel.
 		foreach SettingsPanels(TmpPage)
 		{
 			if (TmpPage.GetPageID() != SelectedPageID)
@@ -246,9 +211,20 @@ simulated function ChoosePanelByPageID(int PageID)
 	}
 }
 
-simulated function OnSettingsTabClicked(MCM_SettingsTab Caller, int PageID)
+simulated function TabClickedHandler(MCM_SettingsTab Caller, int PageID)
 {
+	`log("MCM Tab clicked: " $ string(PageID));
+	//TabsList.SetSelectedItem(kButton, true);
 	ChoosePanelByPageID(PageID);
+}
+
+simulated function AddTabsListButton(string TabLabel, int PageID)
+{
+    local MCM_SettingsTab Item; 
+    Item = Spawn(class'MCM_SettingsTab', TabsList.ItemContainer).InitSettingsTab(PageID, TabLabel);
+	Item.OnClickHandler = TabClickedHandler;
+
+	SettingsTabs.AddItem(Item);
 }
 
 function MCM_API_SettingsPage MakeSettingsPage(string TabLabel, int PageID)
@@ -270,18 +246,6 @@ function MCM_API_SettingsPage MakeSettingsPage(string TabLabel, int PageID)
 	return SP;
 }
 
-function MCM_API_SettingsPage NewSettingsPage(string TabLabel)
-{
-	local int PageID;
-
-	PageID = SettingsPageCounter;
-	SettingsPageCounter++;
-
-	AddTabsListButton(TabLabel, PageID, OnSettingsTabClicked);
-
-	return MakeSettingsPage(TabLabel, PageID);
-}
-
 simulated function CustomTabClickedHandler(MCM_SettingsTab Caller, int PageID)
 {
 	`log("MCM Custom Screen Tab clicked");
@@ -291,7 +255,21 @@ simulated function CustomTabClickedHandler(MCM_SettingsTab Caller, int PageID)
 	}
 }
 
-function NewCustomSettingsPage(string TabLabel, delegate<CustomSettingsPageCallback> Handler)
+// MCM_API_Instance implementation ===============================================================
+
+function MCM_API_SettingsPage NewSettingsPage(string TabLabel)
+{
+	local int PageID;
+
+	PageID = SettingsPageCounter;
+	SettingsPageCounter++;
+
+	AddTabsListButton(TabLabel, PageID);
+
+	return MakeSettingsPage(TabLabel, PageID);
+}
+
+function int NewCustomSettingsPage(string TabLabel, delegate<CustomSettingsPageCallback> Handler)
 {
 	local MCM_SettingsTab Item; 
 	local int PageID;
@@ -302,7 +280,27 @@ function NewCustomSettingsPage(string TabLabel, delegate<CustomSettingsPageCallb
     Item = Spawn(class'MCM_SettingsTab', TabsList.ItemContainer).InitSettingsTab(PageID, TabLabel);
 	Item.CustomPageCallback = Handler;
 	Item.OnClickHandler = CustomTabClickedHandler;
+
+    return PageID;
 }
+
+
+// MCM_API implementation ========================================================================
+
+function bool RegisterClientMod(int major, int minor, delegate<ClientModCallback> SetupHandler)
+{
+	if (major == API_MAJOR_VERSION && minor <= API_MINOR_VERSION)
+	{
+		SetupHandler(self, CurrentGameMode);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+// Defaults ======================================================================================
 
 defaultproperties
 {

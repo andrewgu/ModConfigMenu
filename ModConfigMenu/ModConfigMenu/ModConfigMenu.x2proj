@@ -59,13 +59,37 @@
     <Content Include="Src\ModConfigMenuAPI\MCM_API_Includes.uci">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\ModConfigMenu\Classes\MCM_Checkbox.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenu\Classes\MCM_CheckboxFacade.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenu\Classes\MCM_Dropdown.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenu\Classes\MCM_DropdownFacade.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\ModConfigMenu\Classes\MCM_ExampleTestHarness.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenu\Classes\MCM_GroupLabel.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\ModConfigMenu\Classes\MCM_OptionsMenuListener.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\ModConfigMenu\Classes\MCM_OptionsScreen.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenu\Classes\MCM_SettingBase.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenu\Classes\MCM_SettingFacade.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenu\Classes\MCM_SettingGroup.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\ModConfigMenu\Classes\MCM_SettingItem.uc">

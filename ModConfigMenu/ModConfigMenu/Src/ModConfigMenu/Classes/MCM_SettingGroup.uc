@@ -12,7 +12,8 @@ delegate BoolSettingHandler(MCM_API_Setting Setting, name SettingName, bool Sett
 delegate FloatSettingHandler(MCM_API_Setting Setting, name SettingName, float SettingValue);
 delegate StringSettingHandler(MCM_API_Setting Setting, name SettingName, string SettingValue);
 
-delegate ListItemHandler(UIMechaListItem item);
+//delegate ListItemHandler(UIMechaListItem item);
+delegate ListItemHandler(UIPanel item);
 
 function MCM_SettingGroup InitSettingGroup(name _GroupName, string Label)
 {

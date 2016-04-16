@@ -38,12 +38,15 @@ simulated function UIPanel InitPanel(optional name InitName, optional name InitL
 	SettingsList.SetSelectedNavigation();
 	SettingsList.Navigator.LoopSelection = true;
 
-	TitleLine = Spawn(class'MCM_UISettingSeparator', SettingsList.itemContainer);
-	TitleLine.InitSeparator();
-	TitleLine.UpdateTitle("Mod Settings");
-	TitleLine.SetY(0);
-	TitleLine.Show();
-	TitleLine.EnableNavigation();
+    // Delay spawning of title line to make sure topmost "line" is also last layer.
+    // See ShowSettings();
+    TitleLine = none;
+	//TitleLine = Spawn(class'MCM_UISettingSeparator', SettingsList.itemContainer);
+	//TitleLine.InitSeparator();
+	//TitleLine.UpdateTitle("Mod Settings");
+	//TitleLine.SetY(0);
+	//TitleLine.Show();
+	//TitleLine.EnableNavigation();
 
 	//SettingItemStartY = TitleLine.Height;
 
@@ -74,6 +77,13 @@ simulated function OnResetClicked(UIButton kButton)
 
 simulated function TriggerSaveEvent()
 {
+    local MCM_SettingGroup iter;
+
+    foreach SettingGroups(iter)
+    {
+        iter.TriggerSaveEvents();
+    }
+
     if (SaveHandler != none)
         SaveHandler(self);
 }
@@ -144,7 +154,8 @@ function MCM_API_SettingsGroup GetGroup(name GroupName)
 }
 
 // Assumes that groups are iterated in reverse order and items in groups are inserted in reverse order.
-function OnSettingsLineInitialized(UIMechaListItem NextItem)
+//function OnSettingsLineInitialized(UIMechaListItem NextItem)
+function OnSettingsLineInitialized(UIPanel NextItem)
 {
     SettingsList.MoveItemToTop(NextItem);
 }
@@ -158,5 +169,13 @@ function ShowSettings()
     {
         SettingGroups[groupIndex].InstantiateItems(OnSettingsLineInitialized, SettingsList);
     }
+
+    TitleLine = Spawn(class'MCM_UISettingSeparator', SettingsList.itemContainer);
+	TitleLine.InitSeparator();
+	TitleLine.UpdateTitle("Mod Settings");
+	TitleLine.SetY(0);
+	TitleLine.Show();
+	TitleLine.EnableNavigation();
+    SettingsList.MoveItemToTop(TitleLine);
 }
 

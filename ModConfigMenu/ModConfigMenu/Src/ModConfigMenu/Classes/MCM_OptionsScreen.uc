@@ -112,8 +112,6 @@ simulated function CreateSkeleton()
     TabsList.SetSelectedNavigation();
 	TabsList.Navigator.LoopSelection = true;
 
-    //TestCreateTabButtons();
-
     // Save and exit button    
     SaveAndExitButton = Spawn(class'UIButton', Container);
 	SaveAndExitButton.InitButton(, m_strSaveAndExit, OnSaveAndExit);
@@ -121,10 +119,10 @@ simulated function CreateSkeleton()
 
     CancelButton = Spawn(class'UIButton', Container);
 	CancelButton.InitButton(, m_strCancel, OnCancel);
-	CancelButton.SetPosition(Container.width - 190, Container.height - 40); //Relative to this screen panel
+	CancelButton.SetPosition(Container.width - 190 - 170, Container.height - 40); //Relative to this screen panel
 
-    Navigator.SetSelected(TabsList);
-    TabsList.Navigator.SelectFirstAvailableIfNoCurrentSelection();
+    //Navigator.SetSelected(TabsList);
+    //TabsList.Navigator.SelectFirstAvailableIfNoCurrentSelection();
 }
 
 // Special button handlers ========================================================================

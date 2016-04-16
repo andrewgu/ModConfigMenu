@@ -3,6 +3,7 @@ class MCM_TestHarness extends UIScreenListener config(ModConfigMenu);
 //`include(ModConfigMenu/Src/ModConfigMenuAPI/MCM_API_Includes.uci)
 
 var config bool ENABLE_TEST_HARNESS;
+var config bool P2G2C_SETTING;
 
 var MCM_API APIInst;
 
@@ -49,11 +50,11 @@ function ClientModCallback(MCM_API_Instance ConfigAPI, int GameMode)
         P2G1 = Page2.AddGroup('MCM_Test_P2_G1', "General Settings (P2)");
         P2G2 = Page2.AddGroup('MCM_Test_P2_G2', "Not So General Settings (P2)");
 
-        P1G1.AddCheckbox('P1G1_S1', "P1G1 Setting 1", "Tooltip!", false, CheckboxChangeLogger, CheckboxSaveLogger);
-        P1G1.AddCheckbox('P1G1_S2', "P1G1 Setting 2", "Other Tooltip!", true, CheckboxChangeLogger, CheckboxSaveLogger);
+        P1G1.AddCheckbox('P1G1_S1', "P1G1 Setting 1", "Tooltip!", false, CheckboxSaveLogger, CheckboxChangeLogger);
+        P1G1.AddCheckbox('P1G1_S2', "P1G1 Setting 2", "Other Tooltip!", true, CheckboxSaveLogger, CheckboxChangeLogger);
 
-        P2G1.AddCheckbox('P2G1_S1', "P2G1 General Setting", "Page 2", false, CheckboxChangeLogger, CheckboxSaveLogger);
-        P2G2_C = P2G2.AddCheckbox('P2G2_S1', "P2G2 Specific Setting", "Page 2", false, CheckboxChangeLogger, CheckboxSaveLogger);
+        P2G1.AddCheckbox('P2G1_S1', "P2G1 General Setting", "Page 2", false, CheckboxSaveLogger, CheckboxChangeLogger);
+        P2G2_C = P2G2.AddCheckbox('P2G2_S2', "P2G2 Specific Setting", "Page 2", P2G2C_SETTING, CheckboxSaveLogger, CheckboxChangeLogger);
 
         if (GameMode == eGameMode_Strategy)
 			P2G2_C.SetEditable(false);
@@ -66,6 +67,7 @@ function ClientModCallback(MCM_API_Instance ConfigAPI, int GameMode)
 function SaveButtonClicked(MCM_API_SettingsPage Page)
 {
 	`log("MCM: Save button clicked on page " $ string(Page.GetPageID()));
+    class'MCM_TestHarness'.static.StaticSaveConfig();
 }
 
 function RevertButtonClicked(MCM_API_SettingsPage Page)
@@ -86,6 +88,13 @@ function CheckboxChangeLogger(MCM_API_Setting Setting, name SettingName, bool Se
 function CheckboxSaveLogger(MCM_API_Setting Setting, name SettingName, bool SettingValue)
 {
     `log("MCM Test Saved: " $ string(SettingName) $ " set to " $ (SettingValue ? "true" : "false"));
+
+    if (SettingName == 'P2G2_S2')
+    {
+        `log("MCM Special setting save");
+        P2G2C_SETTING = SettingValue;
+        class'MCM_TestHarness'.default.P2G2C_SETTING = SettingValue;
+    }
 }
 
 defaultproperties

@@ -9,38 +9,38 @@ delegate CustomSettingsPageCallback(UIScreen ParentScreen, int PageID);
 
 function MCM_SettingsTab InitSettingsTab(int PageID, string Label)
 {
-	super.InitListItem();
+    super.InitListItem();
 
-	SettingsPageID = PageID;
-	OnClickHandler = none;
-	CustomPageCallback = none;
+    SettingsPageID = PageID;
+    OnClickHandler = none;
+    CustomPageCallback = none;
 
-	UpdateDataCheckbox(Label, "", false, CheckboxChangedCallback, CheckboxClickedCallback);
+    UpdateDataCheckbox(Label, "", false, CheckboxChangedCallback, CheckboxClickedCallback);
 
-	return self;
+    return self;
 }
 
 function CheckboxChangedCallback(UICheckbox CheckboxControl)
 {
-	if (OnClickHandler != none)
-	{
-		OnClickHandler(self, SettingsPageID);
-	}
+    if (OnClickHandler != none)
+    {
+        OnClickHandler(self, SettingsPageID);
+    }
 
-	// One does not uncheck by clicking. Doesn't work that way.
-	SetChecked(true);
+    // One does not uncheck by clicking. Doesn't work that way.
+    SetChecked(true);
 }
 
 function CheckboxClickedCallback()
 {
-	if (OnClickHandler != none)
-	{
-		OnClickHandler(self, SettingsPageID);
-	}
+    if (OnClickHandler != none)
+    {
+        OnClickHandler(self, SettingsPageID);
+    }
 }
 
 function SetChecked(bool Checked)
 {
-	// Don't need to generate change event since we care about the click.
-	Checkbox.SetChecked(Checked, false);
+    // Don't need to generate change event since we care about the click.
+    Checkbox.SetChecked(Checked, false);
 }

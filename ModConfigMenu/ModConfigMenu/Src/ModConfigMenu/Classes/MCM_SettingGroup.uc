@@ -58,10 +58,10 @@ function InstantiateItems(delegate<ListItemHandler> handler, UIList Parent)
 
     // now items in reverse order.
     for (iter = Settings.Length-1; iter >= 0; iter--)
-	{
-		TmpItem = Settings[iter];
-		handler(TmpItem.InstantiateUI(Parent));
-	}
+    {
+        TmpItem = Settings[iter];
+        handler(TmpItem.InstantiateUI(Parent));
+    }
 
     // Group header last.
     handler(GroupLabel.InstantiateUI(Parent));

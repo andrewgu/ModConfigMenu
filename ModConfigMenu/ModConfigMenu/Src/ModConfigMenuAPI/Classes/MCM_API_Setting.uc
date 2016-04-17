@@ -2,13 +2,13 @@ interface MCM_API_Setting;
 
 enum eSettingType
 {
-	eSettingType_Label,
-	eSettingType_Button,
-	eSettingType_Checkbox,
-	eSettingType_Slider,
-	eSettingType_Dropdown,
-	eSettingType_Spinner,
-	eSettingType_Unknown
+    eSettingType_Label,
+    eSettingType_Button,
+    eSettingType_Checkbox,
+    eSettingType_Slider,
+    eSettingType_Dropdown,
+    eSettingType_Spinner,
+    eSettingType_Unknown
 };
 
 // Name is used for ID purposes, not for UI.

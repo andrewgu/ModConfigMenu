@@ -9,40 +9,40 @@ var MCM_API APIInst;
 
 event OnInit(UIScreen Screen)
 {
-	if (!ENABLE_TEST_HARNESS)
-	{
-		`log("MCM Test Harness Disabled.");
-		return;
-	}
+    if (!ENABLE_TEST_HARNESS)
+    {
+        `log("MCM Test Harness Disabled.");
+        return;
+    }
 
-	`log("MCM Test Harness: Attempt init.");
+    `log("MCM Test Harness: Attempt init.");
 
-	APIInst = MCM_API(Screen);
-	if (APIInst != None)
-	{
-		`log("MCM Test Harness: Attempt register.");
-		APIInst.RegisterClientMod(0, 2, ClientModCallback);
-	}
+    APIInst = MCM_API(Screen);
+    if (APIInst != None)
+    {
+        `log("MCM Test Harness: Attempt register.");
+        APIInst.RegisterClientMod(0, 2, ClientModCallback);
+    }
 }
 
 function ClientModCallback(MCM_API_Instance ConfigAPI, int GameMode)
 {
-	local MCM_API_SettingsPage Page1, Page2;
+    local MCM_API_SettingsPage Page1, Page2;
     local MCM_API_SettingsGroup P1G1, P2G1, P2G2;
     local MCM_API_Checkbox P2G2_C;
 
-	if (GameMode == eGameMode_MainMenu || GameMode == eGameMode_Strategy)
-	{
-		`log("Is in main menu or strategy menu, attempting to make page.");
-		
-		Page1 = ConfigAPI.NewSettingsPage("MCM_Test_1");
+    if (GameMode == eGameMode_MainMenu || GameMode == eGameMode_Strategy)
+    {
+        `log("Is in main menu or strategy menu, attempting to make page.");
+        
+        Page1 = ConfigAPI.NewSettingsPage("MCM_Test_1");
         Page1.SetPageTitle("Page 1");
         Page1.SetSaveHandler(SaveButtonClicked);
         Page1.SetCancelHandler(RevertButtonClicked);
         Page1.EnableResetButton(ResetButtonClicked);
         P1G1 = Page1.AddGroup('MCM_Test_P1_G1', "General Settings (P1)");
         
-		Page2 = ConfigAPI.NewSettingsPage("MCM_Test_2");
+        Page2 = ConfigAPI.NewSettingsPage("MCM_Test_2");
         Page2.SetPageTitle("Page 2");
         Page2.SetSaveHandler(SaveButtonClicked);
         Page2.SetCancelHandler(RevertButtonClicked);
@@ -57,27 +57,27 @@ function ClientModCallback(MCM_API_Instance ConfigAPI, int GameMode)
         P2G2_C = P2G2.AddCheckbox('P2G2_S2', "P2G2 Specific Setting", "Page 2", P2G2C_SETTING, CheckboxSaveLogger, CheckboxChangeLogger);
 
         if (GameMode == eGameMode_Strategy)
-			P2G2_C.SetEditable(false);
+            P2G2_C.SetEditable(false);
 
         Page1.ShowSettings();
         Page2.ShowSettings();
-	}
+    }
 }
 
 function SaveButtonClicked(MCM_API_SettingsPage Page)
 {
-	`log("MCM: Save button clicked on page " $ string(Page.GetPageID()));
+    `log("MCM: Save button clicked on page " $ string(Page.GetPageID()));
     class'MCM_TestHarness'.static.StaticSaveConfig();
 }
 
 function RevertButtonClicked(MCM_API_SettingsPage Page)
 {
-	`log("MCM: Revert button clicked on page " $ string(Page.GetPageID()));
+    `log("MCM: Revert button clicked on page " $ string(Page.GetPageID()));
 }
 
 function ResetButtonClicked(MCM_API_SettingsPage Page)
 {
-	`log("MCM: Reset button clicked on page " $ string(Page.GetPageID()));
+    `log("MCM: Reset button clicked on page " $ string(Page.GetPageID()));
 }
 
 function CheckboxChangeLogger(MCM_API_Setting Setting, name SettingName, bool SettingValue)
@@ -99,5 +99,5 @@ function CheckboxSaveLogger(MCM_API_Setting Setting, name SettingName, bool Sett
 
 defaultproperties
 {
-	ScreenClass = class'MCM_OptionsScreen';
+    ScreenClass = class'MCM_OptionsScreen';
 }

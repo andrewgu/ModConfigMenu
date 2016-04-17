@@ -10,19 +10,19 @@ config var string DropdownVar;
 
 function ClientModCallback(MCM_API_Instance ConfigAPI, int GameMode)
 {
-	local MCM_API_SettingsPage Page;
-	local array<string> ListOfStrings;
+    local MCM_API_SettingsPage Page;
+    local array<string> ListOfStrings;
     
     ListOfStrings.AddItem("a");
-	ListOfStrings.AddItem("bcd");
-	ListOfStrings.AddItem("e");
-	ListOfStrings.AddItem("fgh");
-	ListOfStrings.AddItem("ij");
-	ListOfStrings.AddItem("klm");
+    ListOfStrings.AddItem("bcd");
+    ListOfStrings.AddItem("e");
+    ListOfStrings.AddItem("fgh");
+    ListOfStrings.AddItem("ij");
+    ListOfStrings.AddItem("klm");
 
-	if (GameMode == eGameMode_MainMenu || GameMode == eGameMode_Strategy)
-	{
-		Page = ConfigAPI.NewSettingsPage("Example");
+    if (GameMode == eGameMode_MainMenu || GameMode == eGameMode_Strategy)
+    {
+        Page = ConfigAPI.NewSettingsPage("Example");
 
         Page.SetSaveHandler(SaveHandler);
         Page.SetCancelHandler(CancelHandler);
@@ -36,7 +36,7 @@ function ClientModCallback(MCM_API_Instance ConfigAPI, int GameMode)
         `BasicDropdown(Page, DropdownVar, "This is a dropdown.", "Tooltip", ListOfStrings)
 
         Page.ShowSettings();
-	}
+    }
 }
 
 `BasicButtonHandler(ThrowawayButtonName)
@@ -51,18 +51,18 @@ function ClientModCallback(MCM_API_Instance ConfigAPI, int GameMode)
 
 function SaveHandler(MCM_API_SettingsPage Page)
 {
-	`log("MCM: Save button clicked on page " $ string(Page.GetPageID()));
+    `log("MCM: Save button clicked on page " $ string(Page.GetPageID()));
     SaveConfig();
 }
 
 function CancelHandler(MCM_API_SettingsPage Page)
 {
-	`log("MCM: Revert button clicked on page " $ string(Page.GetPageID()));
+    `log("MCM: Revert button clicked on page " $ string(Page.GetPageID()));
 }
 
 function ResetHandler(MCM_API_SettingsPage Page)
 {
-	`log("MCM: Reset button clicked on page " $ string(Page.GetPageID()));
+    `log("MCM: Reset button clicked on page " $ string(Page.GetPageID()));
 }
 
 `MCM_API_Boilerplate(ClientModCallback);*/

@@ -49,7 +49,7 @@ function SliderChangedCallback(UISlider SliderControl)
     {
         // Safe to put this inside the SuppressEvent guard because SuppressEvent is only set via methods that modify the SliderValue directly.
         SliderValue = GetSliderValueFromPosition(SliderMin, SliderMax, Slider.percent);
-	    ChangeHandler(ParentFacade, SettingName, self.GetValue());
+        ChangeHandler(ParentFacade, SettingName, self.GetValue());
     }
 }
 

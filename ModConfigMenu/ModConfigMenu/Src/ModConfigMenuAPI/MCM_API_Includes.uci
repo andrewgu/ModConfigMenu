@@ -5,40 +5,40 @@
     if (MCM_API(`{screenInst}) != none){MCM_API(`{screenInst}).RegisterClientMod(`{MCM_MAJOR_VERSION}, `{MCM_MINOR_VERSION}, `{handler});}
 
 `define MCM_API_Boilerplate(handler)\
-	event OnInit(UIScreen Screen)\
-	{\
-		`CheckVersionAndRegister(Screen, `handler);\
-	}\
-	defaultproperties\
-	{\
-		ScreenClass = class'MCM_OptionsScreen';\
-	}
+    event OnInit(UIScreen Screen)\
+    {\
+        `CheckVersionAndRegister(Screen, `handler);\
+    }\
+    defaultproperties\
+    {\
+        ScreenClass = class'MCM_OptionsScreen';\
+    }
 
 `define GenerateSettingName(Varname) `{Varname}_BasicSetting
 `define GenerateSaveHandlerName(Varname) `{Varname}_BasicHandler
 
 `define BasicLabel(Page, Varname, Label, Tooltip)\
-	`{Page}.AddLabel(`GenerateSettingName(`Varname), `Label, `Tooltip);
+    `{Page}.AddLabel(`GenerateSettingName(`Varname), `Label, `Tooltip);
 `define BasicButton(Page, Varname, Label, Tooltip, ButtonLabel)\
-	`{Page}.AddButton(`GenerateSettingName(`Varname), `Label, `Tooltip, `ButtonLabel, , `GenerateSaveHandlerName(`Varname));
+    `{Page}.AddButton(`GenerateSettingName(`Varname), `Label, `Tooltip, `ButtonLabel, , `GenerateSaveHandlerName(`Varname));
 `define BasicCheckbox(Page, Varname, Label, Tooltip)\
-	`{Page}.AddCheckbox(`GenerateSettingName(`Varname), `Label, `Tooltip, `Varname, , `GenerateSaveHandlerName(`Varname));
+    `{Page}.AddCheckbox(`GenerateSettingName(`Varname), `Label, `Tooltip, `Varname, , `GenerateSaveHandlerName(`Varname));
 `define BasicSlider(Page, Varname, Label, Tooltip, SliderMin, SliderMax, SliderStep)\
-	`{Page}.AddSlider(`GenerateSettingName(`Varname), `Label, `Tooltip, `SliderMin, `SliderMax, `SliderStep, `Varname, , `GenerateSaveHandlerName(`Varname));
+    `{Page}.AddSlider(`GenerateSettingName(`Varname), `Label, `Tooltip, `SliderMin, `SliderMax, `SliderStep, `Varname, , `GenerateSaveHandlerName(`Varname));
 `define BasicSpinner(Page, Varname, Label, Tooltip, Options)\
-	`{Page}.AddSpinner(`GenerateSettingName(`Varname), `Label, `Tooltip, `Options, `Varname, , `GenerateSaveHandlerName(`Varname));
+    `{Page}.AddSpinner(`GenerateSettingName(`Varname), `Label, `Tooltip, `Options, `Varname, , `GenerateSaveHandlerName(`Varname));
 `define BasicDropdown(Page, Varname, Label, Tooltip, Options)\
-	`{Page}.AddDropdown(`GenerateSettingName(`Varname), `Label, `Tooltip, `Options, `Varname, , `GenerateSaveHandlerName(`Varname));
+    `{Page}.AddDropdown(`GenerateSettingName(`Varname), `Label, `Tooltip, `Options, `Varname, , `GenerateSaveHandlerName(`Varname));
 
 // Button handler works a bit differently because you want to implement the handler yourself.
 `define BasicButtonHandler(Varname)\
-	function `GenerateSaveHandlerName(`Varname)(MCM_API_Setting Setting, name SettingName)
+    function `GenerateSaveHandlerName(`Varname)(MCM_API_Setting Setting, name SettingName)
 
 `define BasicCheckboxSaveHandler(Varname)\
-	function `GenerateSaveHandlerName(`Varname)(MCM_API_Setting Setting, name SettingName, bool SettingValue) {`Varname = SettingValue;}
+    function `GenerateSaveHandlerName(`Varname)(MCM_API_Setting Setting, name SettingName, bool SettingValue) {`Varname = SettingValue;}
 `define BasicSliderSaveHandler(Varname)\
-	function `GenerateSaveHandlerName(`Varname)(MCM_API_Setting Setting, name SettingName, float SettingValue) {`Varname = SettingValue;}
+    function `GenerateSaveHandlerName(`Varname)(MCM_API_Setting Setting, name SettingName, float SettingValue) {`Varname = SettingValue;}
 `define BasicSpinnerSaveHandler(Varname)\
-	function `GenerateSaveHandlerName(`Varname)(MCM_API_Setting Setting, name SettingName, string SettingValue) {`Varname = SettingValue;}
+    function `GenerateSaveHandlerName(`Varname)(MCM_API_Setting Setting, name SettingName, string SettingValue) {`Varname = SettingValue;}
 `define BasicDropdownSaveHandler(Varname)\
-	function `GenerateSaveHandlerName(`Varname)(MCM_API_Setting Setting, name SettingName, string SettingValue) {`Varname = SettingValue;}
+    function `GenerateSaveHandlerName(`Varname)(MCM_API_Setting Setting, name SettingName, string SettingValue) {`Varname = SettingValue;}

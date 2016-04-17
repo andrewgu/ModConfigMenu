@@ -30,47 +30,47 @@ delegate SaveStateHandler(MCM_API_SettingsPage SettingsPage);
 
 simulated function UIPanel InitPanel(optional name InitName, optional name InitLibID)
 {
-	super.InitPanel(InitName, InitLibID);
+    super.InitPanel(InitName, InitLibID);
 
-	SetSize(PANEL_WIDTH, PANEL_HEIGHT);
+    SetSize(PANEL_WIDTH, PANEL_HEIGHT);
 
-	SettingsList = Spawn(class'UIList', self).InitList('OptionsList', 0, 0, PANEL_WIDTH, PANEL_HEIGHT - FOOTER_HEIGHT - 70);
-	SettingsList.SetSelectedNavigation();
-	SettingsList.Navigator.LoopSelection = true;
+    SettingsList = Spawn(class'UIList', self).InitList('OptionsList', 0, 0, PANEL_WIDTH, PANEL_HEIGHT - FOOTER_HEIGHT - 70);
+    SettingsList.SetSelectedNavigation();
+    SettingsList.Navigator.LoopSelection = true;
 
     // Delay spawning of title line to make sure topmost "line" is also last layer.
     // See ShowSettings();
     TitleLine = none;
-	//TitleLine = Spawn(class'MCM_UISettingSeparator', SettingsList.itemContainer);
-	//TitleLine.InitSeparator();
-	//TitleLine.UpdateTitle("Mod Settings");
-	//TitleLine.SetY(0);
-	//TitleLine.Show();
-	//TitleLine.EnableNavigation();
+    //TitleLine = Spawn(class'MCM_UISettingSeparator', SettingsList.itemContainer);
+    //TitleLine.InitSeparator();
+    //TitleLine.UpdateTitle("Mod Settings");
+    //TitleLine.SetY(0);
+    //TitleLine.Show();
+    //TitleLine.EnableNavigation();
 
-	//SettingItemStartY = TitleLine.Height;
+    //SettingItemStartY = TitleLine.Height;
 
-	ResetButton = Spawn(class'UIButton', self);
-	ResetButton.InitButton(, m_strResetButton, OnResetClicked);
-	ResetButton.SetPosition(RESET_BUTTON_X, PANEL_HEIGHT - FOOTER_HEIGHT + 3); //Relative to this screen panel
-	ResetButton.Hide();
+    ResetButton = Spawn(class'UIButton', self);
+    ResetButton.InitButton(, m_strResetButton, OnResetClicked);
+    ResetButton.SetPosition(RESET_BUTTON_X, PANEL_HEIGHT - FOOTER_HEIGHT + 3); //Relative to this screen panel
+    ResetButton.Hide();
 
-	ResetHandler = none;
+    ResetHandler = none;
     SaveHandler = none;
     CancelHandler = none;
 
-	return self;
+    return self;
 }
 
 simulated function OnInit()
 {
-	super.OnInit();
+    super.OnInit();
 }
 
 simulated function OnResetClicked(UIButton kButton)
 {
-	if (ResetHandler != none)
-		ResetHandler(self);
+    if (ResetHandler != none)
+        ResetHandler(self);
 }
 
 // Helpers for MCM_OptionsScreen ================================================================
@@ -98,13 +98,13 @@ simulated function TriggerCancelEvent()
 
 function int GetPageId()
 {
-	return SettingsPageID;
+    return SettingsPageID;
 }
 
 // To do : probably add description to this function too ? Super d
 function SetPageTitle(string title)
 {
-	TitleLine.UpdateTitle(title);
+    TitleLine.UpdateTitle(title);
 }
 
 function SetSaveHandler(delegate<SaveStateHandler> _SaveHandler)
@@ -171,11 +171,11 @@ function ShowSettings()
     }
 
     TitleLine = Spawn(class'MCM_UISettingSeparator', SettingsList.itemContainer);
-	TitleLine.InitSeparator();
-	TitleLine.UpdateTitle("Mod Settings");
-	TitleLine.SetY(0);
-	TitleLine.Show();
-	TitleLine.EnableNavigation();
+    TitleLine.InitSeparator();
+    TitleLine.UpdateTitle("Mod Settings");
+    TitleLine.SetY(0);
+    TitleLine.Show();
+    TitleLine.EnableNavigation();
     SettingsList.MoveItemToTop(TitleLine);
 }
 

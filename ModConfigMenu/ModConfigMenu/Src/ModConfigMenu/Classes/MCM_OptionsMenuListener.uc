@@ -36,8 +36,8 @@ event OnRemoved(UIScreen Screen)
 simulated function InjectModOptionsButton()
 {
     ModOptionsButton = ParentScreen.Spawn(class'UIButton', ParentScreen);
-	ModOptionsButton.InitButton(, m_strModMenuButton, ShowModOptionsDialog);
-	ModOptionsButton.SetPosition(500, 850); //Relative to this screen panel
+    ModOptionsButton.InitButton(, m_strModMenuButton, ShowModOptionsDialog);
+    ModOptionsButton.SetPosition(500, 850); //Relative to this screen panel
     ModOptionsButton.AnimateIn(0);
 }
 
@@ -47,10 +47,10 @@ simulated function ShowModOptionsDialog(UIButton kButton)
 
     `log("Mod Options Dialog Called.");
     
-	if (USE_FLAT_DISPLAY_STYLE)
-		TargetMovie = None;
-	else
-	    TargetMovie = ParentScreen.Movie;
+    if (USE_FLAT_DISPLAY_STYLE)
+        TargetMovie = None;
+    else
+        TargetMovie = ParentScreen.Movie;
 
     MCM_OptionsScreen(ParentScreen.Movie.Stack.Push(ParentScreen.Spawn(class'MCM_OptionsScreen', ParentScreen), TargetMovie)).InitModOptionsMenu(self);
 }

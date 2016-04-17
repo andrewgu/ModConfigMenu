@@ -10,14 +10,17 @@
     <ProjectGuid>{3f350978-33e7-493a-993b-92c1b54bf591}</ProjectGuid>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="Config\XComEditor.ini" />
-    <Content Include="Config\XComEngine.ini" />
-    <Content Include="Config\XComMCDT_Demo.ini">
+    <Content Include="Config\XComMCDT_ConfigSrc.ini">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Config\XComEditor.ini" />
+    <Content Include="Config\XComEngine.ini" />
     <Content Include="ModPreview.jpg" />
     <Content Include="ReadMe.txt" />
-    <Content Include="Src\ModConfigDependencyTest\Classes\UIConfig.uc">
+    <Content Include="Src\ModConfigDependencyTest\Classes\MCDT_ConfigSrc.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigDependencyTest\Classes\UIExample.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\ModConfigDependencyTest\Classes\UIStub.uc">
@@ -26,13 +29,40 @@
     <Content Include="Src\ModConfigMenuAPI\Classes\MCM_API.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\ModConfigMenuAPI\Classes\MCM_API_Button.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenuAPI\Classes\MCM_API_Checkbox.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenuAPI\Classes\MCM_API_Dropdown.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\ModConfigMenuAPI\Classes\MCM_API_Instance.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenuAPI\Classes\MCM_API_Label.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\ModConfigMenuAPI\Classes\MCM_API_Setting.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\ModConfigMenuAPI\Classes\MCM_API_SettingsGroup.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\ModConfigMenuAPI\Classes\MCM_API_SettingsPage.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenuAPI\Classes\MCM_API_Slider.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenuAPI\Classes\MCM_API_Spinner.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenuAPI\MCM_API_CfgHelpers.uci">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenuAPI\MCM_API_Includes.uci">
       <SubType>Content</SubType>
     </Content>
   </ItemGroup>

@@ -2,10 +2,10 @@ class UIStub extends UIScreenListener;
 
 event OnInit(UIScreen Screen)
 {
-    `log("DEPENDENCY STUB TRIGGERED");
+    `log("MCDT: Dependency Stub Triggered.");
 }
 
 defaultproperties
 {
-    ScreenClass = class'UIOptionsPCScreen';
+    ScreenClass = class'MCM_OptionsScreen';
 }

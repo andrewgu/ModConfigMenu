@@ -8,6 +8,6 @@ m_strTitle="Mod Settings"
 m_strSubtitle=""
 
 [MCM_SettingsPanel]
-m_strResetButton="Defaults"
+m_strResetButton="Reset"
 m_strRevertButton="Discard"
 m_strApplyButton="Save"

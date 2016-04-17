@@ -15,6 +15,9 @@
     <Content Include="Config\XComModConfigMenu.ini">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Config\XComModConfigMenuTest.ini">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Content\MCM.upk">
       <SubType>Content</SubType>
     </Content>
@@ -54,6 +57,9 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\ModConfigMenuAPI\Classes\MCM_API_Spinner.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenuAPI\MCM_API_CfgHelpers.uci">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\ModConfigMenuAPI\MCM_API_Includes.uci">

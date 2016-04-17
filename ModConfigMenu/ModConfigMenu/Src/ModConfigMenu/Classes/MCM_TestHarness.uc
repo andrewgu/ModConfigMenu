@@ -1,15 +1,13 @@
-class MCM_TestHarness extends UIScreenListener config(ModConfigMenu);
+class MCM_TestHarness extends UIScreenListener config(ModConfigMenuTestHarness);
 
-//`include(ModConfigMenu/Src/ModConfigMenuAPI/MCM_API_Includes.uci)
+`include(ModConfigMenu/Src/ModConfigMenuAPI/MCM_API_Includes.uci)
+`include(ModConfigMenu/Src/ModConfigMenuAPI/MCM_API_CfgHelpers.uci)
 
-var config bool ENABLE_TEST_HARNESS;
-
-var config int DEFAULT_VERSION;
-var config bool DEFAULT_CLICKED;
-var config bool DEFAULT_CHECKBOX;
-var config float DEFAULT_SLIDER;
-var config string DEFAULT_DROPDOWN;
-var config string DEFAULT_SPINNER;
+var config bool CFG_CLICKED;
+var config bool CFG_CHECKBOX;
+var config float CFG_SLIDER;
+var config string CFG_DROPDOWN;
+var config string CFG_SPINNER;
 
 var MCM_API APIInst;
 
@@ -21,39 +19,27 @@ var MCM_API_Dropdown P2Dropdown;
 var MCM_API_Spinner P2Spinner;
 
 var MCM_API_SettingsPage Page1;
-var MCM_API_SettingsPage Page2;
+
+`MCM_CH_VersionBoilerplate(class'MCM_TestConfigStore',VERSION)
 
 event OnInit(UIScreen Screen)
 {
-    if (!ENABLE_TEST_HARNESS)
+    if (!(class'MCM_TestConfigStore'.default.ENABLE_TEST_HARNESS))
     {
         `log("MCM Test Harness Disabled.");
         return;
     }
 
-    // Need to "install" the config.
-    if (class'MCM_TestConfigStore'.default.VERSION < DEFAULT_VERSION)
-    {
-        class'MCM_TestConfigStore'.default.VERSION = DEFAULT_VERSION;
-        class'MCM_TestConfigStore'.default.CLICKED = false;
-        class'MCM_TestConfigStore'.default.CHECKBOX = DEFAULT_CHECKBOX;
-        class'MCM_TestConfigStore'.default.SLIDER = DEFAULT_SLIDER;
-        class'MCM_TestConfigStore'.default.DROPDOWN = DEFAULT_DROPDOWN;
-        class'MCM_TestConfigStore'.default.SPINNER = DEFAULT_SPINNER;
-        class'MCM_TestConfigStore'.static.StaticSaveConfig();
-    }
+    // Workaround that's needed in order to be able to "save" files.
+    LoadInitialValues();
 
-    APIInst = MCM_API(Screen);
-    if (APIInst != None)
-    {
-        `log("MCM Test Harness: Attempt register.");
-        APIInst.RegisterClientMod(0, 2, ClientModCallback);
-    }
+    // Use the macro because it automates the version check based on the API version you're compiling against.
+    `MCM_API_Register(Screen, ClientModCallback);
 }
 
 function ClientModCallback(MCM_API_Instance ConfigAPI, int GameMode)
 {
-    local MCM_API_SettingsGroup P1G1, P2G1, P2G2;
+    local MCM_API_SettingsGroup P1G1, P1G2, P1G3;
     local array<string> Options;
 
     if (GameMode == eGameMode_MainMenu || GameMode == eGameMode_Strategy)
@@ -67,23 +53,14 @@ function ClientModCallback(MCM_API_Instance ConfigAPI, int GameMode)
         Page1.EnableResetButton(ResetButtonClicked);
         
         P1G1 = Page1.AddGroup('MCM_Test_P1_G1', "General Settings");
-        
-        Page2 = ConfigAPI.NewSettingsPage("MCM_Test_2");
-        Page2.SetPageTitle("Page 2");
-        Page2.SetSaveHandler(SaveButtonClicked);
-        Page2.SetCancelHandler(RevertButtonClicked);
-
-        P2G1 = Page2.AddGroup('MCM_Test_P2_G1', "Group 1");
-        P2G2 = Page2.AddGroup('MCM_Test_P2_G2', "Group 2");
+        P1G2 = Page1.AddGroup('MCM_Test_P1_G2', "Group 1");
+        P1G3 = Page1.AddGroup('MCM_Test_P1_G3', "Group 2");
 
         P1Label = P1G1.AddLabel('label', "Label", "Label");
-
-        DEFAULT_CLICKED = false;
-
         P1Button = P1G1.AddButton('button', "Button", "Button", "OK", ButtonClickedHandler);
-        P1Checkbox = P1G1.AddCheckbox('checkbox', "Checkbox", "Checkbox", class'MCM_TestConfigStore'.default.CHECKBOX, CheckboxSaveLogger);
+        P1Checkbox = P1G1.AddCheckbox('checkbox', "Checkbox", "Checkbox", CFG_CHECKBOX, CheckboxSaveLogger);
 
-        P2Slider = P2G1.AddSlider('slider', "Slider", "Slider", 0, 200, 20, class'MCM_TestConfigStore'.default.SLIDER, SliderSaveLogger);
+        P2Slider = P1G2.AddSlider('slider', "Slider", "Slider", 0, 200, 20, CFG_SLIDER, SliderSaveLogger);
 
         Options.Length = 0;
         Options.AddItem("a");
@@ -94,100 +71,59 @@ function ClientModCallback(MCM_API_Instance ConfigAPI, int GameMode)
         Options.AddItem("f");
         Options.AddItem("g");
 
-        P2Spinner = P2G2.AddSpinner('spinner', "Spinner", "Spinner", Options, class'MCM_TestConfigStore'.default.SPINNER, SpinnerSaveLogger);
-        P2Dropdown = P2G2.AddDropdown('dropdown', "Dropdown", "Dropdown", Options, class'MCM_TestConfigStore'.default.DROPDOWN, DropdownSaveLogger);
+        P2Spinner = P1G3.AddSpinner('spinner', "Spinner", "Spinner", Options, CFG_SPINNER, SpinnerSaveLogger);
+        P2Dropdown = P1G3.AddDropdown('dropdown', "Dropdown", "Dropdown", Options, CFG_DROPDOWN, DropdownSaveLogger);
 
         if (GameMode == eGameMode_Strategy)
             P1Checkbox.SetEditable(false);
 
         Page1.ShowSettings();
-        Page2.ShowSettings();
     }
+}
+
+`MCM_API_BasicCheckboxSaveHandler(CheckboxSaveLogger, CFG_CHECKBOX)
+`MCM_API_BasicSliderSaveHandler(SliderSaveLogger, CFG_SLIDER)
+`MCM_API_BasicDropdownSaveHandler(DropdownSaveLogger, CFG_DROPDOWN)
+`MCM_API_BasicSpinnerSaveHandler(SpinnerSaveLogger, CFG_SPINNER)
+
+`MCM_API_BasicButtonHandler(ButtonClickedHandler)
+{
+    CFG_CLICKED = true;
 }
 
 function SaveButtonClicked(MCM_API_SettingsPage Page)
 {
-    `log("MCM: Save button clicked on page " $ string(Page.GetPageID()));
+    `log("MCM: Save button clicked");
     
-    if (Page == Page1)
-    {
-        class'MCM_TestConfigStore'.default.CLICKED = DEFAULT_CLICKED;
-        class'MCM_TestConfigStore'.default.CHECKBOX = DEFAULT_CHECKBOX;
-        
-        class'MCM_TestConfigStore'.static.StaticSaveConfig();
-    }
-    else if (Page == Page2)
-    {
-        class'MCM_TestConfigStore'.default.SLIDER = DEFAULT_SLIDER;
-        class'MCM_TestConfigStore'.default.DROPDOWN = DEFAULT_DROPDOWN;
-        class'MCM_TestConfigStore'.default.SPINNER = DEFAULT_SPINNER;
-
-        class'MCM_TestConfigStore'.static.StaticSaveConfig();
-    }
-}
-
-function RevertButtonClicked(MCM_API_SettingsPage Page)
-{
-    `log("MCM: Revert button clicked on page " $ string(Page.GetPageID()));
-
-    if (Page == Page1)
-    {
-        DEFAULT_CLICKED = false;
-        DEFAULT_CHECKBOX = class'MCM_TestConfigStore'.default.CHECKBOX;
-    }
-    else if (Page == Page2)
-    {
-        DEFAULT_SLIDER = class'MCM_TestConfigStore'.default.SLIDER;
-        DEFAULT_DROPDOWN = class'MCM_TestConfigStore'.default.DROPDOWN;
-        DEFAULT_SPINNER = class'MCM_TestConfigStore'.default.SPINNER;
-    }
+    `MCM_CH_SaveConfig();
 }
 
 function ResetButtonClicked(MCM_API_SettingsPage Page)
 {
-    `log("MCM: Reset button clicked on page " $ string(Page.GetPageID()));
+    `log("MCM: Reset button clicked");
 
-    if (Page == Page1)
-    {
-        DEFAULT_CLICKED = false;
-        P1Checkbox.SetValue(class'MCM_TestConfigStore'.default.CHECKBOX, true);
-    }
-    else if (Page == Page2)
-    {
-        P2Slider.SetValue(class'MCM_TestConfigStore'.default.SLIDER, true);
-        P2Dropdown.SetValue(class'MCM_TestConfigStore'.default.DROPDOWN, true);
-        P2Spinner.SetValue(class'MCM_TestConfigStore'.default.SPINNER, true);
-    }
+    // Revert all of the settings.
+    CFG_CLICKED = false;
+    P1Checkbox.SetValue(CFG_CHECKBOX, true);
+    P2Slider.SetValue(CFG_SLIDER, true);
+    P2Dropdown.SetValue(CFG_DROPDOWN, true);
+    P2Spinner.SetValue(CFG_SPINNER, true);
 }
 
-
-function ButtonClickedHandler(MCM_API_Setting Setting, name SettingName)
+function RevertButtonClicked(MCM_API_SettingsPage Page)
 {
-    DEFAULT_CLICKED = true;
+    // Don't need to do anything since values aren't written until at save-time when you use save handlers.
+    `log("MCM: Cancel button clicked");
 }
 
-function CheckboxSaveLogger(MCM_API_Setting Setting, name SettingName, bool SettingValue)
+// This shows how to either pull default values from a source config, or to use more user-defined values, gated by a version number mechanism.
+function LoadInitialValues()
 {
-    `log("MCM Test Saved: " $ string(SettingName) $ " set to " $ (SettingValue ? "true" : "false"));
-    DEFAULT_CHECKBOX = SettingValue;
-}
-
-function SliderSaveLogger(MCM_API_Setting Setting, name SettingName, float SettingValue)
-{
-    `log("MCM Test Saved: " $ string(SettingName) $ " set to " $ string(SettingValue));
-    DEFAULT_SLIDER = SettingValue;
-}
-
-function DropdownSaveLogger(MCM_API_Setting Setting, name SettingName, string SettingValue)
-{
-    `log("MCM Test Saved: " $ string(SettingName) $ " set to " $ SettingValue);
-    DEFAULT_DROPDOWN = SettingValue;
-}
-
-function SpinnerSaveLogger(MCM_API_Setting Setting, name SettingName, string SettingValue)
-{
-    `log("MCM Test Saved: " $ string(SettingName) $ " set to " $ SettingValue);
-    DEFAULT_SPINNER = SettingValue;
+    CFG_CLICKED = false;
+    CFG_CHECKBOX = `MCM_CH_GetConfigValue(CFG_CHECKBOX,class'MCM_TestConfigStore',CHECKBOX);
+    CFG_SLIDER = `MCM_CH_GetConfigValue(CFG_SLIDER,class'MCM_TestConfigStore',SLIDER);
+    CFG_DROPDOWN = `MCM_CH_GetConfigValue(CFG_DROPDOWN,class'MCM_TestConfigStore',DROPDOWN);
+    CFG_SPINNER = `MCM_CH_GetConfigValue(CFG_SPINNER,class'MCM_TestConfigStore',SPINNER);
 }
 
 defaultproperties

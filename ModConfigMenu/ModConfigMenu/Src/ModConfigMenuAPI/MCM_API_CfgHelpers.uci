@@ -1,0 +1,19 @@
+// Contains helper functions for doing proper user-configurable save data. See documentation for patterns on how to do it.
+
+`define MCM_CH_VersionBoilerplate(SrcClass,VersionVar)\
+	var config int MCM_CH_IMPL_CFG_VERSION;\
+	function bool MCM_CH_IMPL_VersionCheck(){\
+		return `{SrcClass}.default.`{VersionVar} > self.MCM_CH_IMPL_CFG_VERSION;\
+	}\
+	function MCM_CH_IMPL_WriteVersion(){\
+		self.MCM_CH_IMPL_CFG_VERSION = `{SrcClass}.default.`{VersionVar};\
+	}
+
+
+`define MCM_CH_GetConfigValue(TrgVar,SrcClass,SrcVar)\
+	(MCM_CH_IMPL_VersionCheck()) ? (`{SrcClass}.default.`{SrcVar}) : `{TrgVar}
+
+`define MCM_CH_SaveConfig()\
+	MCM_CH_IMPL_WriteVersion();\
+	self.SaveConfig();
+

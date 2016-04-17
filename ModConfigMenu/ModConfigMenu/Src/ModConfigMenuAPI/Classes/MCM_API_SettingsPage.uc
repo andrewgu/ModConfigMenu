@@ -1,22 +1,23 @@
 interface MCM_API_SettingsPage;
 
+delegate SaveStateHandler(MCM_API_SettingsPage SettingsPage);
+
 // Gives you a way to uniquely identify this settings page from all others, 
 // guaranteed to be unique per "OnInit" of the mod settings menu.
 function int GetPageId();
 
-delegate SaveStateHandler(MCM_API_SettingsPage SettingsPage);
-
 function SetPageTitle(string title);
 
-// By default Save/Cancel buttons are not visible, you can choose to use them.
-function EnableSaveAndCancelButtons(delegate<SaveStateHandler> SaveHandler, delegate<SaveStateHandler> CancelHandler);
-// By default Reset button is not visible, you can choose to use it.
-function EnableResetToDefaultButton(delegate<SaveStateHandler> Handler);
+// Use these to handle user triggered save/cancel events.
+function SetSaveHandler(delegate<SaveStateHandler> SaveHandler);
+function SetCancelHandler(delegate<SaveStateHandler> CancelHandler);
 
-// It's done this way because of some UI issues where dropdowns don't behave unless you initialize
-// the settings UI widgets from bottom up.
-function array<MCM_API_Setting> MakeSettings(array<name> SettingNames);
-// Will return None if setting by that name isn't found.
-function MCM_API_Setting GetSettingByName(name SettingName);
-function MCM_API_Setting GetSettingByIndex(int Index);
-function int GetNumberOfSettings();
+// By default Reset button is not visible, you can choose to use it.
+function EnableResetButton(delegate<SaveStateHandler> ResetHandler);
+
+// Groups let you visually cluster settings. All settings belong to groups.
+function MCM_API_SettingsGroup AddGroup(name GroupName, string GroupLabel);
+function MCM_API_SettingsGroup GetGroup(name GroupName);
+
+// Call to indicate "done making settings". Must call all of your AddGroup and Group.Add#### calls before this.
+function ShowSettings();

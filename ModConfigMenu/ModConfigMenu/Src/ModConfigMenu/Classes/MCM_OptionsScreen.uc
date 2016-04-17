@@ -1,5 +1,5 @@
 class MCM_OptionsScreen extends UIScreen implements(MCM_API, MCM_API_Instance) 
-	config(ModConfigMenu) dependson(UIDialogueBox);
+    config(ModConfigMenu) dependson(UIDialogueBox);
 
 var config int PANEL_X;
 var config int PANEL_Y;
@@ -18,6 +18,7 @@ var config int API_MINOR_VERSION;
 var localized string m_strTitle;
 var localized string m_strSubtitle;
 var localized string m_strSaveAndExit;
+var localized string m_strCancel;
 
 var MCM_OptionsMenuListener ParentListener;
 
@@ -26,68 +27,65 @@ var UIImage BG;
 var UIImage VSeparator;
 var UIX2PanelHeader TitleHeader;
 
-//var UIPanel TabsPanel;
 var UIList TabsList;
 var int SettingsPageCounter;
 var int SelectedPageID;
-//var array<MCM_UIListItemString_SelfContained> SettingsButtons;
 var array<MCM_SettingsTab> SettingsTabs;
 var array<MCM_SettingsPanel> SettingsPanels;
 var UIButton SaveAndExitButton;
+var UIButton CancelButton;
 
 var int CurrentGameMode;
-//var array<delegate<ClientModCallback> > ClientModCallbacks;
 
 delegate ClientModCallback(MCM_API_Instance ConfigAPI, int GameMode);
 delegate OnClickedDelegate(UIButton Button);
-//delegate SettingsTabDelegate(MCM_UIListItemString_SelfContained Caller);
 delegate SettingsTabDelegate(MCM_SettingsTab Caller, int PageID);
 delegate CustomSettingsPageCallback(UIScreen ParentScreen, int PageID);
 
 simulated function InitScreen(XComPlayerController InitController, UIMovie InitMovie, optional name InitName)
 {
-	`log("MCM InitScreen called.");
+    `log("MCM InitScreen called.");
 
     super.InitScreen(InitController, InitMovie, InitName);
 
-	UpdateGameMode();
+    UpdateGameMode();
     CreateSkeleton();
 }
 
 simulated function UpdateGameMode()
 {
-	local EUIMode uimode;
+    local EUIMode uimode;
 
-	if (`XENGINE.IsMultiplayerGame())
-	{
-		CurrentGameMode = eGameMode_Multiplayer;
-	}
-	else
-	{
-		uimode = Movie.Pres.m_eUIMode;
+    if (`XENGINE.IsMultiplayerGame())
+    {
+        CurrentGameMode = eGameMode_Multiplayer;
+    }
+    else
+    {
+        uimode = Movie.Pres.m_eUIMode;
 
-		if (uimode == eUIMode_Tactical)
-			CurrentGameMode = eGameMode_Tactical;
-		else if (uimode == eUIMode_Strategy)
-			CurrentGameMode = eGameMode_Strategy;
-		else if (uimode == eUIMode_Shell)
-			CurrentGameMode = eGameMode_MainMenu;
-		else
-			CurrentGameMode = eGameMode_Unknown;
-	}
+        if (uimode == eUIMode_Tactical)
+            CurrentGameMode = eGameMode_Tactical;
+        else if (uimode == eUIMode_Strategy)
+            CurrentGameMode = eGameMode_Strategy;
+        else if (uimode == eUIMode_Shell)
+            CurrentGameMode = eGameMode_MainMenu;
+        else
+            CurrentGameMode = eGameMode_Unknown;
+    }
 }
 
 simulated function OnInit()
 {
-	super.OnInit();
+    super.OnInit();
 
-	`log("MCM Core: On Init Called.");
+    `log("MCM Core: On Init Called.");
 }
 
 simulated function InitModOptionsMenu(MCM_OptionsMenuListener listener)
 {
     ParentListener = listener;
-	`log("MCM InitModOptionsMenu called.");
+    `log("MCM InitModOptionsMenu called.");
 }
 
 simulated function CreateSkeleton()
@@ -100,216 +98,214 @@ simulated function CreateSkeleton()
     
     Container = Spawn(class'UIPanel', self).InitPanel('').SetPosition(PANEL_X, PANEL_Y).SetSize(TotalWidth, TotalHeight);
     
-	BG = Spawn(class'UIImage', Container).InitImage(,"img:///MCM.gfx.MainBackground");
-	
-	VSeparator = Spawn(class'UIImage', Container).InitImage(,"img:///MCM.gfx.MainVerticalSeparator");
-	VSeparator.SetPosition(TABLIST_WIDTH,HEADER_HEIGHT);
+    BG = Spawn(class'UIImage', Container).InitImage(,"img:///MCM.gfx.MainBackground");
     
-	TitleHeader = Spawn(class'UIX2PanelHeader', Container);
-	TitleHeader.InitPanelHeader('', m_strTitle, m_strSubtitle);
-	TitleHeader.SetHeaderWidth(Container.width - 20);
-	TitleHeader.SetPosition(10, 10);
+    VSeparator = Spawn(class'UIImage', Container).InitImage(,"img:///MCM.gfx.MainVerticalSeparator");
+    VSeparator.SetPosition(TABLIST_WIDTH,HEADER_HEIGHT);
+    
+    TitleHeader = Spawn(class'UIX2PanelHeader', Container);
+    TitleHeader.InitPanelHeader('', m_strTitle, m_strSubtitle);
+    TitleHeader.SetHeaderWidth(Container.width - 20);
+    TitleHeader.SetPosition(10, 10);
     
     TabsList = Spawn(class'UIList', Container).InitList('ModTabSelectList', 10, HEADER_HEIGHT + TABS_LIST_TOP_PADDING, TABLIST_WIDTH - 30, OPTIONS_HEIGHT);
     TabsList.SetSelectedNavigation();
-	TabsList.Navigator.LoopSelection = true;
-
-    //TestCreateTabButtons();
+    TabsList.Navigator.LoopSelection = true;
 
     // Save and exit button    
     SaveAndExitButton = Spawn(class'UIButton', Container);
-	SaveAndExitButton.InitButton(, m_strSaveAndExit, SaveAndExit);
-	SaveAndExitButton.SetPosition(Container.width - 190, Container.height - 40); //Relative to this screen panel
+    SaveAndExitButton.InitButton(, m_strSaveAndExit, OnSaveAndExit);
+    SaveAndExitButton.SetPosition(Container.width - 190, Container.height - 40); //Relative to this screen panel
 
-    Navigator.SetSelected(TabsList);
-    TabsList.Navigator.SelectFirstAvailableIfNoCurrentSelection();
+    CancelButton = Spawn(class'UIButton', Container);
+    CancelButton.InitButton(, m_strCancel, OnCancel);
+    CancelButton.SetPosition(Container.width - 190 - 170, Container.height - 40); //Relative to this screen panel
+
+    //Navigator.SetSelected(TabsList);
+    //TabsList.Navigator.SelectFirstAvailableIfNoCurrentSelection();
+}
+
+// Special button handlers ========================================================================
+
+simulated function OnSaveAndExit(UIButton kButton)
+{
+    local MCM_SettingsPanel TmpPage;
+    
+    // Save all.
+    foreach SettingsPanels(TmpPage)
+    {
+        TmpPage.TriggerSaveEvent();
+    }
+
+    Movie.Stack.Pop(self);
+}
+
+simulated function OnCancel(UIButton kButton)
+{
+    local MCM_SettingsPanel TmpPage;
+    
+    // Cancel all.
+    foreach SettingsPanels(TmpPage)
+    {
+        TmpPage.TriggerCancelEvent();
+    }
+
+    Movie.Stack.Pop(self);
+}
+
+
+// Helpers for MCM_API_Instance ===================================================================
+
+simulated function MCM_SettingsPanel GetPanelByPageID(int PageID)
+{
+    local MCM_SettingsPanel TmpPage;
+
+    foreach SettingsPanels(TmpPage)
+    {
+        if (TmpPage.GetPageID() == PageID)
+            return TmpPage;
+    }
+
+    return None;
+}
+
+simulated function ChoosePanelByPageID(int PageID)
+{
+    //local MCM_SettingsPanel CurrentSettingsPage;
+    local MCM_SettingsTab TmpButton;
+    local MCM_SettingsPanel TmpPage;
+
+    // Are we changing pages? Do nothing if not changing pages.
+    if (PageID != SelectedPageID)
+    {
+        SelectedPageID = PageID;
+        
+        // Now choose the panel.
+        foreach SettingsPanels(TmpPage)
+        {
+            if (TmpPage.GetPageID() != SelectedPageID)
+            {
+                TmpPage.Hide();
+            }
+            else
+            {
+                `log("MCM: Found correct panel, showing.");
+                TmpPage.Show();
+            }
+        }
+
+        // Refresh the button. This is important if we're cancelling a tab change.
+        foreach SettingsTabs(TmpButton)
+        {
+            if (TmpButton.SettingsPageID == SelectedPageID)
+            {
+                TmpButton.SetChecked(true);
+            }
+            else
+            {
+                TmpButton.SetChecked(false);
+            }
+        }
+    }
 }
 
 simulated function TabClickedHandler(MCM_SettingsTab Caller, int PageID)
 {
-	`log("MCM Tab clicked: " $ string(PageID));
-	//TabsList.SetSelectedItem(kButton, true);
-	ChoosePanelByPageID(PageID);
+    `log("MCM Tab clicked: " $ string(PageID));
+    //TabsList.SetSelectedItem(kButton, true);
+    ChoosePanelByPageID(PageID);
 }
 
-simulated function AddTabsListButton(string TabLabel, int PageID, delegate<SettingsTabDelegate> callback)
+simulated function AddTabsListButton(string TabLabel, int PageID)
 {
     local MCM_SettingsTab Item; 
     Item = Spawn(class'MCM_SettingsTab', TabsList.ItemContainer).InitSettingsTab(PageID, TabLabel);
-	Item.OnClickHandler = TabClickedHandler;
+    Item.OnClickHandler = TabClickedHandler;
 
-	SettingsTabs.AddItem(Item);
+    SettingsTabs.AddItem(Item);
 }
 
-simulated function SaveAndExit(UIButton kButton)
+function MCM_API_SettingsPage MakeSettingsPage(string TabLabel, int PageID)
 {
-    Movie.Stack.Pop(self);
+    local MCM_SettingsPanel SP;
+    SP = Spawn(class'MCM_SettingsPanel', Container);
+    SP.InitPanel();
+    SP.SettingsPageID = PageID;
+    SP.SetPosition(TABLIST_WIDTH + OPTIONS_MARGIN, HEADER_HEIGHT);
+    
+    SP.SetPageTitle(TabLabel);
+
+    // By default do not show the panel.
+    SP.Hide();
+
+    // Register panel.
+    SettingsPanels.AddItem(SP);
+
+    return SP;
 }
+
+simulated function CustomTabClickedHandler(MCM_SettingsTab Caller, int PageID)
+{
+    `log("MCM Custom Screen Tab clicked");
+    if (Caller.CustomPageCallback != none)
+    {
+        Caller.CustomPageCallback(self, PageID);
+    }
+}
+
+// MCM_API_Instance implementation ===============================================================
+
+function MCM_API_SettingsPage NewSettingsPage(string TabLabel)
+{
+    local int PageID;
+
+    PageID = SettingsPageCounter;
+    SettingsPageCounter++;
+
+    AddTabsListButton(TabLabel, PageID);
+
+    return MakeSettingsPage(TabLabel, PageID);
+}
+
+function int NewCustomSettingsPage(string TabLabel, delegate<CustomSettingsPageCallback> Handler)
+{
+    local MCM_SettingsTab Item; 
+    local int PageID;
+
+    PageID = SettingsPageCounter;
+    SettingsPageCounter++;
+
+    Item = Spawn(class'MCM_SettingsTab', TabsList.ItemContainer).InitSettingsTab(PageID, TabLabel);
+    Item.CustomPageCallback = Handler;
+    Item.OnClickHandler = CustomTabClickedHandler;
+
+    return PageID;
+}
+
 
 // MCM_API implementation ========================================================================
 
 function bool RegisterClientMod(int major, int minor, delegate<ClientModCallback> SetupHandler)
 {
-	if (major == API_MAJOR_VERSION && minor <= API_MINOR_VERSION)
-	{
-		SetupHandler(self, CurrentGameMode);
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+    if (major == API_MAJOR_VERSION && minor <= API_MINOR_VERSION)
+    {
+        SetupHandler(self, CurrentGameMode);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
-function bool HasUnsavedChanges()
-{
-	return true;
-}
-
-function bool WarnAboutUnsavedChanges()
-{
-	return true;
-}
-
-// MCM_API_Instance implementation ===============================================================
-simulated function MCM_SettingsPanel GetPanelByPageID(int PageID)
-{
-	local MCM_SettingsPanel TmpPage;
-
-	foreach SettingsPanels(TmpPage)
-	{
-		if (TmpPage.GetPageID() == PageID)
-			return TmpPage;
-	}
-
-	return None;
-}
-
-simulated function ChoosePanelByPageID(int PageID)
-{
-	local MCM_SettingsPanel CurrentSettingsPage;
-	local MCM_SettingsTab TmpButton;
-	local MCM_SettingsPanel TmpPage;
-
-	CurrentSettingsPage = GetPanelByPageID(SelectedPageID);
-
-	// Are we changing pages? Do nothing if not changing pages.
-	if (PageID != SelectedPageID)
-	{
-		// Okay, we're changing pages.
-		if (CurrentSettingsPage != none && HasUnsavedChanges())
-		{
-			if (WarnAboutUnsavedChanges())
-			{
-				// User decided to discard and continue.
-				CurrentSettingsPage.RevertHandler(CurrentSettingsPage);
-				SelectedPageID = PageID;
-			}
-			else
-			{
-				// User decided to come back. So we need to do nothing.
-				`log("MCM: User aborted tab switch.");
-				// SelectedPageID = SelectedPageID;
-			}
-		}
-		else
-		{
-			SelectedPageID = PageID;
-		}
-
-		// Now choose the panel.
-		foreach SettingsPanels(TmpPage)
-		{
-			if (TmpPage.GetPageID() != SelectedPageID)
-			{
-				TmpPage.Hide();
-			}
-			else
-			{
-				`log("MCM: Found correct panel, showing.");
-				TmpPage.Show();
-			}
-		}
-
-		// Refresh the button. This is important if we're cancelling a tab change.
-		foreach SettingsTabs(TmpButton)
-		{
-			if (TmpButton.SettingsPageID == SelectedPageID)
-			{
-				TmpButton.SetChecked(true);
-			}
-			else
-			{
-				TmpButton.SetChecked(false);
-			}
-		}
-	}
-}
-
-simulated function OnSettingsTabClicked(MCM_SettingsTab Caller, int PageID)
-{
-	ChoosePanelByPageID(PageID);
-}
-
-function MCM_API_SettingsPage MakeSettingsPage(string TabLabel, int PageID)
-{
-	local MCM_SettingsPanel SP;
-	SP = Spawn(class'MCM_SettingsPanel', Container);
-	SP.InitPanel();
-	SP.SettingsPageID = PageID;
-	SP.SetPosition(TABLIST_WIDTH + OPTIONS_MARGIN, HEADER_HEIGHT);
-	
-	SP.SetPageTitle(TabLabel);
-
-	// By default do not show the panel.
-	SP.Hide();
-
-	// Register panel.
-	SettingsPanels.AddItem(SP);
-
-	return SP;
-}
-
-function MCM_API_SettingsPage NewSettingsPage(string TabLabel)
-{
-	local int PageID;
-
-	PageID = SettingsPageCounter;
-	SettingsPageCounter++;
-
-	AddTabsListButton(TabLabel, PageID, OnSettingsTabClicked);
-
-	return MakeSettingsPage(TabLabel, PageID);
-}
-
-simulated function CustomTabClickedHandler(MCM_SettingsTab Caller, int PageID)
-{
-	`log("MCM Custom Screen Tab clicked");
-	if (Caller.CustomPageCallback != none)
-	{
-		Caller.CustomPageCallback(self, PageID);
-	}
-}
-
-function NewCustomSettingsPage(string TabLabel, delegate<CustomSettingsPageCallback> Handler)
-{
-	local MCM_SettingsTab Item; 
-	local int PageID;
-
-	PageID = SettingsPageCounter;
-	SettingsPageCounter++;
-
-    Item = Spawn(class'MCM_SettingsTab', TabsList.ItemContainer).InitSettingsTab(PageID, TabLabel);
-	Item.CustomPageCallback = Handler;
-	Item.OnClickHandler = CustomTabClickedHandler;
-}
+// Defaults ======================================================================================
 
 defaultproperties
 {
     ParentListener = None;
-	SettingsPageCounter = 0;
-	SelectedPageID = -1;
+    SettingsPageCounter = 0;
+    SelectedPageID = -1;
 
-	bAlwaysTick = true
-	bConsumeMouseEvents=true
+    bAlwaysTick = true
+    bConsumeMouseEvents=true
 }

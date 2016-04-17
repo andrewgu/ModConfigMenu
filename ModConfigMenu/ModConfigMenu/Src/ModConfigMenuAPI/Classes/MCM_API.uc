@@ -2,11 +2,11 @@ interface MCM_API;
 
 enum eGameMode
 {
-	eGameMode_MainMenu,
-	eGameMode_Strategy,
-	eGameMode_Tactical,
-	eGameMode_Multiplayer,
-	eGameMode_Unknown
+    eGameMode_MainMenu,
+    eGameMode_Strategy,
+    eGameMode_Tactical,
+    eGameMode_Multiplayer,
+    eGameMode_Unknown
 };
 
 // Using an int means that we don't have to redefine eGameMode if we add more possible future values.

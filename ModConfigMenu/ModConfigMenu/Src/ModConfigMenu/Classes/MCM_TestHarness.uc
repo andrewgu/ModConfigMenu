@@ -67,7 +67,8 @@ function ClientModCallback(MCM_API_Instance ConfigAPI, int GameMode)
 function SaveButtonClicked(MCM_API_SettingsPage Page)
 {
     `log("MCM: Save button clicked on page " $ string(Page.GetPageID()));
-    class'MCM_TestHarness'.static.StaticSaveConfig();
+    self.P2G2C_SETTING = false;
+    self.SaveConfig();
 }
 
 function RevertButtonClicked(MCM_API_SettingsPage Page)
@@ -88,13 +89,6 @@ function CheckboxChangeLogger(MCM_API_Setting Setting, name SettingName, bool Se
 function CheckboxSaveLogger(MCM_API_Setting Setting, name SettingName, bool SettingValue)
 {
     `log("MCM Test Saved: " $ string(SettingName) $ " set to " $ (SettingValue ? "true" : "false"));
-
-    if (SettingName == 'P2G2_S2')
-    {
-        `log("MCM Special setting save");
-        P2G2C_SETTING = SettingValue;
-        class'MCM_TestHarness'.default.P2G2C_SETTING = SettingValue;
-    }
 }
 
 defaultproperties

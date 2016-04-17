@@ -131,10 +131,14 @@ function MCM_API_Label AddLabel(name SettingName, string Label, string Tooltip)
 }
 
 function MCM_API_Button AddButton(name SettingName, string Label, string Tooltip, string ButtonLabel, 
-    optional delegate<VoidSettingHandler> SaveHandler, 
-    optional delegate<VoidSettingHandler> ChangeHandler)
+    optional delegate<VoidSettingHandler> ClickHandler)
 {
-    return none;
+    local MCM_ButtonFacade Instance;
+
+    Instance = Spawn(class'MCM_ButtonFacade', self).InitButtonFacade(SettingName, Label, Tooltip, ButtonLabel, ClickHandler);
+    AddSetting(Instance);
+
+    return Instance;
 }
 
 function MCM_API_Checkbox AddCheckbox(name SettingName, string Label, string Tooltip, bool InitiallyChecked, 

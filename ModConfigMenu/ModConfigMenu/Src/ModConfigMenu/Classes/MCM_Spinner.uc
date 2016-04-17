@@ -1,10 +1,10 @@
-class MCM_Dropdown extends MCM_SettingBase implements(MCM_API_Dropdown) config(ModConfigMenu);
+class MCM_Spinner extends MCM_SettingBase implements(MCM_API_Spinner) config(ModConfigMenu);
 
 var delegate<StringSettingHandler> ChangeHandler;
 
 var MCM_API_Setting ParentFacade;
-var array<string> DropdownOptions;
-var int DropdownSelection;
+var array<string> SpinnerOptions;
+var int SpinnerSelection;
 var bool TmpSuppressEvent;
 
 delegate StringSettingHandler(MCM_API_Setting Setting, name _SettingName, string _SettingValue);
@@ -17,7 +17,7 @@ simulated function MCM_SettingBase InitSettingsItem(name _Name, eSettingType _Ty
 }
 
 // Fancy init process
-simulated function MCM_Dropdown InitDropdown(name _SettingName, MCM_API_Setting _ParentFacade, string _Label, string _Tooltip, array<string> _Options, string _Selection, 
+simulated function MCM_Spinner InitSpinner(name _SettingName, MCM_API_Setting _ParentFacade, string _Label, string _Tooltip, array<string> _Options, string _Selection, 
     delegate<StringSettingHandler> _OnChange)
 {
     super.InitSettingsItem(_SettingName, eSettingType_Checkbox, _Label, _Tooltip);
@@ -26,10 +26,11 @@ simulated function MCM_Dropdown InitDropdown(name _SettingName, MCM_API_Setting 
     ParentFacade = _ParentFacade;
 
     CloneOptionsList(_Options);
-    DropdownSelection = GetSelectionIndex(_Options, _Selection);
+    SpinnerSelection = GetSelectionIndex(_Options, _Selection);
 
     TmpSuppressEvent = true;
-    UpdateDataDropdown(_Label, _Options, DropdownSelection, DropdownChangedCallback);
+    UpdateDataSpinner(_Label, "", SpinnerChangedCallback);
+    Spinner.SetValue(_Selection);
     TmpSuppressEvent = false;
 
     SetHoverTooltip(_Tooltip);
@@ -42,10 +43,10 @@ simulated function MCM_Dropdown InitDropdown(name _SettingName, MCM_API_Setting 
 function CloneOptionsList(array<string> OptionsList)
 {
     local int iter;
-    DropdownOptions.Length = 0;
+    SpinnerOptions.Length = 0;
     for (iter = 0; iter < OptionsList.Length; iter++)
     {
-        DropdownOptions.AddItem(OptionsList[iter]);
+        SpinnerOptions.AddItem(OptionsList[iter]);
     }
 }
 
@@ -61,34 +62,46 @@ function int GetSelectionIndex(array<string> OptionsList, string SelectedOption)
     return -1;
 }
 
-function DropdownChangedCallback(UIDropdown DropdownControl)
+function SpinnerChangedCallback(UIListItemSpinner SpinnerControl, int Direction)
 {
-    DropdownSelection = DropdownControl.SelectedItem;
+    SpinnerSelection += Direction;
+    // Clamp index.
+    if (SpinnerSelection >= SpinnerOptions.Length)
+        SpinnerSelection = SpinnerOptions.Length - 1;
+    if (SpinnerSelection < 0)
+        SpinnerSelection = 0;
 
     if (!TmpSuppressEvent)
     {
-        ChangeHandler(ParentFacade, SettingName, DropdownControl.GetSelectedItemText());
+        ChangeHandler(ParentFacade, SettingName, GetValue());
     }
 }
 
-// MCM_API_Dropdown implementation ===========================================================================
+// MCM_API_Spinner implementation ===========================================================================
 
 function string GetValue()
 {
-    return DropdownOptions[DropdownSelection];
+    return SpinnerOptions[SpinnerSelection];
 }
 
 function SetValue(string Selection, bool SuppressEvent)
 {
     local int index;
 
-    index = GetSelectionIndex(DropdownOptions, Selection);
+    index = GetSelectionIndex(SpinnerOptions, Selection);
     // If found.
     if (index >= 0)
     {
-        DropdownSelection = index;
+        SpinnerSelection = index;
         TmpSuppressEvent = SuppressEvent;
-        Dropdown.SetSelected(index);
+        Spinner.SetValue(Selection);
+
+        // SetValue doesn't trigger the event so we manually trigger it if needed.
+        if (!TmpSuppressEvent)
+        {
+            ChangeHandler(ParentFacade, SettingName, GetValue());
+        }
+
         TmpSuppressEvent = false;
     }
 }
@@ -96,10 +109,17 @@ function SetValue(string Selection, bool SuppressEvent)
 function SetOptions(array<string> NewOptions, string InitialSelection, bool SuppressEvent)
 {
     CloneOptionsList(NewOptions);
-    DropdownSelection = GetSelectionIndex(NewOptions, InitialSelection);
+    SpinnerSelection = GetSelectionIndex(NewOptions, InitialSelection);
 
     TmpSuppressEvent = SuppressEvent;
-    UpdateDataDropdown(GetLabel(), NewOptions, DropdownSelection, DropdownChangedCallback);
+    Spinner.SetValue(InitialSelection);
+
+    // SetValue doesn't trigger the event so we manually trigger it if needed.
+    if (!TmpSuppressEvent)
+    {
+        ChangeHandler(ParentFacade, SettingName, GetValue());
+    }
+
     TmpSuppressEvent = false;
 
     SetHoverTooltip(DisplayTooltip);

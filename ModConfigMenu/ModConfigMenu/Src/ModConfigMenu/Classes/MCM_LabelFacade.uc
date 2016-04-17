@@ -1,31 +1,18 @@
-class MCM_CheckboxFacade extends Actor implements(MCM_SettingFacade, MCM_API_Setting, MCM_API_Checkbox) config(ModConfigMenu);
+class MCM_LabelFacade extends Actor implements(MCM_SettingFacade, MCM_API_Setting, MCM_API_Label) config(ModConfigMenu);
 
 var name SettingName;
 var string Label;
 var string Tooltip;
 var bool Editable;
 
-var bool Checked;
+var MCM_Label uiInstance;
 
-var delegate<BoolSettingHandler> ChangeHandler;
-var delegate<BoolSettingHandler> SaveHandler;
-
-var MCM_Checkbox uiInstance;
-
-delegate BoolSettingHandler(MCM_API_Setting _Setting, name _SettingName, bool _SettingValue);
-
-simulated function MCM_CheckboxFacade InitCheckboxFacade(name _Name, string _Label, string _Tooltip, bool _Checked, 
-    delegate<BoolSettingHandler> _OnChange, delegate<BoolSettingHandler> _OnSave)
+simulated function MCM_LabelFacade InitLabelFacade(name _Name, string _Label, string _Tooltip)
 {
     SettingName = _Name;
     Label = _Label;
     Tooltip = _Tooltip;
-    Editable = true;
-
-    Checked = _Checked;
-
-    ChangeHandler = _OnChange;
-    SaveHandler = _OnSave;
+    Editable = false;
 
     uiInstance = none;
 
@@ -36,7 +23,7 @@ simulated function MCM_CheckboxFacade InitCheckboxFacade(name _Name, string _Lab
 
 simulated function UIMechaListItem InstantiateUI(UIList parent)
 {
-    uiInstance = Spawn(class'MCM_Checkbox', parent.itemContainer).InitCheckbox(SettingName, self, Label, Tooltip, Checked, ChangeHandler);
+    uiInstance = Spawn(class'MCM_Label', parent.itemContainer).InitLabel(SettingName, self, Label, Tooltip);
     uiInstance.Show();
     uiInstance.EnableNavigation();
     uiInstance.SetEditable(Editable);
@@ -46,39 +33,12 @@ simulated function UIMechaListItem InstantiateUI(UIList parent)
 
 function TriggerSaveEvent()
 {
-    if (uiInstance != none)
-    {
-        SaveHandler(self, SettingName, uiInstance.GetValue());
-    }
-    else
-    {
-        SaveHandler(self, SettingName, Checked);
-    }
+    // Label doeesn't have a save event.
 }
 
-// MCM_API_Checkbox implementation ====================================================================
+// MCM_API_Label implementation ====================================================================
 
-function bool GetValue()
-{
-    return uiInstance != none ? uiInstance.GetValue(): Checked;
-}
-
-function SetValue(bool _Checked, bool SuppressEvent)
-{
-    if (uiInstance != none)
-    {
-        uiInstance.SetValue(_Checked, SuppressEvent);
-    }
-    else
-    {
-        // Degenerate case, should still fire event if changing without visible widget.
-        Checked = _Checked;
-        if (!SuppressEvent && ChangeHandler != none)
-        {
-            ChangeHandler(self, SettingName, Checked);
-        }
-    }
-}
+// No label methods.
 
 // MCM_API_Setting implementation ====================================================================
 
@@ -142,5 +102,5 @@ function SetEditable(bool IsEditable)
 // future "extension types".
 function int GetSettingType()
 {
-    return eSettingType_Checkbox;
+    return eSettingType_Label;
 }

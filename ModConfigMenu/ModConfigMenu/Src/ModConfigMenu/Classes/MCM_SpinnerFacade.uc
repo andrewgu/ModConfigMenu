@@ -1,4 +1,4 @@
-class MCM_DropdownFacade extends Actor implements(MCM_SettingFacade, MCM_API_Setting, MCM_API_Dropdown) config(ModConfigMenu);
+class MCM_SpinnerFacade extends Actor implements(MCM_SettingFacade, MCM_API_Setting, MCM_API_Spinner) config(ModConfigMenu);
 
 var name SettingName;
 var string Label;
@@ -11,11 +11,11 @@ var int SelectionIndex;
 var delegate<StringSettingHandler> ChangeHandler;
 var delegate<StringSettingHandler> SaveHandler;
 
-var MCM_Dropdown uiInstance;
+var MCM_Spinner uiInstance;
 
 delegate StringSettingHandler(MCM_API_Setting Setting, name _SettingName, string _SettingValue);
 
-simulated function MCM_DropdownFacade InitDropdownFacade(name _Name, string _Label, string _Tooltip, 
+simulated function MCM_SpinnerFacade InitSpinnerFacade(name _Name, string _Label, string _Tooltip, 
     array<string> _Options, string _Selection,
     delegate<StringSettingHandler> _OnChange, delegate<StringSettingHandler> _OnSave)
 {
@@ -62,7 +62,7 @@ function int GetSelectionIndex(array<string> OptionsList, string SelectedOption)
 // MCM_SettingFacade implementation =================================================================
 function UIMechaListItem InstantiateUI(UIList Parent)
 {
-    uiInstance = Spawn(class'MCM_Dropdown', parent.itemContainer).InitDropdown(SettingName, self, Label, Tooltip, Options, Options[SelectionIndex], ChangeHandler);
+    uiInstance = Spawn(class'MCM_Spinner', parent.itemContainer).InitSpinner(SettingName, self, Label, Tooltip, Options, Options[SelectionIndex], ChangeHandler);
     uiInstance.Show();
     uiInstance.EnableNavigation();
     uiInstance.SetEditable(Editable);
@@ -82,7 +82,7 @@ function TriggerSaveEvent()
     }
 }
 
-// MCM_API_Dropdown implementation =================================================================
+// MCM_API_Spinner implementation =================================================================
 
 function string GetValue()
 {

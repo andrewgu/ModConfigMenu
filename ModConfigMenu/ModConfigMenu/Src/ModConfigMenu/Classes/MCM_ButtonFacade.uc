@@ -1,31 +1,29 @@
-class MCM_CheckboxFacade extends Actor implements(MCM_SettingFacade, MCM_API_Setting, MCM_API_Checkbox) config(ModConfigMenu);
+class MCM_ButtonFacade extends Actor implements(MCM_SettingFacade, MCM_API_Setting, MCM_API_Button) config(ModConfigMenu);
 
 var name SettingName;
 var string Label;
 var string Tooltip;
 var bool Editable;
 
-var bool Checked;
+var string ButtonLabel;
 
-var delegate<BoolSettingHandler> ChangeHandler;
-var delegate<BoolSettingHandler> SaveHandler;
+var delegate<VoidSettingHandler> ClickHandler;
 
-var MCM_Checkbox uiInstance;
+var MCM_Button uiInstance;
 
-delegate BoolSettingHandler(MCM_API_Setting _Setting, name _SettingName, bool _SettingValue);
+delegate VoidSettingHandler(MCM_API_Setting _Setting, name _SettingName);
 
-simulated function MCM_CheckboxFacade InitCheckboxFacade(name _Name, string _Label, string _Tooltip, bool _Checked, 
-    delegate<BoolSettingHandler> _OnChange, delegate<BoolSettingHandler> _OnSave)
+simulated function MCM_ButtonFacade InitButtonFacade(name _Name, string _Label, string _Tooltip, string _ButtonLabel, 
+    delegate<VoidSettingHandler> _OnClick)
 {
     SettingName = _Name;
     Label = _Label;
     Tooltip = _Tooltip;
     Editable = true;
 
-    Checked = _Checked;
+    ButtonLabel = _ButtonLabel;
 
-    ChangeHandler = _OnChange;
-    SaveHandler = _OnSave;
+    ClickHandler = _OnClick;
 
     uiInstance = none;
 
@@ -36,7 +34,7 @@ simulated function MCM_CheckboxFacade InitCheckboxFacade(name _Name, string _Lab
 
 simulated function UIMechaListItem InstantiateUI(UIList parent)
 {
-    uiInstance = Spawn(class'MCM_Checkbox', parent.itemContainer).InitCheckbox(SettingName, self, Label, Tooltip, Checked, ChangeHandler);
+    uiInstance = Spawn(class'MCM_Button', parent.itemContainer).InitButton(SettingName, self, Label, Tooltip, ButtonLabel, ClickHandler);
     uiInstance.Show();
     uiInstance.EnableNavigation();
     uiInstance.SetEditable(Editable);
@@ -46,38 +44,14 @@ simulated function UIMechaListItem InstantiateUI(UIList parent)
 
 function TriggerSaveEvent()
 {
-    if (uiInstance != none)
-    {
-        SaveHandler(self, SettingName, uiInstance.GetValue());
-    }
-    else
-    {
-        SaveHandler(self, SettingName, Checked);
-    }
+    // Button doeesn't have a save event.
 }
 
-// MCM_API_Checkbox implementation ====================================================================
+// MCM_API_Button implementation ====================================================================
 
-function bool GetValue()
+function SimulateClick()
 {
-    return uiInstance != none ? uiInstance.GetValue(): Checked;
-}
-
-function SetValue(bool _Checked, bool SuppressEvent)
-{
-    if (uiInstance != none)
-    {
-        uiInstance.SetValue(_Checked, SuppressEvent);
-    }
-    else
-    {
-        // Degenerate case, should still fire event if changing without visible widget.
-        Checked = _Checked;
-        if (!SuppressEvent && ChangeHandler != none)
-        {
-            ChangeHandler(self, SettingName, Checked);
-        }
-    }
+    ClickHandler(self, SettingName);
 }
 
 // MCM_API_Setting implementation ====================================================================
@@ -142,5 +116,5 @@ function SetEditable(bool IsEditable)
 // future "extension types".
 function int GetSettingType()
 {
-    return eSettingType_Checkbox;
+    return eSettingType_Button;
 }

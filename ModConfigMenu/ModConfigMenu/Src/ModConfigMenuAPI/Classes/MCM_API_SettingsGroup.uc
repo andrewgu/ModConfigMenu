@@ -21,8 +21,7 @@ function int GetNumberOfSettings();
 // the settings UI widgets from bottom up.
 function MCM_API_Label AddLabel(name SettingName, string Label, string Tooltip);
 function MCM_API_Button AddButton(name SettingName, string Label, string Tooltip, string ButtonLabel, 
-    optional delegate<VoidSettingHandler> SaveHandler, 
-    optional delegate<VoidSettingHandler> ChangeHandler);
+    optional delegate<VoidSettingHandler> ClickHandler);
 function MCM_API_Checkbox AddCheckbox(name SettingName, string Label, string Tooltip, bool InitiallyChecked, 
     optional delegate<BoolSettingHandler> SaveHandler, 
     optional delegate<BoolSettingHandler> ChangeHandler);

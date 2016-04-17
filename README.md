@@ -125,7 +125,7 @@ A simple mod will go through these steps:
     }
     ```
 
-7. Fill in the code to save the settings when the user clicks the "Save and Exit" button:
+7. Fill in the code to save the settings when the user clicks the "Save and Exit" button (`MCM_API_CfgHelpers.uci` includes helpful macros for this.):
 
     ```
     function SaveButtonClicked(MCM_API_SettingsPage Page)

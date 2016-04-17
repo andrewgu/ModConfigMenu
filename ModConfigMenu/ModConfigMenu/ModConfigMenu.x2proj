@@ -77,9 +77,6 @@
     <Content Include="Src\ModConfigMenu\Classes\MCM_DropdownFacade.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\ModConfigMenu\Classes\MCM_ExampleTestHarness.uc">
-      <SubType>Content</SubType>
-    </Content>
     <Content Include="Src\ModConfigMenu\Classes\MCM_GroupLabel.uc">
       <SubType>Content</SubType>
     </Content>
@@ -107,9 +104,6 @@
     <Content Include="Src\ModConfigMenu\Classes\MCM_SettingGroup.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\ModConfigMenu\Classes\MCM_SettingItem.uc">
-      <SubType>Content</SubType>
-    </Content>
     <Content Include="Src\ModConfigMenu\Classes\MCM_SettingsPanel.uc">
       <SubType>Content</SubType>
     </Content>
@@ -126,6 +120,9 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\ModConfigMenu\Classes\MCM_SpinnerFacade.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenu\Classes\MCM_TestConfigStore.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\ModConfigMenu\Classes\MCM_TestHarness.uc">

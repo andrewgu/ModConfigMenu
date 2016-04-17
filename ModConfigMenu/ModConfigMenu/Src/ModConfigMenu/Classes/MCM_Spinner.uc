@@ -71,6 +71,8 @@ function SpinnerChangedCallback(UIListItemSpinner SpinnerControl, int Direction)
     if (SpinnerSelection < 0)
         SpinnerSelection = 0;
 
+    Spinner.SetValue(GetValue());
+
     if (!TmpSuppressEvent)
     {
         ChangeHandler(ParentFacade, SettingName, GetValue());

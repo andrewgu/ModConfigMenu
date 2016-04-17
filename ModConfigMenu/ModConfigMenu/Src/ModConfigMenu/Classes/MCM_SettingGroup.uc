@@ -127,7 +127,12 @@ function int GetNumberOfSettings()
 
 function MCM_API_Label AddLabel(name SettingName, string Label, string Tooltip)
 {
-    return none;
+    local MCM_LabelFacade Instance;
+
+    Instance = Spawn(class'MCM_LabelFacade', self).InitLabelFacade(SettingName, Label, Tooltip);
+    AddSetting(Instance);
+
+    return Instance;
 }
 
 function MCM_API_Button AddButton(name SettingName, string Label, string Tooltip, string ButtonLabel, 
@@ -157,19 +162,37 @@ function MCM_API_Slider AddSlider(name SettingName, string Label, string Tooltip
     optional delegate<FloatSettingHandler> SaveHandler, 
     optional delegate<FloatSettingHandler> ChangeHandler)
 {
-    return none;
+    local MCM_SliderFacade Instance;
+
+    Instance = Spawn(class'MCM_SliderFacade', self).InitSliderFacade(SettingName, Label, Tooltip,
+        SliderMin, SliderMax, SliderStep, InitialValue, ChangeHandler, SaveHandler);
+    AddSetting(Instance);
+
+    return Instance;
 }
 
 function MCM_API_Spinner AddSpinner(name SettingName, string Label, string Tooltip, array<string> Options, string Selection, 
     optional delegate<StringSettingHandler> SaveHandler, 
     optional delegate<StringSettingHandler> ChangeHandler)
 {
-    return none;
+    local MCM_SpinnerFacade Instance;
+
+    Instance = Spawn(class'MCM_SpinnerFacade', self).InitSpinnerFacade(SettingName, Label, Tooltip,
+        Options, Selection, ChangeHandler, SaveHandler);
+    AddSetting(Instance);
+
+    return Instance;
 }
 
 function MCM_API_Dropdown AddDropdown(name SettingName, string Label, string Tooltip, array<string> Options, string Selection, 
     optional delegate<StringSettingHandler> SaveHandler, 
     optional delegate<StringSettingHandler> ChangeHandler)
 {
-    return none;
+    local MCM_DropdownFacade Instance;
+
+    Instance = Spawn(class'MCM_DropdownFacade', self).InitDropdownFacade(SettingName, Label, Tooltip,
+        Options, Selection, ChangeHandler, SaveHandler);
+    AddSetting(Instance);
+
+    return Instance;
 }

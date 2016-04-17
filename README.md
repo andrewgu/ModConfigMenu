@@ -7,24 +7,34 @@ XCOM 2 Mod Config Menu: a shared settings menu for Xcom 2 mods.
 This project aims to do three things:
 
 1. Centralize mod configurations in an easy place for users to access.
-2. Provide UI abstractions so that you don't have to write any UI code to add an in-game settings page to your mod.
-3. Fail gracefully if a user has not installed the Mod Config Menu, but still tries to run a mod that uses this.
+2. Provide UI tools to let you write an in-game settings UI for your mod with minimal actual UI code.
+3. Leave this mod optional: users can use the control panel if it's installed, but your mod still works without it.
 
 We accomplish this through:
 
-1. a set of interfaces defining the API (`ModConfigMenuAPI`)
-2. a UIScreenListener that listens for the settings screen that this mod creates
-3. boilerplate conditional code that only executes the dependent code if the mod is installed
+1. a set of interfaces and utilities defining the API (`ModConfigMenuAPI`)
+2. boilerplate code using a UIScreenListener that hooks into this mod's API when the mod is present
 
-This all comes at one very big cost though: **The interfaces defined in ModConfigMenuAPI must be copied character for character in every mod.** If we revise the API after its initial release, we will release it as a separate package, i.e. ModConfigMenuAPI2, to preserve backward compatibility. Also, seriously, don't touch `XComModConfigMenu.ini`. Those settings are hiding some *interesting* behaviors in XCOM 2's UI scripting.
+This all comes at a specific configuration complexity: **The interfaces defined in ModConfigMenuAPI must be copied character for character in every mod.** If we revise the API after its initial release, we will release it as a separate package, i.e. ModConfigMenuAPI2, to preserve backward compatibility.
+
+# Screenshots
+
+Mod Settings button in the options screen:
+
+![Mod Settings button in the options screen](https://raw.githubusercontent.com/andrewgu/ModConfigMenu/master/Res/screen1.jpg "Mod Settings button in the options screen")
+
+Example mod rendered in the MCM UI:
+
+![Example mod rendered in the MCM UI](https://raw.githubusercontent.com/andrewgu/ModConfigMenu/master/Res/screen2.jpg "Example mod rendered in the MCM UI")
 
 # Testing/Usage
 
-Three general steps to get this working:
+Three general steps to get this working for your dev environment:
 
-1. Build the ModConfigMenu project. Just open the `.XCOM_sln` file and build. You may wish to disable the self-test built into ModConfigMenu. To do this, find the config file `XComModConfigMenu.ini` and change the line `ENABLE_TEST_HARNESS=True` to `ENABLE_TEST_HARNESS=False`.
-2. In your own mod project, copy the ModConfigMenuAPI source package. The `MCM_API_*` files should be in the path `$(ProjectDir)/Src/ModConfigMenuAPI/Classes`
-3. Add these magic lines to `Config/XComEngine.ini` in your mod:
+1. Clone and download the repository.
+2. Build the ModConfigMenu project. Just open the `.XCOM_sln` file and build. You may wish to disable the self-test built into ModConfigMenu. To do this, find the config file `XComModConfigMenuTest.ini` and change the line `ENABLE_TEST_HARNESS=true` to `ENABLE_TEST_HARNESS=false`.
+3. In your own mod project, copy the ModConfigMenuAPI source package. The `MCM_API_*` files should be in the path `$(ProjectDir)/Src/ModConfigMenuAPI/Classes`. You will also want the *.uci files located in `$(ProjectDir)/Src/ModConfigMenuAPI`.
+4. Add these magic lines to `Config/XComEngine.ini` in your mod:
 
     ```
     [UnrealEd.EditorEngine]
@@ -34,24 +44,98 @@ Three general steps to get this working:
 
 After doing these things, your project should be able to build and run.
 
-For a working example of how to use the mod for the actual settings page, see the ModConfigDependencyTest project. The basic process is:
+# Building your mod UI
 
-1. Create a UIScreenListener subclass that listens for `ScreenClass = class'MCM_OptionsScreen';` Note that this will throw a warning because MCM_OptionsScreen is not defined anywhere in your mod project.
-2. Use this boilerplate to inject the settings page code only if ModConfigMenu is installed:
+There are four types of objects you need to know about:
+
+1. **The API Instance (`MCM_API_Instance`) is the root object.** This is the entry point for the MCM API. Your mod needs to tell MCM what pages of settings to include through this object.
+2. **Use the API instance to spawn pages of settings (`MCM_API_SettingsPage`).** Pages are organized in a tabbed interface like the game's settings page. Typically you will make one page per mod, but MCM lets you make more than one if you want to.
+3. **Each page contains groups (`MCM_API_SettingsGroup`).** Groups let you organize the settings in a mod under subsections. Small mods might only use a "General" grouping, but bigger mods might organize settings into multiple subsections.
+4. **Each group contains individual settings**, which all implement `MCM_API_Setting`, but the individual settings have their own interfaces that expose type-specific functionality.
+
+A simple mod will go through these steps:
+
+1. Make a `UIScreenListener` to **hook into the API instance**:
+
+    ```
+    class MCM_TestHarness extends UIScreenListener config(ModConfigMenuTestHarness);
+    ```
 
     ```
     event OnInit(UIScreen Screen)
     {
-        local MCM_API APIInst;
-        APIInst = MCM_API(Screen);
-        if (APIInst != None)
-         {
-            APIInst.RegisterClientMod(0, 1, ClientModCallback);
-        }
+        // The macro automates a version check to make sure the user installed a compatible version of MCM.
+        `MCM_API_Register(Screen, ClientModCallback);
+    }
+    ```
+    
+    ```
+    defaultproperties
+    {
+        ScreenClass = class'MCM_OptionsScreen';
     }
     ```
 
-3. All of your code that depends on the Mod Config Menu should go into ClientModCallback.
+2. Use the hook from step 1 to **create a page of settings**:
+
+    ```
+    function ClientModCallback(MCM_API_Instance ConfigAPI, int GameMode)
+    {
+        // Only allow mod settings to change when not in-campaign.
+        if (GameMode == eGameMode_MainMenu)
+        {
+            Page1 = ConfigAPI.NewSettingsPage("MCM_Test_1");
+            Page1.SetPageTitle("Page 1");
+            Page1.SetSaveHandler(SaveButtonClicked);
+            
+            // and so on...
+    ```
+
+3. **Add a group to the page**:
+
+    ```
+    Group1 = Page1.AddGroup('General', "General Settings");
+    ```
+
+4. **Add some settings to the group**:
+
+    ```
+    // This initializes the checkbox's state to the current value of bBoolProperty.
+    P1Checkbox = Group1.AddCheckbox('checkbox', "Checkbox", "Checkbox", bBoolProperty, CheckboxSaveLogger);
+    ```
+
+5. After you're done adding adding groups and settings, **tell MCM to render the page**:
+
+    ```
+    Page1.ShowSettings();
+    ```
+
+6. Write a handler to save the settings when they're changed (`MCM_API_Includes.uci` includes helpful macros for this.):
+
+    ```
+    // Method 1: Use a macro.
+    `MCM_API_BasicCheckboxSaveHandler(CheckboxSaveLogger, bBoolProperty)
+    ```
+
+    ```
+    // Method 2: Same thing, but done explicitly:
+    simulated function CheckboxSaveLogger (MCM_API_Setting _Setting, name _SettingName, bool _SettingValue) 
+    {
+        bBoolProperty = _SettingValue; 
+    }
+    ```
+
+7. Fill in the code to save the settings when the user clicks the "Save and Exit" button:
+
+    ```
+    function SaveButtonClicked(MCM_API_SettingsPage Page)
+    {
+        // This is a special helper macro from MCM_API_CfgHelpers.uci.
+        `MCM_CH_SaveConfig();
+    }
+    ```
+
+And you're done. For a full example of both the base MCM API as well as the helper macros in a basic case, see the `UIExample.uc` file in the ModConfigDependencyTest project.
 
 # License
 

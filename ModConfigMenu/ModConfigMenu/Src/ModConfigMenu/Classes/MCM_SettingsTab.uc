@@ -27,12 +27,29 @@ function CheckboxChangedCallback(UICheckbox CheckboxControl)
         OnClickHandler(self, SettingsPageID);
     }
 
-    // One does not uncheck by clicking. Doesn't work that way.
-    SetChecked(true);
+    if (CustomPageCallback == none)
+    {
+        // One does not uncheck by clicking. Doesn't work that way.
+        SetChecked(true);
+    }
+    else
+    {
+        SetChecked(false);
+    }
 }
 
 function CheckboxClickedCallback()
 {
+    if (CustomPageCallback == none)
+    {
+        // One does not uncheck by clicking. Doesn't work that way.
+        SetChecked(true);
+    }
+    else
+    {
+        SetChecked(false);
+    }
+
     if (OnClickHandler != none)
     {
         OnClickHandler(self, SettingsPageID);

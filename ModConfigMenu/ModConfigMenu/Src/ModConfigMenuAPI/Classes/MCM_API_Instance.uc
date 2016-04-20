@@ -11,3 +11,7 @@ function int NewCustomSettingsPage(string TabLabel, delegate<CustomSettingsPageC
 // This lets you take advantage of ready-made UI components.
 // TabLabel is what the tab on the left should say.
 function MCM_API_SettingsPage NewSettingsPage(string TabLabel);
+
+// Returns the corresponding settings page with the given ID. Will return null (none) if it's a custom
+// settings page, because MCM doesn't want to know how you implemented your custom page.
+function MCM_API_SettingsPage GetSettingsPageByID(int PageID);

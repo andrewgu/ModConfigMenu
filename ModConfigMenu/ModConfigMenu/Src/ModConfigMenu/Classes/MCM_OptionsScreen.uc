@@ -249,6 +249,7 @@ simulated function CustomTabClickedHandler(MCM_SettingsTab Caller, int PageID)
     `log("MCM Custom Screen Tab clicked");
     if (Caller.CustomPageCallback != none)
     {
+        Caller.SetChecked(false);
         Caller.CustomPageCallback(self, PageID);
     }
 }
@@ -280,6 +281,21 @@ function int NewCustomSettingsPage(string TabLabel, delegate<CustomSettingsPageC
     Item.OnClickHandler = CustomTabClickedHandler;
 
     return PageID;
+}
+
+function MCM_API_SettingsPage GetSettingsPageByID(int PageID)
+{
+    local MCM_SettingsPanel TmpPage;
+
+    foreach SettingsPanels(TmpPage)
+    {
+        if (TmpPage.GetPageID() == PageID)
+        {
+            return TmpPage;
+        }
+    }
+
+    return None;
 }
 
 

@@ -20,7 +20,9 @@ var MCM_API_Spinner P2Spinner;
 
 var MCM_API_SettingsPage Page1;
 
-`MCM_CH_VersionBoilerplate(class'MCM_TestConfigStore',VERSION)
+var config int MCM_CH_IMPL_CFG_VERSION;
+
+`MCM_CH_VersionChecker(class'MCM_TestConfigStore'.default.VERSION,MCM_CH_IMPL_CFG_VERSION)
 
 event OnInit(UIScreen Screen)
 {
@@ -95,7 +97,8 @@ function SaveButtonClicked(MCM_API_SettingsPage Page)
 {
     `log("MCM: Save button clicked");
     
-    `MCM_CH_SaveConfig();
+    self.MCM_CH_IMPL_CFG_VERSION = `MCM_CH_GetCompositeVersion();
+    self.SaveConfig();
 }
 
 function ResetButtonClicked(MCM_API_SettingsPage Page)
@@ -120,10 +123,10 @@ function RevertButtonClicked(MCM_API_SettingsPage Page)
 function LoadInitialValues()
 {
     CFG_CLICKED = false;
-    CFG_CHECKBOX = `MCM_CH_GetConfigValue(CFG_CHECKBOX,class'MCM_TestConfigStore',CHECKBOX);
-    CFG_SLIDER = `MCM_CH_GetConfigValue(CFG_SLIDER,class'MCM_TestConfigStore',SLIDER);
-    CFG_DROPDOWN = `MCM_CH_GetConfigValue(CFG_DROPDOWN,class'MCM_TestConfigStore',DROPDOWN);
-    CFG_SPINNER = `MCM_CH_GetConfigValue(CFG_SPINNER,class'MCM_TestConfigStore',SPINNER);
+    CFG_CHECKBOX = `MCM_CH_GetValue(class'MCM_TestConfigStore'.default.CHECKBOX,CFG_CHECKBOX);
+    CFG_SLIDER = `MCM_CH_GetValue(class'MCM_TestConfigStore'.default.SLIDER,CFG_SLIDER);
+    CFG_DROPDOWN = `MCM_CH_GetValue(class'MCM_TestConfigStore'.default.DROPDOWN,CFG_DROPDOWN);
+    CFG_SPINNER = `MCM_CH_GetValue(class'MCM_TestConfigStore'.default.SPINNER,CFG_SPINNER);
 }
 
 defaultproperties

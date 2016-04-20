@@ -77,6 +77,12 @@
     <Content Include="Src\ModConfigMenu\Classes\MCM_CheckboxFacade.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\ModConfigMenu\Classes\MCM_CustomPageTest.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenu\Classes\MCM_CustomPageTestUI.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\ModConfigMenu\Classes\MCM_Dropdown.uc">
       <SubType>Content</SubType>
     </Content>

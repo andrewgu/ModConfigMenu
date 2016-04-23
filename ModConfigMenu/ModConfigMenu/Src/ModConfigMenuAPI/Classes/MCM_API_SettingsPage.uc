@@ -17,7 +17,9 @@ function EnableResetButton(delegate<SaveStateHandler> ResetHandler);
 
 // Groups let you visually cluster settings. All settings belong to groups.
 function MCM_API_SettingsGroup AddGroup(name GroupName, string GroupLabel);
-function MCM_API_SettingsGroup GetGroup(name GroupName);
+function MCM_API_SettingsGroup GetGroupByName(name GroupName);
+function MCM_API_SettingsGroup GetGroupByIndex(int Index);
+function int GetGroupCount();
 
 // Call to indicate "done making settings". Must call all of your AddGroup and Group.Add#### calls before this.
 function ShowSettings();

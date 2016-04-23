@@ -10,7 +10,7 @@ var float SliderValue;
 
 var bool SuppressEvent;
 
-delegate FloatSettingHandler(MCM_API_Setting Setting, name _SettingName, float _SettingValue);
+delegate FloatSettingHandler(MCM_API_Setting Setting, float _SettingValue);
 
 simulated function MCM_SettingBase InitSettingsItem(name _Name, eSettingType _Type, optional string _Label = "", optional string _Tooltip = "")
 {
@@ -49,7 +49,7 @@ function SliderChangedCallback(UISlider SliderControl)
     {
         // Safe to put this inside the SuppressEvent guard because SuppressEvent is only set via methods that modify the SliderValue directly.
         SliderValue = GetSliderValueFromPosition(SliderMin, SliderMax, Slider.percent);
-        ChangeHandler(ParentFacade, SettingName, self.GetValue());
+        ChangeHandler(ParentFacade, self.GetValue());
     }
 }
 

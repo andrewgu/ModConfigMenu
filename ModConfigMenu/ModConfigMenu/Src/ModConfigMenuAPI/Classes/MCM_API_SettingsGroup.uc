@@ -1,9 +1,9 @@
 interface MCM_API_SettingsGroup;
 
-delegate VoidSettingHandler(MCM_API_Setting Setting, name SettingName);
-delegate BoolSettingHandler(MCM_API_Setting Setting, name SettingName, bool SettingValue);
-delegate FloatSettingHandler(MCM_API_Setting Setting, name SettingName, float SettingValue);
-delegate StringSettingHandler(MCM_API_Setting Setting, name SettingName, string SettingValue);
+delegate VoidSettingHandler(MCM_API_Setting Setting);
+delegate BoolSettingHandler(MCM_API_Setting Setting, bool SettingValue);
+delegate FloatSettingHandler(MCM_API_Setting Setting, float SettingValue);
+delegate StringSettingHandler(MCM_API_Setting Setting, string SettingValue);
 
 // For reference purposes, not display purposes.
 function name GetName();
@@ -11,6 +11,8 @@ function name GetName();
 // For display purposes, not reference purposes.
 function string GetLabel();
 function SetLabel(string Label);
+
+function MCM_API_SettingsPage GetParentPage();
 
 // Will return None if setting by that name isn't found.
 function MCM_API_Setting GetSettingByName(name SettingName);

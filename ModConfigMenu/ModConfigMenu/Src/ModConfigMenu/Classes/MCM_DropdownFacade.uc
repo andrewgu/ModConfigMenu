@@ -5,6 +5,8 @@ var string Label;
 var string Tooltip;
 var bool Editable;
 
+var MCM_SettingGroup ParentGroup;
+
 var array<string> Options;
 var int SelectionIndex;
 
@@ -13,16 +15,19 @@ var delegate<StringSettingHandler> SaveHandler;
 
 var MCM_Dropdown uiInstance;
 
-delegate StringSettingHandler(MCM_API_Setting Setting, name _SettingName, string _SettingValue);
+delegate StringSettingHandler(MCM_API_Setting Setting, string _SettingValue);
 
 simulated function MCM_DropdownFacade InitDropdownFacade(name _Name, string _Label, string _Tooltip, 
     array<string> _Options, string _Selection,
-    delegate<StringSettingHandler> _OnChange, delegate<StringSettingHandler> _OnSave)
+    delegate<StringSettingHandler> _OnChange, delegate<StringSettingHandler> _OnSave,
+    MCM_SettingGroup _ParentGroup)
 {
     SettingName = _Name;
     Label = _Label;
     Tooltip = _Tooltip;
     Editable = true;
+
+    ParentGroup = _ParentGroup;
 
     CloneOptionsList(_Options);
     SelectionIndex = GetSelectionIndex(_Options, _Selection); 
@@ -74,11 +79,11 @@ function TriggerSaveEvent()
 {
     if (uiInstance != none)
     {
-        SaveHandler(self, SettingName, uiInstance.GetValue());
+        SaveHandler(self, uiInstance.GetValue());
     }
     else
     {
-        SaveHandler(self, SettingName, Options[SelectionIndex]);
+        SaveHandler(self, Options[SelectionIndex]);
     }
 }
 
@@ -103,7 +108,7 @@ function SetValue(string Selection, bool SuppressEvent)
         
         if (!SuppressEvent && TmpIndex >= 0 && TmpIndex != SelectionIndex)
         {
-            ChangeHandler(self, SettingName, Selection);
+            ChangeHandler(self, Selection);
         }
 
         if (TmpIndex >= 0)
@@ -129,7 +134,7 @@ function SetOptions(array<string> NewOptions, string InitialSelection, bool Supp
         
         if (!SuppressEvent && TmpIndex >= 0 && TmpIndex != SelectionIndex)
         {
-            ChangeHandler(self, SettingName, Options[SelectionIndex]);
+            ChangeHandler(self, Options[SelectionIndex]);
         }
 
         if (TmpIndex >= 0)
@@ -202,4 +207,9 @@ function SetEditable(bool IsEditable)
 function int GetSettingType()
 {
     return eSettingType_Dropdown;
+}
+
+function MCM_API_SettingsGroup GetParentGroup()
+{
+    return ParentGroup;
 }

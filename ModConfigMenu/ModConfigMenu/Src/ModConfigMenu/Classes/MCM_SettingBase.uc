@@ -78,3 +78,10 @@ simulated function int GetSettingType()
 {
     return SettingType;
 }
+
+simulated function MCM_API_SettingsGroup GetParentGroup()
+{
+    // MCM_SettingBase derived classes will never get GetParentGroup called because it's handled by the 
+    // Facade object that wraps it.
+    return None;
+}

@@ -134,13 +134,13 @@ function MCM_API_SettingsGroup AddGroup(name GroupName, string GroupLabel)
 {
     local MCM_SettingGroup Grp;
 
-    Grp = Spawn(class'MCM_SettingGroup', self).InitSettingGroup(GroupName, GroupLabel);
+    Grp = Spawn(class'MCM_SettingGroup', self).InitSettingGroup(GroupName, GroupLabel, self);
     SettingGroups.AddItem(Grp);
 
     return Grp;
 }
 
-function MCM_API_SettingsGroup GetGroup(name GroupName)
+function MCM_API_SettingsGroup GetGroupByName(name GroupName)
 {
     local MCM_SettingGroup iter;
 
@@ -151,6 +151,19 @@ function MCM_API_SettingsGroup GetGroup(name GroupName)
     }
 
     return none;
+}
+
+function MCM_API_SettingsGroup GetGroupByIndex(int Index)
+{
+    if (Index >= 0 && Index < SettingGroups.Length)
+        return SettingGroups[Index];
+    else
+        return None;
+}
+
+function int GetGroupCount()
+{
+    return SettingGroups.Length;
 }
 
 // Assumes that groups are iterated in reverse order and items in groups are inserted in reverse order.

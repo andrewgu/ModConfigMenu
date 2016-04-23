@@ -5,6 +5,8 @@ var string Label;
 var string Tooltip;
 var bool Editable;
 
+var MCM_SettingGroup ParentGroup;
+
 var float SliderMin;
 var float SliderMax;
 var float SliderStep;
@@ -15,16 +17,19 @@ var delegate<FloatSettingHandler> SaveHandler;
 
 var MCM_Slider uiInstance;
 
-delegate FloatSettingHandler(MCM_API_Setting Setting, name _SettingName, float _SettingValue);
+delegate FloatSettingHandler(MCM_API_Setting Setting, float _SettingValue);
 
 simulated function MCM_SliderFacade InitSliderFacade(name _Name, string _Label, string _Tooltip, 
     float sMin, float sMax, float sStep, float sValue,
-    delegate<FloatSettingHandler> _OnChange, delegate<FloatSettingHandler> _OnSave)
+    delegate<FloatSettingHandler> _OnChange, delegate<FloatSettingHandler> _OnSave,
+    MCM_SettingGroup _ParentGroup)
 {
     SettingName = _Name;
     Label = _Label;
     Tooltip = _Tooltip;
     Editable = true;
+
+    ParentGroup = _ParentGroup;
 
     SliderMin = sMin;
     SliderMax = sMax;
@@ -55,11 +60,11 @@ function TriggerSaveEvent()
 {
     if (uiInstance != none)
     {
-        SaveHandler(self, SettingName, uiInstance.GetValue());
+        SaveHandler(self, uiInstance.GetValue());
     }
     else
     {
-        SaveHandler(self, SettingName, SliderValue);
+        SaveHandler(self, SliderValue);
     }
 }
 
@@ -88,7 +93,7 @@ function SetValue(float Value, bool SuppressEvent)
         SliderValue = Value;
         if (!SuppressEvent)
         {
-            ChangeHandler(self, SettingName, SliderValue);
+            ChangeHandler(self, SliderValue);
         }
     }
 }
@@ -108,7 +113,7 @@ function SetBounds(float min, float max, float step, float newValue, bool Suppre
 
         if (!SuppressEvent)
         {
-            ChangeHandler(self, SettingName, SliderValue);
+            ChangeHandler(self, SliderValue);
         }
     }
 }
@@ -176,4 +181,9 @@ function SetEditable(bool IsEditable)
 function int GetSettingType()
 {
     return eSettingType_Slider;
+}
+
+function MCM_API_SettingsGroup GetParentGroup()
+{
+    return ParentGroup;
 }

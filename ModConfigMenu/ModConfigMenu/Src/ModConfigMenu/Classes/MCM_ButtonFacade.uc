@@ -5,21 +5,25 @@ var string Label;
 var string Tooltip;
 var bool Editable;
 
+var MCM_SettingGroup ParentGroup;
+
 var string ButtonLabel;
 
 var delegate<VoidSettingHandler> ClickHandler;
 
 var MCM_Button uiInstance;
 
-delegate VoidSettingHandler(MCM_API_Setting _Setting, name _SettingName);
+delegate VoidSettingHandler(MCM_API_Setting _Setting);
 
 simulated function MCM_ButtonFacade InitButtonFacade(name _Name, string _Label, string _Tooltip, string _ButtonLabel, 
-    delegate<VoidSettingHandler> _OnClick)
+    delegate<VoidSettingHandler> _OnClick, MCM_SettingGroup _ParentGroup)
 {
     SettingName = _Name;
     Label = _Label;
     Tooltip = _Tooltip;
     Editable = true;
+
+    ParentGroup = _ParentGroup;
 
     ButtonLabel = _ButtonLabel;
 
@@ -51,7 +55,7 @@ function TriggerSaveEvent()
 
 function SimulateClick()
 {
-    ClickHandler(self, SettingName);
+    ClickHandler(self);
 }
 
 // MCM_API_Setting implementation ====================================================================
@@ -117,4 +121,9 @@ function SetEditable(bool IsEditable)
 function int GetSettingType()
 {
     return eSettingType_Button;
+}
+
+function MCM_API_SettingsGroup GetParentGroup()
+{
+    return ParentGroup;
 }

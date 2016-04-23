@@ -5,14 +5,19 @@ var string Label;
 var string Tooltip;
 var bool Editable;
 
+var MCM_SettingGroup ParentGroup;
+
 var MCM_Label uiInstance;
 
-simulated function MCM_LabelFacade InitLabelFacade(name _Name, string _Label, string _Tooltip)
+simulated function MCM_LabelFacade InitLabelFacade(name _Name, string _Label, string _Tooltip,
+    MCM_SettingGroup _ParentGroup)
 {
     SettingName = _Name;
     Label = _Label;
     Tooltip = _Tooltip;
     Editable = false;
+
+    ParentGroup = _ParentGroup;
 
     uiInstance = none;
 
@@ -103,4 +108,9 @@ function SetEditable(bool IsEditable)
 function int GetSettingType()
 {
     return eSettingType_Label;
+}
+
+function MCM_API_SettingsGroup GetParentGroup()
+{
+    return ParentGroup;
 }

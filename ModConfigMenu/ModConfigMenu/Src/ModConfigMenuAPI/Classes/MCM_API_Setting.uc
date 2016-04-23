@@ -29,3 +29,6 @@ function SetEditable(bool IsEditable);
 // Retrieves underlying setting type. Defined as an int to make setting types more extensible to support
 // future "extension types".
 function int GetSettingType();
+
+// Returns the group that the setting belongs to.
+function MCM_API_SettingsGroup GetParentGroup();

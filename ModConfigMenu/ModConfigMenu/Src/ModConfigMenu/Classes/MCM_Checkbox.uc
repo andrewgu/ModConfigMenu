@@ -3,7 +3,7 @@ class MCM_Checkbox extends MCM_SettingBase implements(MCM_API_Checkbox) config(M
 var MCM_API_Setting ParentFacade;
 var delegate<BoolSettingHandler> ChangeHandler;
 
-delegate BoolSettingHandler(MCM_API_Setting _Setting, name _SettingName, bool _SettingValue);
+delegate BoolSettingHandler(MCM_API_Setting _Setting, bool _SettingValue);
 
 simulated function MCM_SettingBase InitSettingsItem(name _Name, eSettingType _Type, optional string _Label = "", optional string _Tooltip = "")
 {
@@ -28,7 +28,7 @@ simulated function MCM_Checkbox InitCheckbox(name _SettingName, MCM_API_Setting 
 
 function CheckboxChangedCallback(UICheckbox CheckboxControl)
 {
-    ChangeHandler(ParentFacade, SettingName, self.GetValue());
+    ChangeHandler(ParentFacade, self.GetValue());
 }
 
 // MCM_API_Checkbox implementation =============================================================================

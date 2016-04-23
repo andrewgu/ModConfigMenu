@@ -7,7 +7,7 @@ var array<string> DropdownOptions;
 var int DropdownSelection;
 var bool TmpSuppressEvent;
 
-delegate StringSettingHandler(MCM_API_Setting Setting, name _SettingName, string _SettingValue);
+delegate StringSettingHandler(MCM_API_Setting Setting, string _SettingValue);
 
 simulated function MCM_SettingBase InitSettingsItem(name _Name, eSettingType _Type, optional string _Label = "", optional string _Tooltip = "")
 {
@@ -67,7 +67,7 @@ function DropdownChangedCallback(UIDropdown DropdownControl)
 
     if (!TmpSuppressEvent)
     {
-        ChangeHandler(ParentFacade, SettingName, DropdownControl.GetSelectedItemText());
+        ChangeHandler(ParentFacade, DropdownControl.GetSelectedItemText());
     }
 }
 

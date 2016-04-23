@@ -5,19 +5,22 @@ var name GroupName;
 var MCM_GroupLabel GroupLabel;
 var array<MCM_SettingFacade> Settings;
 
+var MCM_SettingsPanel ParentPanel;
+
 var bool UiInstantiated;
 
-delegate VoidSettingHandler(MCM_API_Setting Setting, name SettingName);
-delegate BoolSettingHandler(MCM_API_Setting Setting, name SettingName, bool SettingValue);
-delegate FloatSettingHandler(MCM_API_Setting Setting, name SettingName, float SettingValue);
-delegate StringSettingHandler(MCM_API_Setting Setting, name SettingName, string SettingValue);
+delegate VoidSettingHandler(MCM_API_Setting Setting);
+delegate BoolSettingHandler(MCM_API_Setting Setting, bool SettingValue);
+delegate FloatSettingHandler(MCM_API_Setting Setting, float SettingValue);
+delegate StringSettingHandler(MCM_API_Setting Setting, string SettingValue);
 
 //delegate ListItemHandler(UIMechaListItem item);
 delegate ListItemHandler(UIPanel item);
 
-function MCM_SettingGroup InitSettingGroup(name _GroupName, string Label)
+function MCM_SettingGroup InitSettingGroup(name _GroupName, string Label, MCM_SettingsPanel _ParentPanel)
 {
     GroupName = _GroupName;
+    ParentPanel = _ParentPanel;
     GroupLabel = Spawn(class'MCM_GroupLabel', self).InitGroupLabel(Label);
     UiInstantiated = false;
 
@@ -88,6 +91,11 @@ function SetLabel(string Label)
     GroupLabel.SetGroupLabel(Label);
 }
 
+function MCM_API_SettingsPage GetParentPage()
+{
+    return ParentPanel;
+}
+
 // Will return None if setting by that name isn't found.
 function MCM_API_Setting GetSettingByName(name _SettingName)
 {
@@ -129,7 +137,7 @@ function MCM_API_Label AddLabel(name SettingName, string Label, string Tooltip)
 {
     local MCM_LabelFacade Instance;
 
-    Instance = Spawn(class'MCM_LabelFacade', self).InitLabelFacade(SettingName, Label, Tooltip);
+    Instance = Spawn(class'MCM_LabelFacade', self).InitLabelFacade(SettingName, Label, Tooltip, self);
     AddSetting(Instance);
 
     return Instance;
@@ -140,7 +148,7 @@ function MCM_API_Button AddButton(name SettingName, string Label, string Tooltip
 {
     local MCM_ButtonFacade Instance;
 
-    Instance = Spawn(class'MCM_ButtonFacade', self).InitButtonFacade(SettingName, Label, Tooltip, ButtonLabel, ClickHandler);
+    Instance = Spawn(class'MCM_ButtonFacade', self).InitButtonFacade(SettingName, Label, Tooltip, ButtonLabel, ClickHandler, self);
     AddSetting(Instance);
 
     return Instance;
@@ -152,7 +160,7 @@ function MCM_API_Checkbox AddCheckbox(name SettingName, string Label, string Too
 {
     local MCM_CheckboxFacade Instance;
 
-    Instance = Spawn(class'MCM_CheckboxFacade', self).InitCheckboxFacade(SettingName, Label, Tooltip, InitiallyChecked, ChangeHandler, SaveHandler);
+    Instance = Spawn(class'MCM_CheckboxFacade', self).InitCheckboxFacade(SettingName, Label, Tooltip, InitiallyChecked, ChangeHandler, SaveHandler, self);
     AddSetting(Instance);
 
     return Instance;
@@ -165,7 +173,7 @@ function MCM_API_Slider AddSlider(name SettingName, string Label, string Tooltip
     local MCM_SliderFacade Instance;
 
     Instance = Spawn(class'MCM_SliderFacade', self).InitSliderFacade(SettingName, Label, Tooltip,
-        SliderMin, SliderMax, SliderStep, InitialValue, ChangeHandler, SaveHandler);
+        SliderMin, SliderMax, SliderStep, InitialValue, ChangeHandler, SaveHandler, self);
     AddSetting(Instance);
 
     return Instance;
@@ -178,7 +186,7 @@ function MCM_API_Spinner AddSpinner(name SettingName, string Label, string Toolt
     local MCM_SpinnerFacade Instance;
 
     Instance = Spawn(class'MCM_SpinnerFacade', self).InitSpinnerFacade(SettingName, Label, Tooltip,
-        Options, Selection, ChangeHandler, SaveHandler);
+        Options, Selection, ChangeHandler, SaveHandler, self);
     AddSetting(Instance);
 
     return Instance;
@@ -191,7 +199,7 @@ function MCM_API_Dropdown AddDropdown(name SettingName, string Label, string Too
     local MCM_DropdownFacade Instance;
 
     Instance = Spawn(class'MCM_DropdownFacade', self).InitDropdownFacade(SettingName, Label, Tooltip,
-        Options, Selection, ChangeHandler, SaveHandler);
+        Options, Selection, ChangeHandler, SaveHandler, self);
     AddSetting(Instance);
 
     return Instance;

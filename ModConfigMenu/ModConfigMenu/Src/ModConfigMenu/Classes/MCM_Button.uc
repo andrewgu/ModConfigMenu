@@ -4,7 +4,7 @@ var delegate<VoidSettingHandler> ClickHandler;
 
 var MCM_API_Setting ParentFacade;
 
-delegate VoidSettingHandler(MCM_API_Setting Setting, name _SettingName);
+delegate VoidSettingHandler(MCM_API_Setting Setting);
 
 simulated function MCM_SettingBase InitSettingsItem(name _Name, eSettingType _Type, optional string _Label = "", optional string _Tooltip = "")
 {
@@ -29,11 +29,11 @@ simulated function MCM_Button InitButton(name _SettingName, MCM_API_Setting _Par
 
 function ButtonClickedCallback(UIButton ButtonSource)
 {
-    ClickHandler(ParentFacade, SettingName);
+    ClickHandler(ParentFacade);
 }
 
 // MCM_API_Button implementation
 function SimulateClick()
 {
-    ClickHandler(ParentFacade, SettingName);
+    ClickHandler(ParentFacade);
 }

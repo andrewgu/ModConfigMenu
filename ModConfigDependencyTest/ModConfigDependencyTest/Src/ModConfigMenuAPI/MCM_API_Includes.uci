@@ -6,16 +6,16 @@
 
 
 `define MCM_API_BasicButtonHandler(FuncName)\
-    simulated function `{FuncName} (MCM_API_Setting Setting, name SettingName)
+    simulated function `{FuncName} (MCM_API_Setting Setting)
 
 `define MCM_API_BasicCheckboxSaveHandler(FuncName,VarName)\
-    simulated function `{FuncName} (MCM_API_Setting _Setting, name _SettingName, bool _SettingValue) { `{VarName} = _SettingValue; }
+    simulated function `{FuncName} (MCM_API_Setting _Setting, bool _SettingValue) { `{VarName} = _SettingValue; }
 
 `define MCM_API_BasicSliderSaveHandler(FuncName,VarName)\
-    simulated function `{FuncName} (MCM_API_Setting _Setting, name _SettingName, float _SettingValue) { `{VarName} = _SettingValue; }
+    simulated function `{FuncName} (MCM_API_Setting _Setting, float _SettingValue) { `{VarName} = _SettingValue; }
 
 `define MCM_API_BasicSpinnerSaveHandler(FuncName,VarName)\
-    simulated function `{FuncName} (MCM_API_Setting _Setting, name _SettingName, string _SettingValue) { `{VarName} = _SettingValue; }
+    simulated function `{FuncName} (MCM_API_Setting _Setting, string _SettingValue) { `{VarName} = _SettingValue; }
 
 `define MCM_API_BasicDropdownSaveHandler(FuncName,VarName)\
-    simulated function `{FuncName} (MCM_API_Setting _Setting, name _SettingName, string _SettingValue) { `{VarName} = _SettingValue; }
+    simulated function `{FuncName} (MCM_API_Setting _Setting, string _SettingValue) { `{VarName} = _SettingValue; }

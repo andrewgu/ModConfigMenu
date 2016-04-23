@@ -7,7 +7,7 @@ var array<string> SpinnerOptions;
 var int SpinnerSelection;
 var bool TmpSuppressEvent;
 
-delegate StringSettingHandler(MCM_API_Setting Setting, name _SettingName, string _SettingValue);
+delegate StringSettingHandler(MCM_API_Setting Setting, string _SettingValue);
 
 simulated function MCM_SettingBase InitSettingsItem(name _Name, eSettingType _Type, optional string _Label = "", optional string _Tooltip = "")
 {
@@ -75,7 +75,7 @@ function SpinnerChangedCallback(UIListItemSpinner SpinnerControl, int Direction)
 
     if (!TmpSuppressEvent)
     {
-        ChangeHandler(ParentFacade, SettingName, GetValue());
+        ChangeHandler(ParentFacade, GetValue());
     }
 }
 
@@ -101,7 +101,7 @@ function SetValue(string Selection, bool SuppressEvent)
         // SetValue doesn't trigger the event so we manually trigger it if needed.
         if (!TmpSuppressEvent)
         {
-            ChangeHandler(ParentFacade, SettingName, GetValue());
+            ChangeHandler(ParentFacade, GetValue());
         }
 
         TmpSuppressEvent = false;
@@ -119,7 +119,7 @@ function SetOptions(array<string> NewOptions, string InitialSelection, bool Supp
     // SetValue doesn't trigger the event so we manually trigger it if needed.
     if (!TmpSuppressEvent)
     {
-        ChangeHandler(ParentFacade, SettingName, GetValue());
+        ChangeHandler(ParentFacade, GetValue());
     }
 
     TmpSuppressEvent = false;

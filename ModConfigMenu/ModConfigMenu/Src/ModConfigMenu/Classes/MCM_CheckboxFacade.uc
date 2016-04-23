@@ -5,6 +5,8 @@ var string Label;
 var string Tooltip;
 var bool Editable;
 
+var MCM_SettingGroup ParentGroup;
+
 var bool Checked;
 
 var delegate<BoolSettingHandler> ChangeHandler;
@@ -12,15 +14,18 @@ var delegate<BoolSettingHandler> SaveHandler;
 
 var MCM_Checkbox uiInstance;
 
-delegate BoolSettingHandler(MCM_API_Setting _Setting, name _SettingName, bool _SettingValue);
+delegate BoolSettingHandler(MCM_API_Setting _Setting, bool _SettingValue);
 
 simulated function MCM_CheckboxFacade InitCheckboxFacade(name _Name, string _Label, string _Tooltip, bool _Checked, 
-    delegate<BoolSettingHandler> _OnChange, delegate<BoolSettingHandler> _OnSave)
+    delegate<BoolSettingHandler> _OnChange, delegate<BoolSettingHandler> _OnSave,
+    MCM_SettingGroup _ParentGroup)
 {
     SettingName = _Name;
     Label = _Label;
     Tooltip = _Tooltip;
     Editable = true;
+
+    ParentGroup = _ParentGroup;
 
     Checked = _Checked;
 
@@ -48,11 +53,11 @@ function TriggerSaveEvent()
 {
     if (uiInstance != none)
     {
-        SaveHandler(self, SettingName, uiInstance.GetValue());
+        SaveHandler(self, uiInstance.GetValue());
     }
     else
     {
-        SaveHandler(self, SettingName, Checked);
+        SaveHandler(self, Checked);
     }
 }
 
@@ -75,7 +80,7 @@ function SetValue(bool _Checked, bool SuppressEvent)
         Checked = _Checked;
         if (!SuppressEvent && ChangeHandler != none)
         {
-            ChangeHandler(self, SettingName, Checked);
+            ChangeHandler(self, Checked);
         }
     }
 }
@@ -143,4 +148,9 @@ function SetEditable(bool IsEditable)
 function int GetSettingType()
 {
     return eSettingType_Checkbox;
+}
+
+function MCM_API_SettingsGroup GetParentGroup()
+{
+    return ParentGroup;
 }

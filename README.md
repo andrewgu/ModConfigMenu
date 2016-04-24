@@ -17,6 +17,8 @@ XCOM 2 Mod Config Menu: a shared settings menu for Xcom 2 mods.
 
 ### Developers: How do I use this?
 
+For details, see [the documentation](https://github.com/andrewgu/ModConfigMenu/blob/master/documentation/intro.md).
+
 1. Install the MCM mod. Recommend you do this by cloning the repo and compiling in ModBuddy.
 2. Add the API source files into your ModBuddy project, and make a few specific configuration changes.
 

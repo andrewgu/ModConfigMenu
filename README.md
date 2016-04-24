@@ -12,7 +12,7 @@ XCOM 2 Mod Config Menu: a shared settings menu for Xcom 2 mods.
 
 ### Gamers: How do I use this?
 
-1. Install this mod via Steam Workshop or Nexus. (Links coming soon)
+1. Install this mod via (Steam Workshop)[http://steamcommunity.com/sharedfiles/filedetails/?id=667104300] or Nexus. (Links coming soon)
 2. That's it! If you have any mods that use MCM, it'll just work.
 
 ### Developers: How do I use this?

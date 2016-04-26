@@ -148,6 +148,17 @@ enum eGameMode
 };
 ```
 
+### Using MCM for Per-Campaign Settings
+
+Technically MCM is agnostic to where you are loading/saving the settings, so it's quite possible to use MCM for campaign settings. In general this means you need to do two things:
+
+1. Figure out how you're loading/saving the settings into the game state, or wherever else you are storing them. 
+2. Use the game mode information to only enable settings when you're in Strategy or Tactical views, but not the main menu or multiplayer.
+
+You may have to manually implement the save handlers for individual settings, and you definitely will have to implement the handler for the "Save and Exit" button yourself in order to write settings into the game state.
+
+You will not be able to use any of the `MCM_CH_***` macros because they are meant for loading/saving to config INI's, but the other `MCM_API_***` macros may still be useful. You should still use the macro-based version check.
+
 ### Formatted text
 
 Formatted text (size, color, weight) should work for all group labels and settings labels. Just be careful about:

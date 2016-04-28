@@ -62,7 +62,8 @@ function ClientModCallback(MCM_API_Instance ConfigAPI, int GameMode)
         P1Button = P1G1.AddButton('button', "Button", "Button", "OK", ButtonClickedHandler);
         P1Checkbox = P1G1.AddCheckbox('checkbox', "Checkbox", "Checkbox", CFG_CHECKBOX, CheckboxSaveLogger);
 
-        P2Slider = P1G2.AddSlider('slider', "Slider", "Slider", 0, 200, 20, CFG_SLIDER, SliderSaveLogger);
+        P2Slider = P1G2.AddSlider('slider', "Slider", "Slider", 0, 100, 20, CFG_SLIDER, SliderSaveLogger);
+        P2Slider.SetValueDisplayFilter(SliderValueDisplayFilter);
 
         Options.Length = 0;
         Options.AddItem("a");
@@ -90,7 +91,13 @@ function ClientModCallback(MCM_API_Instance ConfigAPI, int GameMode)
 
 `MCM_API_BasicButtonHandler(ButtonClickedHandler)
 {
+    P2Slider.SetBounds(0, 100, 50, P2Slider.GetValue(), false);
     CFG_CLICKED = true;
+}
+
+function string SliderValueDisplayFilter(float _value)
+{
+    return string(int(_value + 0.5));
 }
 
 function SaveButtonClicked(MCM_API_SettingsPage Page)

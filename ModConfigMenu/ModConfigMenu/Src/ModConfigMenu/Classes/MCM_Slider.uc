@@ -8,8 +8,13 @@ var float SliderMax;
 var float SliderStep;
 var float SliderValue;
 
+var UIScrollingText SliderValueDisplay;
+
 var bool SuppressEvent;
 
+var delegate<SliderValueDisplayFilter> DisplayFilter;
+
+delegate string SliderValueDisplayFilter(float _value);
 delegate FloatSettingHandler(MCM_API_Setting Setting, float _SettingValue);
 
 simulated function MCM_SettingBase InitSettingsItem(name _Name, eSettingType _Type, optional string _Label = "", optional string _Tooltip = "")
@@ -25,6 +30,11 @@ simulated function MCM_Slider InitSlider(name _SettingName, MCM_API_Setting _Par
 {
     super.InitSettingsItem(_SettingName, eSettingType_Slider, _Label, _Tooltip);
 
+    SliderValueDisplay = Spawn(class'UIScrollingText', self);
+	SliderValueDisplay.bIsNavigable = false;
+	SliderValueDisplay.bAnimateOnInit = bAnimateOnInit;
+	SliderValueDisplay.InitScrollingText('SliderValueTextControl',,90,260);
+
     SuppressEvent = false;
 
     ChangeHandler = _OnChange;
@@ -35,8 +45,15 @@ simulated function MCM_Slider InitSlider(name _SettingName, MCM_API_Setting _Par
     SliderStep = sStep;
     SliderValue = sValue;
 
+    // Magical incantation to make SetStepSize work without messing up the location of the marker. SetStepSize has a really weird bug in it.
     UpdateDataSlider(_Label, "", int(GetSliderPositionFromValue(SliderMin, SliderMax, SliderValue) + 0.5), , SliderChangedCallback);
+    //UpdateDataSlider(_Label, "", 1, , SliderChangedCallback);
     Slider.SetStepSize(GetSliderStepSize(SliderMin, SliderMax, SliderStep));
+    Slider.SetPercent(GetSliderPositionFromValue(SliderMin, SliderMax, SliderValue));
+
+    // Initially no filter.
+    DisplayFilter = none;
+    UpdateSliderValueDisplay();
 
     SetHoverTooltip(_Tooltip);
 
@@ -49,7 +66,21 @@ function SliderChangedCallback(UISlider SliderControl)
     {
         // Safe to put this inside the SuppressEvent guard because SuppressEvent is only set via methods that modify the SliderValue directly.
         SliderValue = GetSliderValueFromPosition(SliderMin, SliderMax, Slider.percent);
+        UpdateSliderValueDisplay();
         ChangeHandler(ParentFacade, self.GetValue());
+    }
+}
+
+function UpdateSliderValueDisplay()
+{
+    //SliderValueDisplay.SetHTMLText("<p align='right'>" $ string(GetValue()) $ "</p>");
+    if (DisplayFilter == none)
+    {
+        SliderValueDisplay.SetText(string(GetValue()));
+    }
+    else
+    {
+        SliderValueDisplay.SetText(DisplayFilter(GetValue()));
     }
 }
 
@@ -57,17 +88,20 @@ function SliderChangedCallback(UISlider SliderControl)
 
 function float GetSliderPositionFromValue(float sMin, float sMax, float sValue)
 {
-    return 100.0 * (sValue - sMin)/(sMax - sMin);
+    // The weird 99 is because range is [1,100] and not [0,100].
+    return 1.0 + 99.0 * (sValue - sMin)/(sMax - sMin);
 }
 
 function float GetSliderValueFromPosition(float sMin, float sMax, float sPercent)
 {
-    return (sMax - sMin) * (sPercent / 100.0);
+    // The weird 99 is because range is [1,100] and not [0,100].
+    return (sMax - sMin) * ((sPercent-1.0) / 99.0);
 }
 
 function float GetSliderStepSize(float sMin, float sMax, float sStep)
 {
-    return 100.0 * sStep / (sMax - sMin);
+    // The weird 99 is because range is [1,100] and not [0,100].
+    return 99.0 * sStep / (sMax - sMin);
 }
 
 // MCM_API_Slider implementation =============================================================================
@@ -83,6 +117,7 @@ simulated function SetValue(float _Value, bool _SuppressEvent)
 
     SuppressEvent = _SuppressEvent;
     Slider.SetPercent(GetSliderPositionFromValue(SliderMin, SliderMax, SliderValue));
+    UpdateSliderValueDisplay();
     SuppressEvent = false;
 }
 
@@ -95,9 +130,19 @@ simulated function SetBounds(float min, float max, float step, float newValue, b
     
     SuppressEvent = _SuppressEvent;
 
+    // Magical incantation to make SetStepSize work without messing up the location of the marker. SetStepSize has a really weird bug in it.
     UpdateDataSlider(GetLabel(), "", int(GetSliderPositionFromValue(SliderMin, SliderMax, SliderValue) + 0.5), , SliderChangedCallback);
+    //UpdateDataSlider(GetLabel(), "", 1, , SliderChangedCallback);
     Slider.SetStepSize(GetSliderStepSize(SliderMin, SliderMax, SliderStep));
+    Slider.SetPercent(GetSliderPositionFromValue(SliderMin, SliderMax, SliderValue));
+    UpdateSliderValueDisplay();
     SetHoverTooltip(GetHoverTooltip());
     
     SuppressEvent = false;
+}
+
+simulated function SetValueDisplayFilter(delegate<SliderValueDisplayFilter> _DisplayFilter)
+{
+    DisplayFilter = _DisplayFilter;
+    UpdateSliderValueDisplay();
 }

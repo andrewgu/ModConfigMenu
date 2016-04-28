@@ -3,7 +3,7 @@ class MCM_SettingBase extends UIMechaListItem implements(MCM_API_Setting);
 var eSettingType SettingType;
 var name SettingName;
 // Don't need this because we can just use the Desc object.
-//var string DisplayLabel;
+var string DisplayLabel;
 var string DisplayTooltip;
 
 
@@ -24,6 +24,9 @@ simulated function MCM_SettingBase InitSettingsItem(name _Name, eSettingType _Ty
     //ChangedHandler = Handler;
     SettingType = _Type;
 
+    DisplayLabel = _Label;
+    Desc.SetText(DisplayLabel);
+
     DisplayTooltip = _Tooltip;
 
     return self;
@@ -40,12 +43,13 @@ simulated function name GetName()
 // Label is used for UI purposes, not for ID.
 simulated function SetLabel(string NewLabel)
 {
+    DisplayLabel = NewLabel;
     Desc.SetText(NewLabel);
 }
 
 simulated function string GetLabel()
 {
-    return Desc.text;
+    return DisplayLabel;
 }
 
 // When you mouse-over the setting.

@@ -15,9 +15,12 @@ var float SliderValue;
 var delegate<FloatSettingHandler> ChangeHandler;
 var delegate<FloatSettingHandler> SaveHandler;
 
+var delegate<SliderValueDisplayFilter> DisplayFilter;
+
 var MCM_Slider uiInstance;
 
 delegate FloatSettingHandler(MCM_API_Setting Setting, float _SettingValue);
+delegate string SliderValueDisplayFilter(float value);
 
 simulated function MCM_SliderFacade InitSliderFacade(name _Name, string _Label, string _Tooltip, 
     float sMin, float sMax, float sStep, float sValue,
@@ -39,9 +42,23 @@ simulated function MCM_SliderFacade InitSliderFacade(name _Name, string _Label, 
     ChangeHandler = _OnChange;
     SaveHandler = _OnSave;
 
+    DisplayFilter= none;
+
     uiInstance = none;
 
     return self;
+}
+
+function string InnerDisplayFilter(float _Value)
+{
+    if (DisplayFilter == none)
+    {
+        return string(_Value);
+    }
+    else
+    {
+        return DisplayFilter(_Value);
+    }
 }
 
 // MCM_SettingFacade implementation =================================================================
@@ -52,6 +69,8 @@ function UIMechaListItem InstantiateUI(UIList Parent)
     uiInstance.Show();
     uiInstance.EnableNavigation();
     uiInstance.SetEditable(Editable);
+    // Always have one implemented.
+    uiInstance.SetValueDisplayFilter(InnerDisplayFilter);
 
     return uiInstance;
 }
@@ -116,6 +135,11 @@ function SetBounds(float min, float max, float step, float newValue, bool Suppre
             ChangeHandler(self, SliderValue);
         }
     }
+}
+
+function SetValueDisplayFilter(delegate<SliderValueDisplayFilter> _DisplayFilter)
+{
+    DisplayFilter = _DisplayFilter;
 }
 
 // MCM_API_Setting implementation ====================================================================

@@ -53,7 +53,7 @@ function string InnerDisplayFilter(float _Value)
 {
     if (DisplayFilter == none)
     {
-        return string(_Value);
+        return string(int(_Value+0.5));
     }
     else
     {

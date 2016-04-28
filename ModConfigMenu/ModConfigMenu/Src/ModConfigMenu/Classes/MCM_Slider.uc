@@ -76,7 +76,7 @@ function UpdateSliderValueDisplay()
     //SliderValueDisplay.SetHTMLText("<p align='right'>" $ string(GetValue()) $ "</p>");
     if (DisplayFilter == none)
     {
-        SliderValueDisplay.SetText(string(GetValue()));
+        SliderValueDisplay.SetText(string(int(GetValue()+0.5)));
     }
     else
     {

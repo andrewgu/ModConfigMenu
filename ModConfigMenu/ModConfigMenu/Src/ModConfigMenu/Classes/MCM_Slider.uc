@@ -71,12 +71,20 @@ function SliderChangedCallback(UISlider SliderControl)
     }
 }
 
+function int RoundFloat(float _v)
+{
+    if (_v >= 0)
+        return int(_v + 0.5);
+    else
+        return int (_v - 0.5);
+}
+
 function UpdateSliderValueDisplay()
 {
     //SliderValueDisplay.SetHTMLText("<p align='right'>" $ string(GetValue()) $ "</p>");
     if (DisplayFilter == none)
     {
-        SliderValueDisplay.SetText(string(int(GetValue()+0.5)));
+        SliderValueDisplay.SetText(string(RoundFloat(GetValue())));
     }
     else
     {
@@ -95,7 +103,7 @@ function float GetSliderPositionFromValue(float sMin, float sMax, float sValue)
 function float GetSliderValueFromPosition(float sMin, float sMax, float sPercent)
 {
     // The weird 99 is because range is [1,100] and not [0,100].
-    return (sMax - sMin) * ((sPercent-1.0) / 99.0);
+    return sMin + (sMax - sMin) * ((sPercent-1.0) / 99.0);
 }
 
 function float GetSliderStepSize(float sMin, float sMax, float sStep)

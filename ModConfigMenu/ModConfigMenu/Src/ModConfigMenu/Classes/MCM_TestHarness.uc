@@ -62,7 +62,7 @@ function ClientModCallback(MCM_API_Instance ConfigAPI, int GameMode)
         P1Button = P1G1.AddButton('button', "Button", "Button", "OK", ButtonClickedHandler);
         P1Checkbox = P1G1.AddCheckbox('checkbox', "Checkbox", "Checkbox", CFG_CHECKBOX, CheckboxSaveLogger);
 
-        P2Slider = P1G2.AddSlider('slider', "Slider", "Slider", 0, 100, 20, CFG_SLIDER, SliderSaveLogger);
+        P2Slider = P1G2.AddSlider('slider', "Slider", "Slider", -100, 100, 1, CFG_SLIDER, SliderSaveLogger);
         P2Slider.SetValueDisplayFilter(SliderValueDisplayFilter);
 
         Options.Length = 0;
@@ -81,12 +81,6 @@ function ClientModCallback(MCM_API_Instance ConfigAPI, int GameMode)
             P1Checkbox.SetEditable(false);
 
         Page1.ShowSettings();
-
-        P1Button.SetEditable(false);
-        P1Checkbox.SetEditable(false);
-        P2Slider.SetEditable(false);
-        P2Spinner.SetEditable(false);
-        P2Dropdown.SetEditable(false);
     }
 }
 
@@ -101,9 +95,17 @@ function ClientModCallback(MCM_API_Instance ConfigAPI, int GameMode)
     CFG_CLICKED = true;
 }
 
+function int RoundFloat(float _v)
+{
+    if (_v >= 0)
+        return int(_v + 0.5);
+    else
+        return int (_v - 0.5);
+}
+
 function string SliderValueDisplayFilter(float _value)
 {
-    return string(int(_value + 0.5));
+    return string(RoundFloat(_value));
 }
 
 function SaveButtonClicked(MCM_API_SettingsPage Page)

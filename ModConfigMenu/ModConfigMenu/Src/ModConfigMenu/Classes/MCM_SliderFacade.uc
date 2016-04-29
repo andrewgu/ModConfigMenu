@@ -49,11 +49,19 @@ simulated function MCM_SliderFacade InitSliderFacade(name _Name, string _Label, 
     return self;
 }
 
+function int RoundFloat(float _v)
+{
+    if (_v >= 0)
+        return int(_v + 0.5);
+    else
+        return int (_v - 0.5);
+}
+
 function string InnerDisplayFilter(float _Value)
 {
     if (DisplayFilter == none)
     {
-        return string(int(_Value+0.5));
+        return string(RoundFloat(_Value));
     }
     else
     {

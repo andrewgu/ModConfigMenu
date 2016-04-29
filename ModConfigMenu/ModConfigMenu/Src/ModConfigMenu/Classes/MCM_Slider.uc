@@ -146,3 +146,22 @@ simulated function SetValueDisplayFilter(delegate<SliderValueDisplayFilter> _Dis
     DisplayFilter = _DisplayFilter;
     UpdateSliderValueDisplay();
 }
+
+// Have to override to disable the underlying control.
+simulated function SetEditable(bool IsEditable)
+{
+    super.SetEditable(IsEditable);
+    //SliderValueDisplay.SetDisabled(!IsEditable);
+
+    // Hiding *everything* for consistency's sake. Until there's a better answer.
+    if (IsEditable)
+    {
+        SliderValueDisplay.Show();
+        Slider.Show();
+    }
+    else
+    {
+        SliderValueDisplay.Hide();
+        Slider.Hide();
+    }
+}

@@ -42,3 +42,10 @@ simulated function SetValue(bool Checked, bool SuppressEvent)
 {
     Checkbox.SetChecked(Checked, !SuppressEvent);
 }
+
+// Have to override to disable the underlying control.
+simulated function SetEditable(bool IsEditable)
+{
+    super.SetEditable(IsEditable);
+    Checkbox.SetReadOnly(!IsEditable);
+}

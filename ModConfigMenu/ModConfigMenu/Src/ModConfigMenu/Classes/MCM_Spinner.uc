@@ -126,3 +126,18 @@ function SetOptions(array<string> NewOptions, string InitialSelection, bool Supp
 
     SetHoverTooltip(DisplayTooltip);
 }
+
+// Have to override to disable the underlying control.
+simulated function SetEditable(bool IsEditable)
+{
+    super.SetEditable(IsEditable);
+
+    if (IsEditable)
+    {
+        Spinner.Show();
+    }
+    else
+    {
+        Spinner.Hide();
+    }
+}

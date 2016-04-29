@@ -81,6 +81,12 @@ function ClientModCallback(MCM_API_Instance ConfigAPI, int GameMode)
             P1Checkbox.SetEditable(false);
 
         Page1.ShowSettings();
+
+        P1Button.SetEditable(false);
+        P1Checkbox.SetEditable(false);
+        P2Slider.SetEditable(false);
+        P2Spinner.SetEditable(false);
+        P2Dropdown.SetEditable(false);
     }
 }
 

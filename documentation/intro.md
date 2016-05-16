@@ -21,7 +21,7 @@ For a complete catalog of all of the functions available to you, see [*API Docum
 
 ### Key Concepts
 
-To understand how this mod works, you need to understand its core object types:
+Here are MCM's core object types, which also correspond to its core concepts:
 
 1. The *API Instance* (`MCM_API_Instance`) is the entry point for the MCM API. Your mod will create its settings pages from here.
 2. The *Page* (`MCM_API_SettingsPage`) represents a visual page of settings, which you can access by clicking the corresponding tab in the options screen. Each page contains groups of settings. Most mods will use only one page.

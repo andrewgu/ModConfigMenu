@@ -35,8 +35,9 @@ Example mod rendered in the MCM UI:
 ### Credits
 
 In addition to our two contributors, many thanks to two collaborators who have been critical to this project:
-Blue_Raja
-Abeclancy
+
+* Blue_Raja
+* Abeclancy
 
 ### License
 

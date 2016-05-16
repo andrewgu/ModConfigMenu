@@ -36,7 +36,7 @@ Example mod rendered in the MCM UI:
 
 In addition to our two contributors, many thanks to two collaborators who have been critical to this project:
 
-* Blue-Raja
+* BlueRaja
 * Patrick-Seymour
 
 ### License

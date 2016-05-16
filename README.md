@@ -32,6 +32,12 @@ Example mod rendered in the MCM UI:
 
 ![Example mod rendered in the MCM UI](https://raw.githubusercontent.com/andrewgu/ModConfigMenu/master/Res/screen2.jpg "Example mod rendered in the MCM UI")
 
+### Credits
+
+In addition to our two contributors, many thanks to two collaborators who have been critical to this project:
+Blue_Raja
+Abeclancy
+
 ### License
 
 If it's not covered by Firaxis, then it's covered by the MIT License:

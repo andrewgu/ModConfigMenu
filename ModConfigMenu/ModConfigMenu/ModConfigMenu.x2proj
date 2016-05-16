@@ -3,7 +3,9 @@
   <PropertyGroup>
     <Guid>fa9b04b1-c447-4ce3-b608-d6f7a7d0e648</Guid>
     <Name>Mod Config Menu</Name>
-    <Description>This mod is an optional prerequisite for certain mods that enable in-game config options.</Description>
+    <Description>This mod (MCM) is an optional prerequisite for certain mods that enable in-game config options.
+
+For full details on using this mod, troubleshooting, or even building your own mods to use this menu, visit: https://github.com/andrewgu/ModConfigMenu</Description>
     <SteamPublishID>0</SteamPublishID>
     <AssemblyName>ExampleClassOverride</AssemblyName>
     <RootNamespace>ExampleClassOverride</RootNamespace>

@@ -21,6 +21,7 @@ For details, see [the documentation](https://github.com/andrewgu/ModConfigMenu/b
 
 1. Install the MCM mod. Recommend you do this by cloning the repo and compiling in ModBuddy.
 2. Add the API source files into your ModBuddy project, and make a few specific configuration changes.
+3. **Warning:** If you use MCM, make sure that your mod loads configurations properly when MCM is missing or if the player never actually opens MCM. See the tutorial for specifics. 
 
 ### Screenshots
 

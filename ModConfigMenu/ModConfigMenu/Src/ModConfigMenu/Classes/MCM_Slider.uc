@@ -47,6 +47,7 @@ simulated function MCM_Slider InitSlider(name _SettingName, MCM_API_Setting _Par
 
     // Magical incantation to make SetStepSize work without messing up the location of the marker. SetStepSize has a really weird bug in it.
     UpdateDataSlider(_Label, "", int(GetSliderPositionFromValue(SliderMin, SliderMax, SliderValue) + 0.5), , SliderChangedCallback);
+
     //UpdateDataSlider(_Label, "", 1, , SliderChangedCallback);
     Slider.SetStepSize(GetSliderStepSize(SliderMin, SliderMax, SliderStep));
     Slider.SetPercent(GetSliderPositionFromValue(SliderMin, SliderMax, SliderValue));
@@ -97,6 +98,7 @@ function UpdateSliderValueDisplay()
 function float GetSliderPositionFromValue(float sMin, float sMax, float sValue)
 {
     // The weird 99 is because range is [1,100] and not [0,100].
+    `log(string(1.0 + 99.0 * (sValue - sMin)/(sMax - sMin)));
     return 1.0 + 99.0 * (sValue - sMin)/(sMax - sMin);
 }
 
@@ -111,6 +113,45 @@ function float GetSliderStepSize(float sMin, float sMax, float sStep)
     // The weird 99 is because range is [1,100] and not [0,100].
     return 99.0 * sStep / (sMax - sMin);
 }
+
+// =============================================== Patching some unhelpful stuff that UpdateDataSlider does.
+
+simulated function UpdateDataSlider(string _Desc,
+									 String _SliderLabel,
+									 optional int _SliderPosition,
+									 optional delegate<OnClickDelegate> _OnClickDelegate = none,
+									 optional delegate<OnSliderChangedCallback> _OnSliderChangedDelegate = none)
+{
+	SetWidgetType(EUILineItemType_Slider);
+
+	if( Slider == none )
+	{
+		Slider = Spawn(class'UISlider', self);
+		Slider.bIsNavigable = false;
+		Slider.bAnimateOnInit = false;
+		Slider.InitSlider('SliderMC');
+		Slider.Navigator.HorizontalNavigation = true;
+		//Slider.SetPosition(width - 420, 0);
+		Slider.SetX(width - 418);
+	}
+
+	Slider.SetPercent(_SliderPosition);
+	Slider.SetText(_SliderLabel);
+	Slider.Show();
+
+	// Since we have a narrower settings object, we're just going to hard-code this as 250 because it's wide enough.
+    //Desc.SetWidth(width - 418);
+    Desc.SetWidth(250);
+
+	Desc.SetHTMLText(_Desc);
+	Desc.Show();
+
+	OnClickDelegate = _OnClickDelegate;
+	OnSliderChangedCallback = _OnSliderChangedDelegate;
+	Slider.onChangedDelegate = _OnSliderChangedDelegate;
+}
+
+
 
 // MCM_API_Slider implementation =============================================================================
 
@@ -139,7 +180,7 @@ simulated function SetBounds(float min, float max, float step, float newValue, b
     SuppressEvent = _SuppressEvent;
 
     // Magical incantation to make SetStepSize work without messing up the location of the marker. SetStepSize has a really weird bug in it.
-    UpdateDataSlider(GetLabel(), "", int(GetSliderPositionFromValue(SliderMin, SliderMax, SliderValue) + 0.5), , SliderChangedCallback);
+    UpdateDataSlider(GetLabel(), "", RoundFloat(GetSliderPositionFromValue(SliderMin, SliderMax, SliderValue)), , SliderChangedCallback);
     //UpdateDataSlider(GetLabel(), "", 1, , SliderChangedCallback);
     Slider.SetStepSize(GetSliderStepSize(SliderMin, SliderMax, SliderStep));
     Slider.SetPercent(GetSliderPositionFromValue(SliderMin, SliderMax, SliderValue));

@@ -71,6 +71,52 @@ function DropdownChangedCallback(UIDropdown DropdownControl)
     }
 }
 
+// Need to tweak text boundary limits
+
+simulated function UIMechaListItem UpdateDataDropdown(string _Desc, 
+									   array<String> Data, 
+									   int SelectedIndex,
+									   delegate<OnDropdownSelectionChangedCallback> _OnSelectionChange,
+									   optional delegate<OnClickDelegate> _OnClickDelegate = none)
+{
+	local int i;
+
+	SetWidgetType(EUILineItemType_Dropdown);
+	if(Dropdown != none)
+	{
+		Dropdown.Remove();
+		Dropdown = none;
+	}
+	
+	if( Dropdown == none )
+	{
+		Dropdown = Spawn(class'UIDropdown', self);
+		Dropdown.bIsNavigable = false;
+		Dropdown.InitDropdown('DropdownMC');
+		Dropdown.SetPosition(width - 308, 24);
+	}
+	
+	Dropdown.Clear();
+
+	for(i = 0; i < Data.Length; ++i)
+	{
+		Dropdown.AddItem(Data[i]);
+	}
+
+	Dropdown.SetLabel("");
+	Dropdown.SetSelected(SelectedIndex);
+	Dropdown.Show();
+	
+	//Desc.SetWidth(width - 308);
+    Desc.SetWidth(width - 340);
+	Desc.SetHTMLText(_Desc);
+	Desc.Show();
+
+	OnClickDelegate = _OnClickDelegate;
+	Dropdown.OnItemSelectedDelegate = _OnSelectionChange;
+	return self;
+}
+
 // MCM_API_Dropdown implementation ===========================================================================
 
 function string GetValue()

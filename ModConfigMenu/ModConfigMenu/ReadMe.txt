@@ -1,1 +1,1 @@
-﻿You created an XCOM 2 Mod Project!
+﻿For usage and installation instructions, visit the project homepage at https://github.com/andrewgu/ModConfigMenu

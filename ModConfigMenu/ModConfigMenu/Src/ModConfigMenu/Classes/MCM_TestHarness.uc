@@ -62,7 +62,7 @@ function ClientModCallback(MCM_API_Instance ConfigAPI, int GameMode)
         P1Button = P1G1.AddButton('button', "Button", "Button", "OK", ButtonClickedHandler);
         P1Checkbox = P1G1.AddCheckbox('checkbox', "Checkbox", "Checkbox", CFG_CHECKBOX, CheckboxSaveLogger);
 
-        P2Slider = P1G2.AddSlider('slider', "Slider", "Slider", -100, 100, 1, CFG_SLIDER, SliderSaveLogger);
+        P2Slider = P1G2.AddSlider('slider', "Really long description here", "Slider", 0, 200, 20, CFG_SLIDER, SliderSaveLogger);
         P2Slider.SetValueDisplayFilter(SliderValueDisplayFilter);
 
         Options.Length = 0;
@@ -74,8 +74,8 @@ function ClientModCallback(MCM_API_Instance ConfigAPI, int GameMode)
         Options.AddItem("f");
         Options.AddItem("g");
 
-        P2Spinner = P1G3.AddSpinner('spinner', "Spinner", "Spinner", Options, CFG_SPINNER, SpinnerSaveLogger);
-        P2Dropdown = P1G3.AddDropdown('dropdown', "Dropdown", "Dropdown", Options, CFG_DROPDOWN, DropdownSaveLogger);
+        P2Spinner = P1G3.AddSpinner('spinner', "Really long description here", "Spinner", Options, CFG_SPINNER, SpinnerSaveLogger);
+        P2Dropdown = P1G3.AddDropdown('dropdown', "Really long description here", "Dropdown", Options, CFG_DROPDOWN, DropdownSaveLogger);
 
         if (GameMode == eGameMode_Strategy)
             P1Checkbox.SetEditable(false);

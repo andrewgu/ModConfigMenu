@@ -301,12 +301,6 @@ defaultproperties
 
 Short, and no UI code!
 
-### Testing
-
-To test, you need to have the ModConfigMenu mod installed. You can do it two ways: either install it from Steam Workshop, or compile this mod from source. You can find the source code in this repository.
-
-Before you release your mod, you should also test that your mod works without MCM installed, and works when MCM hasn't been run. This means your mod still needs to work when the INI file where you store settings does not exist.
-
 ### Avoiding the Missing INI Pitfall
 
 If MCM was not installed, or if the player never actually went into MCM and saved any settings, you will be missing an INI file. If you try to load settings from a missing INI file, shit will break and everything will go to hell. 
@@ -322,7 +316,8 @@ Fortunately, there are two ways to avoid that entirely:
     `include(MCM_Tutorial/Src/ModConfigMenuAPI/MCM_API_CfgHelpers.uci)
     
     // Somewhere in the function definitions
-    `MCM_CH_VersionChecker(class'MCM_Tutorial_Defaults'.default.VERSION,class'ExampleListener'.default.CONFIG_VERSION)
+    `MCM_CH_VersionChecker(class'MCM_Tutorial_Defaults'.default.VERSION,
+        class'ExampleListener'.default.CONFIG_VERSION)
     
     int function ExampleFunctionInMyMod()
     {
@@ -339,3 +334,9 @@ Fortunately, there are two ways to avoid that entirely:
     ```
 
 In both cases, you can use the `MCM_CH_***` API calls to make your job a bit easier.
+
+### Testing
+
+To test, you need to have the ModConfigMenu mod installed. You can do it two ways: either install it from Steam Workshop, or compile this mod from source. You can find the source code in this repository.
+
+Before you release your mod, you should also test that your mod works without MCM installed, and works when MCM hasn't been run. This means your mod still needs to work when the INI file where you store settings does not exist.

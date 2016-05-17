@@ -127,7 +127,7 @@ We will also need a "version" variable which will be necessary later on in order
 
 ```
 var config bool CHECKBOX_VALUE;
-var config bool CONFIG_VERSION;
+var config int CONFIG_VERSION;
 ```
 
 Now that we have variables out of the way, we're going to make `ExampleListener` listen for the UI screen that MCM creates. At the bottom of the file, we're going to tell the UIScreenListener to listen specifically for the magical UI screen:

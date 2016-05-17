@@ -304,3 +304,38 @@ Short, and no UI code!
 ### Testing
 
 To test, you need to have the ModConfigMenu mod installed. You can do it two ways: either install it from Steam Workshop, or compile this mod from source. You can find the source code in this repository.
+
+Before you release your mod, you should also test that your mod works without MCM installed, and works when MCM hasn't been run. This means your mod still needs to work when the INI file where you store settings does not exist.
+
+### Avoiding the Missing INI Pitfall
+
+If MCM was not installed, or if the player never actually went into MCM and saved any settings, you will be missing an INI file. If you try to load settings from a missing INI file, shit will break and everything will go to hell. 
+
+Fortunately, there are two ways to avoid that entirely:
+
+1. Load settings both from the default settings INI included in your mod and from the INI file where you are keeping the player's settings, and do a version check each time. Like this:
+
+    ```
+    class SomeClassInMyMod extends Object;
+    
+    // In the header somewhere
+    `include(MCM_Tutorial/Src/ModConfigMenuAPI/MCM_API_CfgHelpers.uci)
+    
+    // Somewhere in the function definitions
+    `MCM_CH_VersionChecker(class'MCM_Tutorial_Defaults'.default.VERSION,class'ExampleListener'.default.CONFIG_VERSION)
+    
+    int function ExampleFunctionInMyMod()
+    {
+        // Doing it this way means that it'll pull from defaults if the INI file wasn't created.
+        return `MCM_CH_GetValue(class'MCM_Tutorial_Defaults'.default.SETTING,
+            class'ExampleListener'.default.CHECKBOX_VALUE);
+    }
+    ```
+
+2. On game startup, do a version check and generate the new INI file using your defaults, so that any future attempts to load from the INI file will succeed.
+
+    ```
+    // Placeholder. Will fill this in momentarily.
+    ```
+
+In both cases, you can use the `MCM_CH_***` API calls to make your job a bit easier.

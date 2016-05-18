@@ -305,9 +305,9 @@ Short, and no UI code!
 
 If MCM was not installed, or if the player never actually went into MCM and saved any settings, you will be missing an INI file. If you try to load settings from a missing INI file, shit will break and everything will go to hell. 
 
-Fortunately, there are two ways to avoid that entirely:
+Fortunately, there are a few ways to avoid that entirely:
 
-1. Load settings both from the default settings INI included in your mod and from the INI file where you are keeping the player's settings, and do a version check each time. Like this:
+1. My preferred method: load settings both from the default settings INI included in your mod and from the INI file where you are keeping the player's settings, and do a version check each time. It means every time you might use a config var, replace it with a `MCM_CH_GetValue` macro, like this:
 
     ```
     class SomeClassInMyMod extends Object;
@@ -316,21 +316,58 @@ Fortunately, there are two ways to avoid that entirely:
     `include(MCM_Tutorial/Src/ModConfigMenuAPI/MCM_API_CfgHelpers.uci)
     
     // Somewhere in the function definitions
-    `MCM_CH_VersionChecker(class'MCM_Tutorial_Defaults'.default.VERSION,
-        class'ExampleListener'.default.CONFIG_VERSION)
+    `MCM_CH_VersionChecker(class'MCM_Tutorial_Defaults'.default.VERSION,class'ExampleListener'.default.CONFIG_VERSION)
     
     int function ExampleFunctionInMyMod()
     {
         // Doing it this way means that it'll pull from defaults if the INI file wasn't created.
-        return `MCM_CH_GetValue(class'MCM_Tutorial_Defaults'.default.SETTING,
-            class'ExampleListener'.default.CHECKBOX_VALUE);
+        return `MCM_CH_GetValue(class'MCM_Tutorial_Defaults'.default.SETTING,class'ExampleListener'.default.CHECKBOX_VALUE);
     }
     ```
 
-2. On game startup, do a version check and generate the new INI file using your defaults, so that any future attempts to load from the INI file will succeed.
+2. Do a lazy initialization check before the first time your settings variables are read on each startup. So if you need to read settings during template loading, call the lazy initializer before you start making templates. If you need it for UI things, call the lazy initializer first in the `OnInit` event. And so on. Here's an example lazy initializer you might use to do the version check and create the INI file if needed. In this example you would make sure to call `class'LazyIniHandler'.static.LazyInitializer()` before any point where your mod would need its config values.
 
     ```
-    // Placeholder. Will fill this in momentarily.
+    class LazyIniHAndler extends Object;
+    
+    // In the header somewhere
+    `include(MCM_Tutorial/Src/ModConfigMenuAPI/MCM_API_CfgHelpers.uci)
+    
+    var bool IniFileCreated;
+    
+    // Somewhere in the function definitions
+    `MCM_CH_VersionChecker(class'MCM_Tutorial_Defaults'.default.VERSION,class'ExampleListener'.default.CONFIG_VERSION)
+    
+    static function LazyInitializer()
+    {
+        // Early out.
+        if (default.IniFileCreated) 
+            return;
+        
+        // Only works if you correctly labeled the default's version to be >= 1.
+        if (class'MCM_Tutorial_Defaults'.default.VERSION > class'ExampleListener'.default.CONFIG_VERSION)
+        {
+            static.UpdateSavedIniFile();
+        }
+        
+        default.IniFileCreated = true;
+    }
+    
+    static function UpdateSavedIniFile()
+    {
+        // This updates values or grabs defaults if the INI is missing.
+        class'ExampleListener'.default.CHECKBOX_VALUE =
+            `MCM_CH_GetValue(class'MCM_Tutorial_Defaults'.default.SETTING,class'ExampleListener'.default.CHECKBOX_VALUE);
+        
+        // This saves updates or creates the INI if it's missing.
+        class'ExampleListener'.static.StaticSaveConfig();
+    }
+    
+    defaultproperties
+    {
+        IniFileCreated = false;
+    }
+    
     ```
 
 In both cases, you can use the `MCM_CH_***` API calls to make your job a bit easier.

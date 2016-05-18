@@ -11,12 +11,14 @@ var UIButton ModOptionsButton;
 event OnInit(UIScreen Screen)
 {
     `log("MCM Listener OnInit");
-
-    ParentScreen = UIOptionsPCScreen(Screen);
-
-    if (ENABLE_MENU)
+    if(UIOptionsPCSCreen(Screen) != none)
     {
-        InjectModOptionsButton();
+        ParentScreen = UIOptionsPCScreen(Screen);
+    
+        if (ENABLE_MENU)
+        {
+            InjectModOptionsButton();
+        }
     }
 }
 
@@ -57,5 +59,5 @@ simulated function ShowModOptionsDialog(UIButton kButton)
 
 defaultproperties
 {
-    ScreenClass = class'UIOptionsPCScreen';
+    ScreenClass = none
 }

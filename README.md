@@ -40,6 +40,11 @@ In addition to our two contributors, many thanks to two collaborators who have b
 * BlueRaja
 * Patrick-Seymour
 
+As well as various others who have contributed to this project's ongoing development:
+
+* RealityMachina
+* CMDBob
+
 ### License
 
 If it's not covered by Firaxis, then it's covered by the MIT License:

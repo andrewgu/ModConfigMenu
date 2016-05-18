@@ -59,5 +59,6 @@ simulated function ShowModOptionsDialog(UIButton kButton)
 
 defaultproperties
 {
-    ScreenClass = none
+    ScreenClass = none;
 }
+

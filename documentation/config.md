@@ -2,7 +2,7 @@
 
 ### The Problem
 
-The problem is twofold.
+The problem is twofold. The solution is also an unwieldy hack, but it's the best answer I've encountered so far.
 
 #### Problem 1: SaveConfig and StaticSaveConfig don't always work.
 

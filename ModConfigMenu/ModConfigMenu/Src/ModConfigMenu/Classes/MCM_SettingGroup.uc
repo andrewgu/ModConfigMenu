@@ -102,7 +102,7 @@ function MCM_API_Setting GetSettingByName(name _SettingName)
     local int iter;
     local MCM_SettingFacade Tmp;
 
-    for (iter = 0; iter < Settings.Length-1; iter++)
+    for (iter = 0; iter < Settings.Length; iter++)
     {
         Tmp = Settings[iter];
         if (Tmp.GetName() == _SettingName)

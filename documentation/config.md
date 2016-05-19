@@ -60,7 +60,7 @@ In short:
     ```
     
 2. In your ModBuddy project, only create `XcomFoo_Defaults.ini`, don't create `XcomFoo.ini`. Since `XcomFoo.ini` is missing, the config vars in `Foo` will take on their data type defaults, i.e. false for booleans, 0 for integers, "" for strings, and so on.
-3. Use the version number to figure out which settings to use. Since `XcomFoo.ini` is missing, `class'Foo'.default.VERSION` will be `0`. `class'Foo_Defaults'.default.VERSION` will be whatever you put in `XcomFoo_Defaults.ini`.
+3. Use the version number to figure out which settings to use. Since `XcomFoo.ini` is missing, `class'Foo'.default.VERSION` will use the UnrealScript "uninitialized value for an `int`," which will `0`. `class'Foo_Defaults'.default.VERSION` will be whatever you put in `XcomFoo_Defaults.ini`.
 4. If the version number for `Foo` is older than `Foo_Defaults` then pull values from `Foo_Defaults` into `Foo`, update the version number in `Foo`, and call `SaveConfig()`. This will create `XcomFoo.ini`. In the future, a version number check would tell you to use the values from `Foo`.
 
 This works especially well for our purposes with ModConfigMenu because `XcomFoo.ini` will be in your `My Games` folder, meaning it will be *writeable*!

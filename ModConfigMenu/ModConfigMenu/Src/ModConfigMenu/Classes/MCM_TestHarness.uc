@@ -26,17 +26,21 @@ var config int MCM_CH_IMPL_CFG_VERSION;
 
 event OnInit(UIScreen Screen)
 {
-    if (!(class'MCM_TestConfigStore'.default.ENABLE_TEST_HARNESS))
+    // Only the actual screen you want to hook onto will implement MCM_API, so this check lets you hook in.
+    if (MCM_API(Screen) != none)
     {
-        `log("MCM Test Harness Disabled.");
-        return;
+        if (!(class'MCM_TestConfigStore'.default.ENABLE_TEST_HARNESS))
+        {
+            `log("MCM Test Harness Disabled.");
+            return;
+        }
+
+        // Workaround that's needed in order to be able to "save" files.
+        LoadInitialValues();
+        
+        // Use the macro because it automates the version check based on the API version you're compiling against.
+        `MCM_API_Register(Screen, ClientModCallback);
     }
-
-    // Workaround that's needed in order to be able to "save" files.
-    LoadInitialValues();
-
-    // Use the macro because it automates the version check based on the API version you're compiling against.
-    `MCM_API_Register(Screen, ClientModCallback);
 }
 
 function ClientModCallback(MCM_API_Instance ConfigAPI, int GameMode)
@@ -146,5 +150,6 @@ function LoadInitialValues()
 
 defaultproperties
 {
-    ScreenClass = class'MCM_OptionsScreen';
+    // Need this because you won't be able to listen for a concrete class type that doesn't exist yet.
+    ScreenClass = none;
 }

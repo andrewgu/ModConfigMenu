@@ -130,21 +130,28 @@ var config bool CHECKBOX_VALUE;
 var config int CONFIG_VERSION;
 ```
 
-Now that we have variables out of the way, we're going to make `ExampleListener` listen for the UI screen that MCM creates. At the bottom of the file, we're going to tell the UIScreenListener to listen specifically for the magical UI screen:
+Now that we have variables out of the way, we're going to make `ExampleListener` listen for the UI screen that MCM creates. The problem is, since the class 
+you actually want to listen for (`MCM_OptionsScreen`) doesn't exist when you're compiling your mod, you can't listen to it directly. Instead, you will have to
+check for it in the `OnInit` event.
 
 ```
 defaultproperties
 {
-    ScreenClass = class'MCM_OptionsScreen';
+    ScreenClass = none;
 }
 ```
 
-Now we're going to use the `OnInit` event to hook into MCM:
+Now we're going to use the `OnInit` event to check for the right screen type and to hook into MCM:
 
 ```
 event OnInit(UIScreen Screen)
 {
-    `MCM_API_Register(Screen, ClientModCallback);
+	// Everything out here runs on every UIScreen. Not great but necessary.
+	if (MCM_API(Screen) != none)
+	{
+		// Everything in here runs only when you need to touch MCM.
+		`MCM_API_Register(Screen, ClientModCallback);
+	}
 }
 ```
 
@@ -257,7 +264,10 @@ var config bool CONFIG_VERSION;
 
 event OnInit(UIScreen Screen)
 {
-    `MCM_API_Register(Screen, ClientModCallback);
+	if (MCM_API(Screen) != none)
+	{
+		`MCM_API_Register(Screen, ClientModCallback);
+	}
 }
 
 simulated function ClientModCallback(MCM_API_Instance ConfigAPI, int GameMode)
@@ -295,7 +305,7 @@ simulated function SaveButtonClicked(MCM_API_SettingsPage Page)
 
 defaultproperties
 {
-    ScreenClass = class'MCM_OptionsScreen';
+    ScreenClass = none;
 }
 ```
 

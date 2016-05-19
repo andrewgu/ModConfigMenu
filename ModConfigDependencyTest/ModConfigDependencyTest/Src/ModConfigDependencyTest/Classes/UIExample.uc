@@ -26,8 +26,13 @@ var config int MCM_CH_IMPL_CFG_VERSION;
 
 event OnInit(UIScreen Screen)
 {
-    // Use the macro because it automates the version check based on the API version you're compiling against.
-    `MCM_API_Register(Screen, ClientModCallback);
+    // Since it's listening for all UI classes, check here for the right screen, which will implement MCM_API.
+    if (MCM_API(Screen) != none)
+    {
+        `log("Detected the options screen.");
+        // Use the macro because it automates the version check based on the API version you're compiling against.
+        `MCM_API_Register(Screen, ClientModCallback);
+    }
 }
 
 simulated function ClientModCallback(MCM_API_Instance ConfigAPI, int GameMode)
@@ -125,5 +130,6 @@ simulated function LoadInitialValues()
 
 defaultproperties
 {
-    ScreenClass = class'MCM_OptionsScreen';
+    // The class you're listening for doesn't exist in this project, so you can't listen for it directly.
+    ScreenClass = none;
 }

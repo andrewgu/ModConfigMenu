@@ -49,8 +49,8 @@ simulated function MCM_Slider InitSlider(name _SettingName, MCM_API_Setting _Par
     UpdateDataSlider(_Label, "", int(GetSliderPositionFromValue(SliderMin, SliderMax, SliderValue) + 0.5), , SliderChangedCallback);
 
     //UpdateDataSlider(_Label, "", 1, , SliderChangedCallback);
-    Slider.SetStepSize(GetSliderStepSize(SliderMin, SliderMax, SliderStep));
-    Slider.SetPercent(GetSliderPositionFromValue(SliderMin, SliderMax, SliderValue));
+    //Slider.SetStepSize(GetSliderStepSize(SliderMin, SliderMax, SliderStep));
+    //Slider.SetPercent(GetSliderPositionFromValue(SliderMin, SliderMax, SliderValue));
 
     // Initially no filter.
     DisplayFilter = none;
@@ -70,6 +70,14 @@ function SliderChangedCallback(UISlider SliderControl)
         UpdateSliderValueDisplay();
         ChangeHandler(ParentFacade, self.GetValue());
     }
+}
+
+simulated function AfterParentPageDisplayed()
+{
+    super.AfterParentPageDisplayed();
+
+    // Fix for issue where slider gets positioned weird on a SetStepSize when first initializing the slider.
+    Slider.SetPercent(GetSliderPositionFromValue(SliderMin, SliderMax, SliderValue));
 }
 
 function int RoundFloat(float _v)
@@ -180,12 +188,24 @@ simulated function SetBounds(float min, float max, float step, float newValue, b
     SuppressEvent = _SuppressEvent;
 
     // Magical incantation to make SetStepSize work without messing up the location of the marker. SetStepSize has a really weird bug in it.
-    UpdateDataSlider(GetLabel(), "", RoundFloat(GetSliderPositionFromValue(SliderMin, SliderMax, SliderValue)), , SliderChangedCallback);
+    //UpdateDataSlider(GetLabel(), "", RoundFloat(GetSliderPositionFromValue(SliderMin, SliderMax, SliderValue)), , SliderChangedCallback);
     //UpdateDataSlider(GetLabel(), "", 1, , SliderChangedCallback);
     Slider.SetStepSize(GetSliderStepSize(SliderMin, SliderMax, SliderStep));
+
+    // There's a bug where SetStepSize will move the slider position automatically to one step above "1 percent"
+    // And then if you try to SetPercent in a way that doesn't move the slider, it gets stuck at the "one step above 1 percent" spot.
+    // So the quick hack to avoid this problem is to force slider to change value a few times after setting step size. 
+    // These values aren't special, they just happen to be always different therefore we're guaranteed to move the slider
+    // bar a few times to get it to stop at the right place.
+    Slider.SetPercent(1);
+    Slider.SetPercent(100);
+    
     Slider.SetPercent(GetSliderPositionFromValue(SliderMin, SliderMax, SliderValue));
+
     UpdateSliderValueDisplay();
-    SetHoverTooltip(GetHoverTooltip());
+    
+    // Don't need to call the tooltip thing again since we're not doing UpdateDataSlider.
+    //SetHoverTooltip(GetHoverTooltip());
     
     SuppressEvent = false;
 }

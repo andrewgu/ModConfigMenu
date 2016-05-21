@@ -76,7 +76,10 @@ simulated function AfterParentPageDisplayed()
 {
     super.AfterParentPageDisplayed();
 
-    // Fix for issue where slider gets positioned weird on a SetStepSize when first initializing the slider.
+    // Fix for issue where slider gets positioned weird on a SetStepSize when first initializing the slider. The two
+    // numbers are arbitrary but it forces the slider into the right position. See further down in SetBounds for more details.
+    Slider.SetPercent(1);
+    Slider.SetPercent(100);
     Slider.SetPercent(GetSliderPositionFromValue(SliderMin, SliderMax, SliderValue));
 }
 

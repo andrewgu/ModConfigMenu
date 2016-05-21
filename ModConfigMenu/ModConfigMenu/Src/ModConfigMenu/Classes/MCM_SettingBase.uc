@@ -28,8 +28,15 @@ simulated function MCM_SettingBase InitSettingsItem(name _Name, eSettingType _Ty
     Desc.SetText(DisplayLabel);
 
     DisplayTooltip = _Tooltip;
+    //SetHoverTooltip(DisplayTooltip);
 
     return self;
+}
+
+simulated function AfterParentPageDisplayed()
+{
+    // Apparently you have to set it once the screen element is actually visible.
+    BG.SetTooltipText(DisplayTooltip);
 }
 
 // MCM_API_Setting implementation ==========================================================================
@@ -57,9 +64,6 @@ simulated function SetHoverTooltip(string Tooltip)
 {
     // Doesn't inherently store Tooltip text so we'll remember it.
     DisplayTooltip = Tooltip;
-    
-    if (BG.bHasTooltip)
-        BG.RemoveTooltip();
 
     BG.SetTooltipText(Tooltip);
 }

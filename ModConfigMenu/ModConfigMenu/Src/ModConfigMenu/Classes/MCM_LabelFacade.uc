@@ -36,6 +36,14 @@ simulated function UIMechaListItem InstantiateUI(UIList parent)
     return uiInstance;
 }
 
+simulated function AfterParentPageDisplayed()
+{
+    if (uiInstance != none)
+    {
+        uiInstance.AfterParentPageDisplayed();
+    }
+}
+
 function TriggerSaveEvent()
 {
     // Label doeesn't have a save event.

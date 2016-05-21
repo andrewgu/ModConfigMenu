@@ -52,6 +52,14 @@ function CloneOptionsList(array<string> OptionsList)
     }
 }
 
+simulated function AfterParentPageDisplayed()
+{
+    if (uiInstance != none)
+    {
+        uiInstance.AfterParentPageDisplayed();
+    }
+}
+
 function int GetSelectionIndex(array<string> OptionsList, string SelectedOption)
 {
     local int iter;

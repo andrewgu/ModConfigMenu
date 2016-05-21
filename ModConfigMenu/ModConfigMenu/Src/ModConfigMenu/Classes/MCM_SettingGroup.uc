@@ -72,6 +72,21 @@ function InstantiateItems(delegate<ListItemHandler> handler, UIList Parent)
     UiInstantiated = true;
 }
 
+simulated function AfterParentPageDisplayed()
+{
+    local int iter;
+    local MCM_SettingFacade TmpItem;
+
+    if (UiInstantiated)
+    {
+        for (iter = 0; iter < Settings.Length; iter++)
+        {
+            TmpItem = Settings[iter];
+            TmpItem.AfterParentPageDisplayed();
+        }
+    }
+}
+
 // MCM_API_SettingsGroup implementation =============================================
 
 // For reference purposes, not display purposes.

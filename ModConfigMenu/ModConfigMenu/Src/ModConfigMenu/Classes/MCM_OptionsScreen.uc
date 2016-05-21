@@ -322,6 +322,8 @@ defaultproperties
     SettingsPageCounter = 0;
     SelectedPageID = -1;
 
+	InputState= eInputState_Evaluate;
+
     bAlwaysTick = true
     bConsumeMouseEvents=true
 }

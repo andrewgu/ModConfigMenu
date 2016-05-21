@@ -95,7 +95,8 @@ function ClientModCallback(MCM_API_Instance ConfigAPI, int GameMode)
 
 `MCM_API_BasicButtonHandler(ButtonClickedHandler)
 {
-    P2Slider.SetBounds(0, 100, 50, P2Slider.GetValue(), false);
+    //P2Slider.SetBounds(0, 100, 50, P2Slider.GetValue(), false);
+    P2Slider.SetHoverTooltip("asdf");
     CFG_CLICKED = true;
 }
 

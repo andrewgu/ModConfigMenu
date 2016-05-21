@@ -75,6 +75,14 @@ function UIMechaListItem InstantiateUI(UIList Parent)
     return uiInstance;
 }
 
+simulated function AfterParentPageDisplayed()
+{
+    if (uiInstance != none)
+    {
+        uiInstance.AfterParentPageDisplayed();
+    }
+}
+
 function TriggerSaveEvent()
 {
     if (uiInstance != none)

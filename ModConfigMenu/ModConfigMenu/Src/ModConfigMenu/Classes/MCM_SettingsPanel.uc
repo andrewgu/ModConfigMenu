@@ -73,6 +73,19 @@ simulated function OnResetClicked(UIButton kButton)
         ResetHandler(self);
 }
 
+simulated function Show()
+{
+    local MCM_SettingGroup iter;
+
+    super.Show();
+
+    // Now that it's visible, need to trigger the post-visibility update.
+    foreach SettingGroups(iter)
+    {
+        iter.AfterParentPageDisplayed();
+    }
+}
+
 // Helpers for MCM_OptionsScreen ================================================================
 
 simulated function TriggerSaveEvent()

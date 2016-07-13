@@ -52,8 +52,8 @@ simulated function UpdateDescription(string HelperText) {
 
 defaultproperties 
 {
-    TITLE_X = 7;
-    TITLE_Y = 8;
-    DESC_X  = 7;
-    DESC_Y  = 20;
+    TITLE_X = 0;
+    TITLE_Y = 0;
+    DESC_X  = 0;
+    DESC_Y  = 0;
 }

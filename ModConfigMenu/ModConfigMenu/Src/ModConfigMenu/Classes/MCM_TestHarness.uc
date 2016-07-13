@@ -1,4 +1,5 @@
-class MCM_TestHarness extends UIScreenListener config(ModConfigMenuTestHarness);
+//class MCM_TestHarness extends UIScreenListener config(ModConfigMenuTestHarness);
+class MCM_TestHarness extends Object config(ModConfigMenuTestHarness);
 
 `include(ModConfigMenu/Src/ModConfigMenuAPI/MCM_API_Includes.uci)
 `include(ModConfigMenu/Src/ModConfigMenuAPI/MCM_API_CfgHelpers.uci)
@@ -24,16 +25,17 @@ var config int MCM_CH_IMPL_CFG_VERSION;
 
 `MCM_CH_VersionChecker(class'MCM_TestConfigStore'.default.VERSION,MCM_CH_IMPL_CFG_VERSION)
 
-event OnInit(UIScreen Screen)
+//event OnInit(UIScreen Screen)
+function OnInit(UIScreen Screen)
 {
     // Only the actual screen you want to hook onto will implement MCM_API, so this check lets you hook in.
     if (MCM_API(Screen) != none)
     {
-        if (!(class'MCM_TestConfigStore'.default.ENABLE_TEST_HARNESS))
-        {
-            `log("MCM Test Harness Disabled.");
-            return;
-        }
+        //if (!(class'MCM_TestConfigStore'.default.ENABLE_TEST_HARNESS))
+        //{
+        //    `log("MCM Test Harness Disabled.");
+        //    return;
+        //}
 
         // Workaround that's needed in order to be able to "save" files.
         LoadInitialValues();
@@ -115,7 +117,7 @@ function string SliderValueDisplayFilter(float _value)
 
 function SaveButtonClicked(MCM_API_SettingsPage Page)
 {
-    `log("MCM: Save button clicked");
+    `log("MCM: Save button clicked (TestHarness)");
     
     self.MCM_CH_IMPL_CFG_VERSION = `MCM_CH_GetCompositeVersion();
     self.SaveConfig();
@@ -136,7 +138,7 @@ function ResetButtonClicked(MCM_API_SettingsPage Page)
 function RevertButtonClicked(MCM_API_SettingsPage Page)
 {
     // Don't need to do anything since values aren't written until at save-time when you use save handlers.
-    `log("MCM: Cancel button clicked");
+    `log("MCM: Cancel button clicked (TestHarness)");
 }
 
 // This shows how to either pull default values from a source config, or to use more user-defined values, gated by a version number mechanism.
@@ -152,5 +154,5 @@ function LoadInitialValues()
 defaultproperties
 {
     // Need this because you won't be able to listen for a concrete class type that doesn't exist yet.
-    ScreenClass = none;
+    //ScreenClass = none;
 }

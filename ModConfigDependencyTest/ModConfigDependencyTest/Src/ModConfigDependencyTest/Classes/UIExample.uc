@@ -1,4 +1,5 @@
-class UIExample extends UIScreenListener config(MCDT_Settings);
+//class UIExample extends UIScreenListener config(MCDT_Settings);
+class UIExample extends Object config(MCDT_Settings);
 
 `include(ModConfigDependencyTest/Src/ModConfigMenuAPI/MCM_API_Includes.uci)
 `include(ModConfigDependencyTest/Src/ModConfigMenuAPI/MCM_API_CfgHelpers.uci)
@@ -24,7 +25,8 @@ var config int MCM_CH_IMPL_CFG_VERSION;
 
 `MCM_CH_VersionChecker(class'MCDT_ConfigSrc'.default.VERSION,MCM_CH_IMPL_CFG_VERSION)
 
-event OnInit(UIScreen Screen)
+//event OnInit(UIScreen Screen)
+function OnInit(UIScreen Screen)
 {
     // Since it's listening for all UI classes, check here for the right screen, which will implement MCM_API.
     if (MCM_API(Screen) != none)
@@ -134,5 +136,5 @@ simulated function LoadInitialValues()
 defaultproperties
 {
     // The class you're listening for doesn't exist in this project, so you can't listen for it directly.
-    ScreenClass = none;
+    //ScreenClass = none;
 }

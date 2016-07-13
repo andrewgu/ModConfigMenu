@@ -106,6 +106,9 @@ For full details on using this mod, troubleshooting, or even building your own m
     <Content Include="Src\ModConfigMenu\Classes\MCM_OptionsMenuListener.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\ModConfigMenu\Classes\MCM_OptionsMenuListenerHook.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\ModConfigMenu\Classes\MCM_OptionsScreen.uc">
       <SubType>Content</SubType>
     </Content>
@@ -140,6 +143,9 @@ For full details on using this mod, troubleshooting, or even building your own m
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\ModConfigMenu\Classes\MCM_TestHarness.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenu\Classes\MCM_TestHarnessListener.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\ModConfigMenu\Classes\MCM_UISettingSeparator.uc">

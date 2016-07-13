@@ -1,3 +1,4 @@
+// Ignore this, used for testing.
 class UIStub extends UIScreenListener;
 
 event OnInit(UIScreen Screen)

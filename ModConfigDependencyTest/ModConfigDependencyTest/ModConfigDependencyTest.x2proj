@@ -17,10 +17,22 @@
     <Content Include="Config\XComEngine.ini" />
     <Content Include="ModPreview.jpg" />
     <Content Include="ReadMe.txt" />
+    <Content Include="Src\ModConfigDependencyTest\Classes\GameStateExample.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigDependencyTest\Classes\GameStateExampleListener.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigDependencyTest\Classes\GameStateInitializer.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\ModConfigDependencyTest\Classes\MCDT_ConfigSrc.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\ModConfigDependencyTest\Classes\UIExample.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigDependencyTest\Classes\UIExampleListener.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\ModConfigDependencyTest\Classes\UIStub.uc">

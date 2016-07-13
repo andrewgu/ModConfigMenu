@@ -1,16 +1,18 @@
-class MCM_CustomPageTest extends UIScreenListener config(ModConfigMenuTestHarness);
+//class MCM_CustomPageTest extends UIScreenListener config(ModConfigMenuTestHarness);
+class MCM_CustomPageTest extends Object config(ModConfigMenuTestHarness);
 
 `include(ModConfigMenu/Src/ModConfigMenuAPI/MCM_API_Includes.uci)
 
 delegate CustomSettingsPageCallback(UIScreen ParentScreen, int PageID);
 
-event OnInit(UIScreen Screen)
+//event OnInit(UIScreen Screen)
+function OnInit(UIScreen Screen)
 {
-    if (!(class'MCM_TestConfigStore'.default.ENABLE_TEST_HARNESS))
-    {
-        `log("MCM Test Harness Disabled.");
-        return;
-    }
+    //if (!(class'MCM_TestConfigStore'.default.ENABLE_TEST_HARNESS))
+    //{
+    //    `log("MCM Test Harness Disabled (Custom Page Test).");
+    //    return;
+    //}
 
     // Use the macro because it automates the version check based on the API version you're compiling against.
     `MCM_API_Register(Screen, ClientModCallback);
@@ -31,5 +33,5 @@ function CustomHandler(UIScreen ParentScreen, int PageID)
 
 defaultproperties
 {
-    ScreenClass = class'MCM_OptionsScreen';
+    //ScreenClass = class'MCM_OptionsScreen';
 }

@@ -1,4 +1,15 @@
-class MCM_OptionsMenuListener extends UIScreenListener config(ModConfigMenu);
+// Paired with MCM_OptionsMenuListenerHook to work around a GC bug related to screen listeners.
+// This hook makes it so that this "listener" that uses a instance reference to a UIScreen 
+// is actually attached to the UIOptionsScreen and not to the UIScreenListener, thus giving
+// the UIScreenListener a workable object lifetime.
+// It's actually attached to the UIOptionsScreen in GC terms because the instance reference to
+// this object from MCM_OptionsMenuListenerHook is transient, which means this object is 
+// orphaned immediately, so it's just a node on the object reference graph attached to the UI
+// itself. Since the GC graph looks like that, we can safely keep a reference to UI objects here
+// instead of the actual screen listener.
+
+//class MCM_OptionsMenuListener extends UIScreenListener config(ModConfigMenu);
+class MCM_OptionsMenuListener extends Object config(ModConfigMenu);
 
 var config bool ENABLE_MENU;
 var config bool USE_FLAT_DISPLAY_STYLE;
@@ -8,31 +19,18 @@ var localized string m_strModMenuButton;
 var UIOptionsPCScreen ParentScreen;
 var UIButton ModOptionsButton;
 
-event OnInit(UIScreen Screen)
+//event OnInit(UIScreen Screen)
+function OnInit(UIOptionsPCSCreen Screen)
 {
-    `log("MCM Listener OnInit");
-    if(UIOptionsPCSCreen(Screen) != none)
-    {
-        ParentScreen = UIOptionsPCScreen(Screen);
+    //if(UIOptionsPCSCreen(Screen) != none)
+    //{
+        ParentScreen = Screen;
     
         if (ENABLE_MENU)
         {
             InjectModOptionsButton();
         }
-    }
-}
-
-event OnReceiveFocus(UIScreen Screen)
-{
-    `log("MCM Listener OnReceiveFocus");
-}
-
-event OnLoseFocus(UIScreen Screen)
-{
-}
-
-event OnRemoved(UIScreen Screen)
-{
+    //}
 }
 
 simulated function InjectModOptionsButton()
@@ -59,6 +57,8 @@ simulated function ShowModOptionsDialog(UIButton kButton)
 
 defaultproperties
 {
-    ScreenClass = none;
+    ParentScreen = none;
+    ModOptionsButton = none;
+    //ScreenClass = none;
 }
 

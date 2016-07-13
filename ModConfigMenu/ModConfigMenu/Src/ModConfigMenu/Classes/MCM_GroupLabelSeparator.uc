@@ -46,7 +46,8 @@ simulated function UpdateDescription(string HelperText) {
     Description.SetText(HelperText);
 }
 
-defaultproperties {
+defaultproperties 
+{
     TITLE_X = 7;
     TITLE_Y = 8;
     DESC_X  = 7;

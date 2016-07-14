@@ -52,4 +52,6 @@ defaultproperties
     TITLE_Y = 5;
     DESC_X  = 0;
     DESC_Y  = 5;
+
+    bProcessesMouseEvents = true;
 }

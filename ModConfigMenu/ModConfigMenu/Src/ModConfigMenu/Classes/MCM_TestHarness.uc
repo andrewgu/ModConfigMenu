@@ -83,6 +83,24 @@ function ClientModCallback(MCM_API_Instance ConfigAPI, int GameMode)
         P2Spinner = P1G3.AddSpinner('spinner', "Really long description here", "Spinner", Options, CFG_SPINNER, SpinnerSaveLogger);
         P2Dropdown = P1G3.AddDropdown('dropdown', "Really long description here", "Dropdown", Options, CFG_DROPDOWN, DropdownSaveLogger);
 
+        // Dummies to fill out the page for scrolling.
+        P1G3.AddDropdown('dropdown1', "Really long description here", "Dropdown", Options, CFG_DROPDOWN, none);
+        P1G3.AddDropdown('dropdown2', "Really long description here", "Dropdown", Options, CFG_DROPDOWN, none);
+        P1G3.AddDropdown('dropdown3', "Really long description here", "Dropdown", Options, CFG_DROPDOWN, none);
+        P1G3.AddDropdown('dropdown4', "Really long description here", "Dropdown", Options, CFG_DROPDOWN, none);
+        P1G3.AddDropdown('dropdown5', "Really long description here", "Dropdown", Options, CFG_DROPDOWN, none);
+        P1G3.AddDropdown('dropdown6', "Really long description here", "Dropdown", Options, CFG_DROPDOWN, none);
+        P1G3.AddDropdown('dropdown7', "Really long description here", "Dropdown", Options, CFG_DROPDOWN, none);
+        P1G3.AddDropdown('dropdown8', "Really long description here", "Dropdown", Options, CFG_DROPDOWN, none);
+        P1G3.AddDropdown('dropdown9', "Really long description here", "Dropdown", Options, CFG_DROPDOWN, none);
+        P1G3.AddDropdown('dropdown10', "Really long description here", "Dropdown", Options, CFG_DROPDOWN, none);
+        P1G3.AddDropdown('dropdown11', "Really long description here", "Dropdown", Options, CFG_DROPDOWN, none);
+        P1G3.AddDropdown('dropdown12', "Really long description here", "Dropdown", Options, CFG_DROPDOWN, none);
+        P1G3.AddDropdown('dropdown13', "Really long description here", "Dropdown", Options, CFG_DROPDOWN, none);
+        P1G3.AddDropdown('dropdown14', "Really long description here", "Dropdown", Options, CFG_DROPDOWN, none);
+        P1G3.AddDropdown('dropdown15', "Really long description here", "Dropdown", Options, CFG_DROPDOWN, none);
+        
+
         if (GameMode == eGameMode_Strategy)
             P1Checkbox.SetEditable(false);
 

@@ -11,6 +11,10 @@ var config int OPTIONS_MARGIN;
 var config int HEADER_HEIGHT;
 var config int FOOTER_HEIGHT;
 
+// If false, then hide soldier during Options menu in order to improve visibility and avoid blocking
+// Save and Exit button. Allows for bigger menu.
+var config bool SHOW_SOLDIER;
+
 // Needs major version match and requested minor version needs to be <= actual minor version.
 var config int API_MAJOR_VERSION;
 var config int API_MINOR_VERSION;
@@ -153,6 +157,23 @@ simulated function OnCancel(UIButton kButton)
     Movie.Stack.Pop(self);
 }
 
+// Keyboard input ============================================================================
+
+simulated function bool OnUnrealCommand(int cmd, int arg)
+{
+	if( !CheckInputIsReleaseOrDirectionRepeat(cmd, arg) )
+		return false;
+
+	switch( cmd )
+	{
+		case class'UIUtilities_Input'.const.FXS_BUTTON_B:
+		case class'UIUtilities_Input'.const.FXS_KEY_ESCAPE:
+			OnCancel(none);
+			break; 
+	}
+
+	return super.OnUnrealCommand(cmd, arg);
+}
 
 // Helpers for MCM_API_Instance ===================================================================
 

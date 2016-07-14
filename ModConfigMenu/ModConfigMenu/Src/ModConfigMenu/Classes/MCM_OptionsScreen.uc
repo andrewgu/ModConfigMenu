@@ -41,6 +41,14 @@ var UIButton CancelButton;
 
 var int CurrentGameMode;
 
+// Pawn hiding code thanks to Patrick-Seymour
+var bool SoldierVisible;
+struct PawnAndComponents {
+    var XComUnitPawn Pawn;
+    var array<PrimitiveComponent> Comps;
+};
+var array<PawnAndComponents> PawnAndComps;
+
 delegate ClientModCallback(MCM_API_Instance ConfigAPI, int GameMode);
 delegate OnClickedDelegate(UIButton Button);
 delegate SettingsTabDelegate(MCM_SettingsTab Caller, int PageID);
@@ -54,6 +62,8 @@ simulated function InitScreen(XComPlayerController InitController, UIMovie InitM
 
     UpdateGameMode();
     CreateSkeleton();
+
+    `log("MCM InitScreen complete.");
 }
 
 simulated function UpdateGameMode()
@@ -84,6 +94,21 @@ simulated function OnInit()
     super.OnInit();
 
     `log("MCM Core: On Init Called.");
+
+    if (CurrentGameMode == eGameMode_MainMenu && SHOW_SOLDIER == false)
+    {
+        `log("MCM Core: hiding soldier guy on main menu for visibility.");
+        HideSoldierIfMainMenu();
+    }
+}
+
+simulated function OnRemoved()
+{
+    if (CurrentGameMode == eGameMode_MainMenu && SHOW_SOLDIER == false)
+    {
+        `log("MCM Core: unhiding soldier guy on main menu for visibility.");
+        ShowSoldierIfMainMenu();
+    }
 }
 
 simulated function InitModOptionsMenu(MCM_OptionsMenuListener listener)
@@ -179,6 +204,81 @@ simulated function bool OnUnrealCommand(int cmd, int arg)
 	}
 
 	return super.OnUnrealCommand(cmd, arg);
+}
+
+// Show/hide the soldier pawn ===================================================================
+// Implementation thanks to Patrick-Seymour, who provided this code.
+
+simulated function HideSoldier()
+{
+    local XComUnitPawn Pawn;
+    local PrimitiveComponent Comp;
+    local int i;
+    local PawnAndComponents PawnAndComp;
+    PawnAndComps.Length = 0;
+    foreach `XWORLDINFO.AllActors(class'XComUnitPawn', Pawn) 
+    {
+        PawnAndComp.Pawn = Pawn;
+        PawnAndComp.Comps.Length = 0;
+        foreach Pawn.AllOwnedComponents(class'PrimitiveComponent', Comp) 
+        {
+            if (!Comp.HiddenGame) 
+            {
+                Comp.SetHidden(true);
+                PawnAndComp.Comps.AddItem(Comp);
+            }
+        }
+        PawnAndComps.AddItem(PawnAndComp);
+    }
+
+    SoldierVisible = false;
+}
+
+simulated function ShowSoldier()
+{
+    local XComUnitPawn Pawn;
+    local PrimitiveComponent Comp;
+    local int i, j;
+    foreach `XWORLDINFO.AllActors(class'XComUnitPawn', Pawn) 
+    {
+        for (i = 0; i < PawnAndComps.Length; ++i) 
+        {
+            if (PawnAndComps[i].Pawn == Pawn) 
+            {
+                foreach Pawn.AllOwnedComponents(class'PrimitiveComponent', Comp) 
+                {
+                    for (j = 0; j < PawnAndComps[i].Comps.Length; ++j) 
+                    {
+                        if (PawnAndComps[i].Comps[j] == Comp) 
+                        {
+                            Comp.SetHidden(false);
+                            break;
+                        }
+                    }
+                }
+                break;
+            }
+        }
+    }
+    PawnAndComps.Length = 0;
+
+    SoldierVisible = true;
+}
+
+simulated function HideSoldierIfMainMenu()
+{
+    if (CurrentGameMode == eGameMode_MainMenu && SoldierVisible)
+    {
+        HideSoldier();
+    }
+}
+
+simulated function ShowSoldierIfMainMenu()
+{
+    if (CurrentGameMode == eGameMode_MainMenu && !SoldierVisible)
+    {
+        ShowSoldier();
+    }
 }
 
 // Helpers for MCM_API_Instance ===================================================================
@@ -348,6 +448,8 @@ defaultproperties
     ParentListener = None;
     SettingsPageCounter = 0;
     SelectedPageID = -1;
+
+    SoldierVisible = true;
 
 	InputState= eInputState_Evaluate;
 

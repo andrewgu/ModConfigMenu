@@ -50,7 +50,7 @@ function ClientModCallback(MCM_API_Instance ConfigAPI, int GameMode)
     local MCM_API_SettingsGroup P1G1, P1G2, P1G3;
     local array<string> Options;
 
-    if (GameMode == eGameMode_MainMenu || GameMode == eGameMode_Strategy)
+    if (GameMode == eGameMode_MainMenu || GameMode == eGameMode_Strategy || GameMode == eGameMode_Tactical)
     {
         `log("Is in main menu or strategy menu, attempting to make page.");
         

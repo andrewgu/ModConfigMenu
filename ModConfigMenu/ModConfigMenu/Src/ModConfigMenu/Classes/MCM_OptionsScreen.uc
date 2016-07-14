@@ -107,6 +107,17 @@ simulated function CreateSkeleton()
     VSeparator = Spawn(class'UIImage', Container).InitImage(,"img:///MCM.gfx.MainVerticalSeparator");
     VSeparator.SetPosition(TABLIST_WIDTH,HEADER_HEIGHT);
     
+    // Save and exit button    
+    SaveAndExitButton = Spawn(class'UIButton', Container);
+    SaveAndExitButton.InitButton(, m_strSaveAndExit, OnSaveAndExit);
+    SaveAndExitButton.SetPosition(Container.width - 190, Container.height - 40); //Relative to this screen panel
+    SaveAndExitButton.AnimateIn(0);
+
+    CancelButton = Spawn(class'UIButton', Container);
+    CancelButton.InitButton(, m_strCancel, OnCancel);
+    CancelButton.SetPosition(Container.width - 190 - 170, Container.height - 40); //Relative to this screen panel
+    CancelButton.AnimateIn(0);
+
     TitleHeader = Spawn(class'UIX2PanelHeader', Container);
     TitleHeader.InitPanelHeader('', m_strTitle, m_strSubtitle);
     TitleHeader.SetHeaderWidth(Container.width - 20);
@@ -116,17 +127,12 @@ simulated function CreateSkeleton()
     TabsList.SetSelectedNavigation();
     TabsList.Navigator.LoopSelection = true;
 
-    // Save and exit button    
-    SaveAndExitButton = Spawn(class'UIButton', Container);
-    SaveAndExitButton.InitButton(, m_strSaveAndExit, OnSaveAndExit);
-    SaveAndExitButton.SetPosition(Container.width - 190, Container.height - 40); //Relative to this screen panel
+    //Container.Navigator.AddControl(SaveAndExitButton);
+    //Container.Navigator.AddControl(CancelButton);
 
-    CancelButton = Spawn(class'UIButton', Container);
-    CancelButton.InitButton(, m_strCancel, OnCancel);
-    CancelButton.SetPosition(Container.width - 190 - 170, Container.height - 40); //Relative to this screen panel
-
-    //Navigator.SetSelected(TabsList);
-    //TabsList.Navigator.SelectFirstAvailableIfNoCurrentSelection();
+    // Start with nothing selected.
+    Container.Navigator.SetSelected(none);
+    //TabsList.Navigator.SelectFirstAvailable();
 }
 
 // Special button handlers ========================================================================

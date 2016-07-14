@@ -14,12 +14,12 @@ var int DESC_Y;
 // @param string Description : A description to show below (couple lines)
 simulated function MCM_GroupLabelSeparator InitSeparator(optional name InitName,optional string Label,optional string HelperText) {
     //local UIList List;     
-                         
-    SetWidth(540);
-    SetHeight(45);
 
-    //InitImage(InitName,"img:///MCM.gfx.GroupLabelSeparator");
-    InitImage(InitName,"img:///MCM.gfx.MainHeaderSeparator");
+    InitImage(InitName,"img:///MCM.gfx.GroupLabelSeparator");
+    //InitImage(InitName,"img:///MCM.gfx.MainHeaderSeparator");
+           
+    SetWidth(548);
+    SetHeight(38);
 
     // Get parent width
     //List = UIList(GetParent(class'UIList'));
@@ -49,9 +49,9 @@ simulated function UpdateDescription(string HelperText) {
 defaultproperties 
 {
     TITLE_X = 0;
-    TITLE_Y = 5;
+    TITLE_Y = 0;
     DESC_X  = 0;
-    DESC_Y  = 5;
+    DESC_Y  = 0;
 
     bProcessesMouseEvents = true;
 }

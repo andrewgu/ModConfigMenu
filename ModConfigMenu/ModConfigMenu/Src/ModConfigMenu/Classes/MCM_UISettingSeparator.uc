@@ -18,12 +18,12 @@ var int DESC_Y;
 // @param string Label : Title of the header
 // @param string Description : A description to show below (couple lines)
 simulated function MCM_UISettingSeparator InitSeparator(optional name InitName,optional string Label,optional string HelperText) {
-    //local UIList List;     
-                         
-    SetWidth(540);
-    SetHeight(60);
+    //local UIList List;
 
     InitImage(InitName,"img:///MCM.gfx.MainHeaderSeparator");
+       
+    SetWidth(548);
+    SetHeight(60);
 
     // Get parent width
     //List = UIList(GetParent(class'UIList'));
@@ -53,9 +53,9 @@ simulated function UpdateDescription(string HelperText) {
 defaultproperties 
 {
     TITLE_X = 0;
-    TITLE_Y = 0;
+    TITLE_Y = 10;
     DESC_X  = 0;
-    DESC_Y  = 0;
+    DESC_Y  = 10;
 
     bProcessesMouseEvents = true;
 }

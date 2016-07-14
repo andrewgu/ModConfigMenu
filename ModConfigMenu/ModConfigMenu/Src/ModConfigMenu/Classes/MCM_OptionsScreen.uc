@@ -213,7 +213,6 @@ simulated function HideSoldier()
 {
     local XComUnitPawn Pawn;
     local PrimitiveComponent Comp;
-    local int i;
     local PawnAndComponents PawnAndComp;
     PawnAndComps.Length = 0;
     foreach `XWORLDINFO.AllActors(class'XComUnitPawn', Pawn) 

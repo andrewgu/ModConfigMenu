@@ -16,25 +16,26 @@ var config bool USE_FLAT_DISPLAY_STYLE;
 
 var localized string m_strModMenuButton;
 
-var UIOptionsPCScreen ParentScreen;
-var UIButton ModOptionsButton;
+//var UIOptionsPCScreen ParentScreen;
+//var UIButton ModOptionsButton;
 
 //event OnInit(UIScreen Screen)
 function OnInit(UIOptionsPCSCreen Screen)
-{
+{    
     //if(UIOptionsPCSCreen(Screen) != none)
     //{
-        ParentScreen = Screen;
+        //ParentScreen = Screen;
     
         if (ENABLE_MENU)
         {
-            InjectModOptionsButton();
+            InjectModOptionsButton(Screen);
         }
     //}
 }
 
-simulated function InjectModOptionsButton()
+simulated function InjectModOptionsButton(UIOptionsPCSCreen ParentScreen)
 {
+    local UIButton ModOptionsButton;
     ModOptionsButton = ParentScreen.Spawn(class'UIButton', ParentScreen);
     ModOptionsButton.InitButton(, m_strModMenuButton, ShowModOptionsDialog);
     ModOptionsButton.SetPosition(500, 850); //Relative to this screen panel
@@ -44,8 +45,11 @@ simulated function InjectModOptionsButton()
 simulated function ShowModOptionsDialog(UIButton kButton)
 {
     local UIMovie TargetMovie;
+    local UIOptionsPCScreen ParentScreen;
 
     `log("Mod Options Dialog Called.");
+
+    ParentScreen = UIOptionsPCScreen(kButton.ParentPanel);
     
     if (USE_FLAT_DISPLAY_STYLE)
         TargetMovie = None;
@@ -57,8 +61,8 @@ simulated function ShowModOptionsDialog(UIButton kButton)
 
 defaultproperties
 {
-    ParentScreen = none;
-    ModOptionsButton = none;
+    //ParentScreen = none;
+    //ModOptionsButton = none;
     //ScreenClass = none;
 }
 

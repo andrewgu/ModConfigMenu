@@ -382,6 +382,51 @@ Fortunately, there are a few ways to avoid that entirely:
 
 In both cases, you can use the `MCM_CH_***` API calls to make your job a bit easier.
 
+### Avoid storing Actors, UI objects, and MCM_API objects as instance variables
+
+This is a very easy pitfall to fall into. Notice how the tutorial code carefully avoids storing anything other than primitive data types at the class scope. Everything that isn't a primitive is stored at local scope.
+
+We do it this way because screen listeners do not get garbage collected when Actors, UI objects, and MCM_API objects get garbage collected. This creates a problem because any lingering references will prevent cleanup on objects that needed it. That in turn causes hard to debug problems like graphical glitches and infinite loops when loading saves. So don't do it.
+
+If you absolutely must do it, then I recommend splitting the UIScreenListener into two parts. Like this:
+
+```
+class ExampleListenerHook extends UIScreenListener;
+
+event OnInit(UIScreen Screen)
+{
+    local ExampleListener listener;
+    if (MCM_API(Screen) != none)
+    {
+    	listener = new class'ExampleListener';
+    	listener.OnInit(Screen);
+    }
+}
+
+defaultproperties
+{
+    ScreenClass = none;
+}
+```
+
+```
+class ExampleListener extends Object config(NonexistentConfigName);
+
+function OnInit(UIScreen Screen)
+{
+    `MCM_API_Register(Screen, ClientModCallback);
+}
+
+// And so on with the rest of the original ExampleListener.
+
+defaultproperties
+{
+    // Don't need ScreenClass since it's not a UIScreenListener anymore.
+}
+```
+
+By putting the actual meat of the code in a transient reference instead of a UIScreenListener, this allows the garbage collector to destroy everything cleanly even though the UIScreenListener is never garbage collected.
+
 ### Testing
 
 To test, you need to have the ModConfigMenu mod installed. You can do it two ways: either install it from Steam Workshop, or compile this mod from source. You can find the source code in this repository.

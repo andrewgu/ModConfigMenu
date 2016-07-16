@@ -37,6 +37,7 @@ Example mod rendered in the MCM UI:
 
 In addition to our two contributors, many thanks to two collaborators who have been critical to this project:
 
+* Superd22
 * BlueRaja
 * Patrick-Seymour
 
@@ -44,6 +45,8 @@ As well as various others who have contributed to this project's ongoing develop
 
 * RealityMachina
 * CMDBob
+* korgano
+* robojumper
 
 ### License
 

@@ -143,7 +143,7 @@ simulated function UpdateDataSlider(string _Desc,
 		Slider.InitSlider('SliderMC');
 		Slider.Navigator.HorizontalNavigation = true;
 		//Slider.SetPosition(width - 420, 0);
-		Slider.SetX(width - 418);
+		Slider.SetX(width - 420);
 	}
 
 	Slider.SetPercent(_SliderPosition);
@@ -151,7 +151,7 @@ simulated function UpdateDataSlider(string _Desc,
 	Slider.Show();
 
 	// Since we have a narrower settings object, we're just going to hard-code this as 250 because it's wide enough.
-    //Desc.SetWidth(width - 418);
+    //Desc.SetWidth(width - 420);
     Desc.SetWidth(250);
 
 	Desc.SetHTMLText(_Desc);

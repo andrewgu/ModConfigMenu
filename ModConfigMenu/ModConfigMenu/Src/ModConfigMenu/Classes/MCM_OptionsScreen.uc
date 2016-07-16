@@ -128,6 +128,7 @@ simulated function CreateSkeleton()
     Container = Spawn(class'UIPanel', self).InitPanel('').SetPosition(PANEL_X, PANEL_Y).SetSize(TotalWidth, TotalHeight);
     
     BG = Spawn(class'UIImage', Container).InitImage(,"img:///MCM.gfx.MainBackground");
+    BG.SetPosition(0,0).SetSize(TotalWidth, TotalHeight);
     
     VSeparator = Spawn(class'UIImage', Container).InitImage(,"img:///MCM.gfx.MainVerticalSeparator");
     VSeparator.SetPosition(TABLIST_WIDTH,HEADER_HEIGHT);

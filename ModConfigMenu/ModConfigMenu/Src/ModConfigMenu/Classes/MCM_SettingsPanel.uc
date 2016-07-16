@@ -34,7 +34,10 @@ simulated function UIPanel InitPanel(optional name InitName, optional name InitL
 
     SetSize(PANEL_WIDTH, PANEL_HEIGHT);
 
-    SettingsList = Spawn(class'UIList', self).InitList('OptionsList', 0, 0, PANEL_WIDTH, PANEL_HEIGHT - FOOTER_HEIGHT - 70);
+    SettingsList = Spawn(class'UIList', self).InitList('OptionsList', 0, 0, PANEL_WIDTH, PANEL_HEIGHT - FOOTER_HEIGHT - 40);
+    //SettingsList = Spawn(class'UIList', self).InitList('OptionsList', 0, 0, PANEL_WIDTH, PANEL_HEIGHT - FOOTER_HEIGHT - 20, , true);
+    // Necessary to make sure dropdowns don't run past the bottom.
+    //SettingsList.ScrollbarPadding = 500;
     SettingsList.SetSelectedNavigation();
     SettingsList.Navigator.LoopSelection = true;
 
@@ -190,6 +193,15 @@ function ShowSettings()
 {
     // This is where magic happens.
     local int groupIndex;
+    local UIImage bottomPadding;
+
+    // Adds padding at bottom to make sure that bottom options are visisble.
+    bottomPadding = Spawn(class'UIImage', SettingsList.itemContainer);
+    bottomPadding.bProcessesMouseEvents = true;
+    bottomPadding.InitImage('MCMBottomPadding',"img:///MCM.gfx.Transparent");
+    bottomPadding.SetWidth(548);
+    bottomPadding.SetHeight(150);
+    OnSettingsLineInitialized(bottomPadding);
 
     for (groupIndex = SettingGroups.Length - 1; groupIndex >= 0; groupIndex--) 
     {
@@ -205,3 +217,7 @@ function ShowSettings()
     SettingsList.MoveItemToTop(TitleLine);
 }
 
+defaultproperties
+{
+    bProcessesMouseEvents = false;
+}

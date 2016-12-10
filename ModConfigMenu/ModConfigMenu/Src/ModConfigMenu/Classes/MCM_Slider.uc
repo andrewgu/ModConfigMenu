@@ -70,20 +70,6 @@ function SliderChangedCallback(UISlider SliderControl)
 simulated function AfterParentPageDisplayed()
 {
     super.AfterParentPageDisplayed();
-
-    // Fix for issue where slider gets positioned weird on a SetStepSize when first initializing the slider. The two
-    // numbers are arbitrary but it forces the slider into the right position. See further down in SetBounds for more details.
-    //Slider.SetPercent(1);
-    //Slider.SetPercent(100);
-    //Slider.SetPercent(GetSliderPositionFromValue(SliderMin, SliderMax, SliderValue));
-}
-
-function int RoundFloat(float _v)
-{
-    if (_v >= 0)
-        return int(_v + 0.5);
-    else
-        return int (_v - 0.5);
 }
 
 function UpdateSliderValueDisplay()
@@ -91,7 +77,7 @@ function UpdateSliderValueDisplay()
     //SliderValueDisplay.SetHTMLText("<p align='right'>" $ string(GetValue()) $ "</p>");
     if (DisplayFilter == none)
     {
-        SliderValueDisplay.SetText(string(RoundFloat(GetValue())));
+        SliderValueDisplay.SetText(string(GetValue()));
     }
     else
     {

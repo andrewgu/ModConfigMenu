@@ -45,12 +45,7 @@ simulated function MCM_Slider InitSlider(name _SettingName, MCM_API_Setting _Par
     SliderStep = sStep;
     SliderValue = sValue;
 
-    // Magical incantation to make SetStepSize work without messing up the location of the marker. SetStepSize has a really weird bug in it.
-    UpdateDataSlider(_Label, "", int(GetSliderPositionFromValue(SliderMin, SliderMax, SliderValue) + 0.5), , SliderChangedCallback);
-
-    //UpdateDataSlider(_Label, "", 1, , SliderChangedCallback);
-    //Slider.SetStepSize(GetSliderStepSize(SliderMin, SliderMax, SliderStep));
-    //Slider.SetPercent(GetSliderPositionFromValue(SliderMin, SliderMax, SliderValue));
+    UpdateDataSlider(_Label, "", GetSliderPositionFromValue(SliderMin, SliderMax, SliderValue), , SliderChangedCallback);
 
     // Initially no filter.
     DisplayFilter = none;
@@ -78,9 +73,9 @@ simulated function AfterParentPageDisplayed()
 
     // Fix for issue where slider gets positioned weird on a SetStepSize when first initializing the slider. The two
     // numbers are arbitrary but it forces the slider into the right position. See further down in SetBounds for more details.
-    Slider.SetPercent(1);
-    Slider.SetPercent(100);
-    Slider.SetPercent(GetSliderPositionFromValue(SliderMin, SliderMax, SliderValue));
+    //Slider.SetPercent(1);
+    //Slider.SetPercent(100);
+    //Slider.SetPercent(GetSliderPositionFromValue(SliderMin, SliderMax, SliderValue));
 }
 
 function int RoundFloat(float _v)
@@ -109,7 +104,6 @@ function UpdateSliderValueDisplay()
 function float GetSliderPositionFromValue(float sMin, float sMax, float sValue)
 {
     // The weird 99 is because range is [1,100] and not [0,100].
-    `log(string(1.0 + 99.0 * (sValue - sMin)/(sMax - sMin)));
     return 1.0 + 99.0 * (sValue - sMin)/(sMax - sMin);
 }
 
@@ -189,27 +183,8 @@ simulated function SetBounds(float min, float max, float step, float newValue, b
     SliderValue = newValue;
     
     SuppressEvent = _SuppressEvent;
-
-    // Magical incantation to make SetStepSize work without messing up the location of the marker. SetStepSize has a really weird bug in it.
-    //UpdateDataSlider(GetLabel(), "", RoundFloat(GetSliderPositionFromValue(SliderMin, SliderMax, SliderValue)), , SliderChangedCallback);
-    //UpdateDataSlider(GetLabel(), "", 1, , SliderChangedCallback);
-    Slider.SetStepSize(GetSliderStepSize(SliderMin, SliderMax, SliderStep));
-
-    // There's a bug where SetStepSize will move the slider position automatically to one step above "1 percent"
-    // And then if you try to SetPercent in a way that doesn't move the slider, it gets stuck at the "one step above 1 percent" spot.
-    // So the quick hack to avoid this problem is to force slider to change value a few times after setting step size. 
-    // These values aren't special, they just happen to be always different therefore we're guaranteed to move the slider
-    // bar a few times to get it to stop at the right place.
-    Slider.SetPercent(1);
-    Slider.SetPercent(100);
-    
     Slider.SetPercent(GetSliderPositionFromValue(SliderMin, SliderMax, SliderValue));
-
     UpdateSliderValueDisplay();
-    
-    // Don't need to call the tooltip thing again since we're not doing UpdateDataSlider.
-    //SetHoverTooltip(GetHoverTooltip());
-    
     SuppressEvent = false;
 }
 

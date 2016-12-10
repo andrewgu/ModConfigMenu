@@ -28,23 +28,16 @@ simulated function MCM_SliderFacade InitSliderFacade(name _Name, string _Label, 
     MCM_SettingGroup _ParentGroup)
 {
     SettingName = _Name;
-    Label = _Label;
-    Tooltip = _Tooltip;
-    Editable = true;
-
     ParentGroup = _ParentGroup;
-
-    SliderMin = sMin;
-    SliderMax = sMax;
-    SliderStep = sStep;
-    SliderValue = sValue;
-
     ChangeHandler = _OnChange;
     SaveHandler = _OnSave;
-
-    DisplayFilter= none;
-
+    DisplayFilter = none;
     uiInstance = none;
+
+    SetLabel(_Label);
+    SetHoverTooltip(_Tooltip);
+    SetEditable(true);
+    SetBounds(sMin, sMax, sStep, sValue, true);
 
     return self;
 }

@@ -43,7 +43,7 @@ simulated function MCM_Slider InitSlider(name _SettingName, MCM_API_Setting _Par
     SliderMin = sMin;
     SliderMax = sMax;
     SliderStep = sStep;
-    SliderValue = sValue;
+    SliderValue = ClampAndSnapValue(sMin, sMax, sStep, sValue);
 
     UpdateDataSlider(_Label, "", GetSliderPositionFromValue(SliderMin, SliderMax, SliderValue), , SliderChangedCallback);
 
@@ -61,7 +61,7 @@ function SliderChangedCallback(UISlider SliderControl)
     if (!SuppressEvent)
     {
         // Safe to put this inside the SuppressEvent guard because SuppressEvent is only set via methods that modify the SliderValue directly.
-        SliderValue = GetSliderValueFromPosition(SliderMin, SliderMax, Slider.percent);
+        SliderValue = ClampAndSnapValue(SliderMin, SliderMax, SliderStep, GetSliderValueFromPosition(SliderMin, SliderMax, Slider.percent));
         UpdateSliderValueDisplay();
         ChangeHandler(ParentFacade, self.GetValue());
     }
@@ -77,7 +77,7 @@ function UpdateSliderValueDisplay()
     //SliderValueDisplay.SetHTMLText("<p align='right'>" $ string(GetValue()) $ "</p>");
     if (DisplayFilter == none)
     {
-        SliderValueDisplay.SetText(string(GetValue()));
+        SliderValueDisplay.SetText(DefaultDisplayFilter(GetValue()));
     }
     else
     {
@@ -85,24 +85,9 @@ function UpdateSliderValueDisplay()
     }
 }
 
-// Helpers
-
-function float GetSliderPositionFromValue(float sMin, float sMax, float sValue)
+function string DefaultDisplayFilter(float _value)
 {
-    // The weird 99 is because range is [1,100] and not [0,100].
-    return 1.0 + 99.0 * (sValue - sMin)/(sMax - sMin);
-}
-
-function float GetSliderValueFromPosition(float sMin, float sMax, float sPercent)
-{
-    // The weird 99 is because range is [1,100] and not [0,100].
-    return sMin + (sMax - sMin) * ((sPercent-1.0) / 99.0);
-}
-
-function float GetSliderStepSize(float sMin, float sMax, float sStep)
-{
-    // The weird 99 is because range is [1,100] and not [0,100].
-    return 99.0 * sStep / (sMax - sMin);
+    return DefaultFormatValueForDisplay(SliderMin, SliderMax, SliderStep, _value);
 }
 
 // =============================================== Patching some unhelpful stuff that UpdateDataSlider does.
@@ -117,7 +102,7 @@ simulated function UpdateDataSlider(string _Desc,
 
 	if( Slider == none )
 	{
-		Slider = Spawn(class'UISlider', self);
+		Slider = Spawn(class'MCM_XCOM2_UISlider', self);
 		Slider.bIsNavigable = false;
 		Slider.bAnimateOnInit = false;
 		Slider.InitSlider('SliderMC');
@@ -142,8 +127,6 @@ simulated function UpdateDataSlider(string _Desc,
 	Slider.onChangedDelegate = _OnSliderChangedDelegate;
 }
 
-
-
 // MCM_API_Slider implementation =============================================================================
 
 simulated function float GetValue()
@@ -153,7 +136,7 @@ simulated function float GetValue()
 
 simulated function SetValue(float _Value, bool _SuppressEvent)
 {
-    SliderValue = _Value;
+    SliderValue = ClampAndSnapValue(SliderMin, SliderMax, SliderStep, _Value);
 
     SuppressEvent = _SuppressEvent;
     Slider.SetPercent(GetSliderPositionFromValue(SliderMin, SliderMax, SliderValue));
@@ -161,12 +144,20 @@ simulated function SetValue(float _Value, bool _SuppressEvent)
     SuppressEvent = false;
 }
 
+function GetBounds(out float sMin, out float sMax, out float sStep, out float sValue)
+{
+    sMin = SliderMin;
+    sMax = SliderMax;
+    sStep = SliderStep;
+    sValue = SliderValue;
+}
+
 simulated function SetBounds(float min, float max, float step, float newValue, bool _SuppressEvent)
 {
     SliderMin = min;
     SliderMax = max;
     SliderStep = step;
-    SliderValue = newValue;
+    SliderValue = ClampAndSnapValue(min, max, step, newValue);
     
     SuppressEvent = _SuppressEvent;
     Slider.SetPercent(GetSliderPositionFromValue(SliderMin, SliderMax, SliderValue));
@@ -197,4 +188,64 @@ simulated function SetEditable(bool IsEditable)
         SliderValueDisplay.Hide();
         Slider.Hide();
     }
+}
+
+// =============================================== Value/Position conversions
+
+// For an indicated numerical value, get the percent on the slider that represents
+// that value.
+static function float GetSliderPositionFromValue(float sMin, float sMax, float sValue)
+{
+    // The weird 99 is because range is [1,100] and not [0,100].
+    //return 1.0 + 99.0 * (sValue - sMin)/(sMax - sMin);
+    return 100.0 * (sValue - sMin) / (sMax - sMin);
+}
+
+// For an indicated percent position on the slider, get the value that is represented
+// by that position.
+static function float GetSliderValueFromPosition(float sMin, float sMax, float sPercent)
+{
+    // The weird 99 is because range is [1,100] and not [0,100].
+    //return sMin + (sMax - sMin) * ((sPercent-1.0) / 99.0);
+    return sMin + (sMax - sMin) * (sPercent / 100.0);
+}
+
+// Clamps the indicated value to between the min/max, and also snaps it to the nearest
+// stepping point between them.
+static function float ClampAndSnapValue(float sMin, float sMax, float sStep, float sValue)
+{
+    if (sValue <= sMin) return sMin;
+    if (sValue >= sMax) return sMax;
+    if (sStep > 0)
+    {
+        return float(int((sValue - sMin) / sStep)) * sStep + sMin;
+    }
+    return sValue;
+}
+
+static function float PercentPerStep(float sMin, float sMax, float sStep)
+{
+    if (sStep == 0) return 0;
+    return sStep / (sMax - sMin) * 100.0;
+}
+
+// =============================================== Default value display code
+
+// The default function to format a value into a string for display. Is used by both the
+// Slider and SliderFacade, so put here for less duplication.
+static function string DefaultFormatValueForDisplay(float sMin, float sMax, float sStep, float sValue)
+{
+    local string retstring;
+    local int i;
+    
+    retstring = string(sValue);
+
+    // if there is a decimal, strip out any ending zeroes (and the decimal if necessary)
+    i = InStr(retstring, ".");
+    if (i > 0) {
+        while (Right(retstring, 1) == "0") retstring = Left(retstring, Len(retstring) - 1);
+        if    (Right(retstring, 1) == ".") retstring = Left(retstring, Len(retstring) - 1);
+    }
+    
+    return retstring;
 }

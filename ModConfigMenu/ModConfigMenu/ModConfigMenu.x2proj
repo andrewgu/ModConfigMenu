@@ -11,6 +11,9 @@ For full details on using this mod, troubleshooting, or even building your own m
     <RootNamespace>ExampleClassOverride</RootNamespace>
     <ProjectGuid>{3f350978-33e7-493a-993b-92c1b54bf591}</ProjectGuid>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <OutputPath>bin\Debug\</OutputPath>
+  </PropertyGroup>
   <ItemGroup>
     <Content Include="Config\XComEditor.ini" />
     <Content Include="Config\XComEngine.ini" />
@@ -149,6 +152,9 @@ For full details on using this mod, troubleshooting, or even building your own m
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\ModConfigMenu\Classes\MCM_UISettingSeparator.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenu\Classes\MCM_XCOM2_UISlider.uc">
       <SubType>Content</SubType>
     </Content>
   </ItemGroup>

@@ -73,7 +73,7 @@ function SpinnerChangedCallback(UIListItemSpinner SpinnerControl, int Direction)
 
     Spinner.SetValue(GetValue());
 
-    if (!TmpSuppressEvent)
+    if (ChangeHandler != none && !TmpSuppressEvent)
     {
         ChangeHandler(ParentFacade, GetValue());
     }
@@ -99,7 +99,7 @@ function SetValue(string Selection, bool SuppressEvent)
         Spinner.SetValue(Selection);
 
         // SetValue doesn't trigger the event so we manually trigger it if needed.
-        if (!TmpSuppressEvent)
+        if (ChangeHandler != none && !TmpSuppressEvent)
         {
             ChangeHandler(ParentFacade, GetValue());
         }
@@ -117,7 +117,7 @@ function SetOptions(array<string> NewOptions, string InitialSelection, bool Supp
     Spinner.SetValue(InitialSelection);
 
     // SetValue doesn't trigger the event so we manually trigger it if needed.
-    if (!TmpSuppressEvent)
+    if (ChangeHandler != none && !TmpSuppressEvent)
     {
         ChangeHandler(ParentFacade, GetValue());
     }

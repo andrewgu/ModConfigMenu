@@ -28,7 +28,10 @@ simulated function MCM_Checkbox InitCheckbox(name _SettingName, MCM_API_Setting 
 
 function CheckboxChangedCallback(UICheckbox CheckboxControl)
 {
-    ChangeHandler(ParentFacade, self.GetValue());
+    if(ChangeHandler != none)
+    {
+        ChangeHandler(ParentFacade, self.GetValue());
+    }
 }
 
 // MCM_API_Checkbox implementation =============================================================================

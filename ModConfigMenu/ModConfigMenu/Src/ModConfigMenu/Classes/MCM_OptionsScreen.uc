@@ -193,18 +193,18 @@ simulated function OnCancel(UIButton kButton)
 
 simulated function bool OnUnrealCommand(int cmd, int arg)
 {
-	if( !CheckInputIsReleaseOrDirectionRepeat(cmd, arg) )
-		return false;
+    if( !CheckInputIsReleaseOrDirectionRepeat(cmd, arg) )
+        return false;
 
-	switch( cmd )
-	{
-		case class'UIUtilities_Input'.const.FXS_BUTTON_B:
-		case class'UIUtilities_Input'.const.FXS_KEY_ESCAPE:
-			OnCancel(none);
-			break; 
-	}
+    switch( cmd )
+    {
+        case class'UIUtilities_Input'.const.FXS_BUTTON_B:
+        case class'UIUtilities_Input'.const.FXS_KEY_ESCAPE:
+            OnCancel(none);
+            break; 
+    }
 
-	return super.OnUnrealCommand(cmd, arg);
+    return super.OnUnrealCommand(cmd, arg);
 }
 
 // Show/hide the soldier pawn ===================================================================
@@ -451,7 +451,7 @@ defaultproperties
 
     SoldierVisible = true;
 
-	InputState= eInputState_Evaluate;
+    InputState= eInputState_Evaluate;
 
     bAlwaysTick = true
     bConsumeMouseEvents=true

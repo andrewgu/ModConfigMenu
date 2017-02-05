@@ -31,9 +31,9 @@ simulated function MCM_Slider InitSlider(name _SettingName, MCM_API_Setting _Par
     super.InitSettingsItem(_SettingName, eSettingType_Slider, _Label, _Tooltip);
 
     SliderValueDisplay = Spawn(class'UIScrollingText', self);
-	SliderValueDisplay.bIsNavigable = false;
-	SliderValueDisplay.bAnimateOnInit = bAnimateOnInit;
-	SliderValueDisplay.InitScrollingText('SliderValueTextControl',,90,260);
+    SliderValueDisplay.bIsNavigable = false;
+    SliderValueDisplay.bAnimateOnInit = bAnimateOnInit;
+    SliderValueDisplay.InitScrollingText('SliderValueTextControl',,90,260);
 
     SuppressEvent = false;
 
@@ -44,15 +44,15 @@ simulated function MCM_Slider InitSlider(name _SettingName, MCM_API_Setting _Par
     SliderMax = sMax;
     SliderStep = sStep;
 
-	if (sStep == 0)
-	{
-		// Special case default value, 10 steps in whole bar.
-		SliderStep = (SliderMax - SliderMin) * 0.01f;
-	}
+    if (sStep == 0)
+    {
+        // Special case default value, 10 steps in whole bar.
+        SliderStep = (SliderMax - SliderMin) * 0.01f;
+    }
 
     SliderValue = ClampAndSnapValue(sMin, sMax, sStep, sValue);
 
-	// Need to calculate the above stats before calling to make sure UpdateDataSlider can compute step size.
+    // Need to calculate the above stats before calling to make sure UpdateDataSlider can compute step size.
     UpdateDataSlider(_Label, "", GetSliderPositionFromValue(SliderMin, SliderMax, SliderValue), , SliderChangedCallback);
 
     // Initially no filter.
@@ -104,41 +104,41 @@ function string DefaultDisplayFilter(float _value)
 // =============================================== Patching some unhelpful stuff that UpdateDataSlider does.
 
 simulated function UpdateDataSlider(string _Desc,
-									 String _SliderLabel,
-									 optional int _SliderPosition,
-									 optional delegate<OnClickDelegate> _OnClickDelegate = none,
-									 optional delegate<OnSliderChangedCallback> _OnSliderChangedDelegate = none)
+                                     String _SliderLabel,
+                                     optional int _SliderPosition,
+                                     optional delegate<OnClickDelegate> _OnClickDelegate = none,
+                                     optional delegate<OnSliderChangedCallback> _OnSliderChangedDelegate = none)
 {
-	SetWidgetType(EUILineItemType_Slider);
+    SetWidgetType(EUILineItemType_Slider);
 
-	if( Slider == none )
-	{
-		Slider = Spawn(class'MCM_XCOM2_UISlider', self);
-		Slider.bIsNavigable = false;
-		Slider.bAnimateOnInit = false;
-		Slider.InitSlider('SliderMC');
-		Slider.Navigator.HorizontalNavigation = true;
-		//Slider.SetPosition(width - 420, 0);
-		Slider.SetX(width - 420);
-	}
+    if( Slider == none )
+    {
+        Slider = Spawn(class'MCM_XCOM2_UISlider', self);
+        Slider.bIsNavigable = false;
+        Slider.bAnimateOnInit = false;
+        Slider.InitSlider('SliderMC');
+        Slider.Navigator.HorizontalNavigation = true;
+        //Slider.SetPosition(width - 420, 0);
+        Slider.SetX(width - 420);
+    }
 
-	// Needed to make sure arrow buttons for increment/decrement work.
-	Slider.SetStepSize(PercentPerStep(SliderMin, SliderMax, SliderStep));
+    // Needed to make sure arrow buttons for increment/decrement work.
+    Slider.SetStepSize(PercentPerStep(SliderMin, SliderMax, SliderStep));
 
-	Slider.SetPercent(_SliderPosition);
-	Slider.SetText(_SliderLabel);
-	Slider.Show();
+    Slider.SetPercent(_SliderPosition);
+    Slider.SetText(_SliderLabel);
+    Slider.Show();
 
-	// Since we have a narrower settings object, we're just going to hard-code this as 250 because it's wide enough.
+    // Since we have a narrower settings object, we're just going to hard-code this as 250 because it's wide enough.
     //Desc.SetWidth(width - 420);
     Desc.SetWidth(250);
 
-	Desc.SetHTMLText(_Desc);
-	Desc.Show();
+    Desc.SetHTMLText(_Desc);
+    Desc.Show();
 
-	OnClickDelegate = _OnClickDelegate;
-	OnSliderChangedCallback = _OnSliderChangedDelegate;
-	Slider.onChangedDelegate = _OnSliderChangedDelegate;
+    OnClickDelegate = _OnClickDelegate;
+    OnSliderChangedCallback = _OnSliderChangedDelegate;
+    Slider.onChangedDelegate = _OnSliderChangedDelegate;
 }
 
 // MCM_API_Slider implementation =============================================================================
@@ -171,18 +171,18 @@ simulated function SetBounds(float min, float max, float step, float newValue, b
     SliderMin = min;
     SliderMax = max;
     SliderStep = step;
-	
-	if (step == 0)
-	{
-		// Special case default value, 10 steps in whole bar.
-		SliderStep = (SliderMax - SliderMin) * 0.01f;
-	}
+    
+    if (step == 0)
+    {
+        // Special case default value, 10 steps in whole bar.
+        SliderStep = (SliderMax - SliderMin) * 0.01f;
+    }
 
     SliderValue = ClampAndSnapValue(min, max, step, newValue);
     
     SuppressEvent = _SuppressEvent;
-	// Update increment/decrement arrow button step sizes.
-	Slider.SetStepSize(PercentPerStep(SliderMin, SliderMax, SliderStep));
+    // Update increment/decrement arrow button step sizes.
+    Slider.SetStepSize(PercentPerStep(SliderMin, SliderMax, SliderStep));
     Slider.SetPercent(GetSliderPositionFromValue(SliderMin, SliderMax, SliderValue));
     UpdateSliderValueDisplay();
     SuppressEvent = false;

@@ -7,9 +7,12 @@ Project("{5DAE07AF-E217-45C1-8DE7-FF99D6011E8A}") = "ModConfigMenu", "ModConfigM
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|XCOM 2 = Debug|XCOM 2
 		Default|XCOM 2 = Default|XCOM 2
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3F350978-33E7-493A-993B-92C1B54BF591}.Debug|XCOM 2.ActiveCfg = Debug|XCOM 2
+		{3F350978-33E7-493A-993B-92C1B54BF591}.Debug|XCOM 2.Build.0 = Debug|XCOM 2
 		{3F350978-33E7-493A-993B-92C1B54BF591}.Default|XCOM 2.ActiveCfg = Default|XCOM 2
 		{3F350978-33E7-493A-993B-92C1B54BF591}.Default|XCOM 2.Build.0 = Default|XCOM 2
 	EndGlobalSection

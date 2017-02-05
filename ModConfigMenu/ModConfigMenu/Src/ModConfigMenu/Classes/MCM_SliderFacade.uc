@@ -28,45 +28,37 @@ simulated function MCM_SliderFacade InitSliderFacade(name _Name, string _Label, 
     MCM_SettingGroup _ParentGroup)
 {
     SettingName = _Name;
-    Label = _Label;
-    Tooltip = _Tooltip;
-    Editable = true;
-
     ParentGroup = _ParentGroup;
-
-    SliderMin = sMin;
-    SliderMax = sMax;
-    SliderStep = sStep;
-    SliderValue = sValue;
-
     ChangeHandler = _OnChange;
     SaveHandler = _OnSave;
-
-    DisplayFilter= none;
-
+    DisplayFilter = none;
     uiInstance = none;
+
+    SetLabel(_Label);
+    SetHoverTooltip(_Tooltip);
+    SetEditable(true);
+    SetBounds(sMin, sMax, sStep, sValue, true);
 
     return self;
 }
 
-function int RoundFloat(float _v)
-{
-    if (_v >= 0)
-        return int(_v + 0.5);
-    else
-        return int (_v - 0.5);
-}
-
-function string InnerDisplayFilter(float _Value)
+function string InnerDisplayFilter(float v)
 {
     if (DisplayFilter == none)
     {
-        return string(RoundFloat(_Value));
+        return DefaultDisplayFilter(v);
     }
     else
     {
-        return DisplayFilter(_Value);
+        return DisplayFilter(v);
     }
+}
+
+function string DefaultDisplayFilter(float v)
+{
+    local float min, max, step, ignorevalue;
+    GetBounds(min, max, step, ignorevalue);
+    return class'MCM_Slider'.static.DefaultFormatValueForDisplay(min, max, step, v);
 }
 
 // MCM_SettingFacade implementation =================================================================
@@ -125,11 +117,26 @@ function SetValue(float Value, bool SuppressEvent)
     }
     else
     {
-        SliderValue = Value;
+        SliderValue = class'MCM_Slider'.static.ClampAndSnapValue(SliderMin, SliderMax, SliderStep, Value);
         if (!SuppressEvent)
         {
             ChangeHandler(self, SliderValue);
         }
+    }
+}
+
+function GetBounds(out float sMin, out float sMax, out float sStep, out float sValue)
+{
+    if (uiInstance != none)
+    {
+        uiInstance.GetBounds(sMin, sMax, sStep, sValue);
+    }
+    else
+    {
+        sMin = SliderMin;
+        sMax = SliderMax;
+        sStep = SliderStep;
+        sValue = SliderValue;
     }
 }
 
@@ -144,7 +151,7 @@ function SetBounds(float min, float max, float step, float newValue, bool Suppre
         SliderMin = min;
         SliderMax = max;
         SliderStep = step;
-        SliderValue = newValue;
+        SliderValue = class'MCM_Slider'.static.ClampAndSnapValue(SliderMin, SliderMax, SliderStep, newValue);
 
         if (!SuppressEvent)
         {

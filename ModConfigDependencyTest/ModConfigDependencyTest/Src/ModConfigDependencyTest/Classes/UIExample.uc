@@ -16,6 +16,7 @@ var MCM_API_Label P1Label;
 var MCM_API_Button P1Button;
 var MCM_API_Checkbox P1Checkbox;
 var MCM_API_Slider P2Slider;
+var MCM_API_Slider P2SliderFloat;
 var MCM_API_Dropdown P2Dropdown;
 var MCM_API_Spinner P2Spinner;
 
@@ -63,7 +64,8 @@ simulated function ClientModCallback(MCM_API_Instance ConfigAPI, int GameMode)
         P1Button = P1G1.AddButton('button', "Button", "Button", "OK", ButtonClickedHandler);
         P1Checkbox = P1G1.AddCheckbox('checkbox', "Checkbox", "Checkbox", CFG_CHECKBOX, CheckboxSaveLogger);
 
-        P2Slider = P1G2.AddSlider('slider', "Slider", "Slider", -200, 0, 20, CFG_SLIDER, SliderSaveLogger);
+        P2Slider = P1G2.AddSlider('slider', "Slider", "Slider", -30, 30, 1, CFG_SLIDER, SliderSaveLogger);
+		P2SliderFloat = P1G2.AddSlider('floatslider', "Partial", "Partial", -30, 30, 0, -30.5, none);
 
         Options.Length = 0;
         Options.AddItem("a");

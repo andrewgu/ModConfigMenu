@@ -43,8 +43,16 @@ simulated function MCM_Slider InitSlider(name _SettingName, MCM_API_Setting _Par
     SliderMin = sMin;
     SliderMax = sMax;
     SliderStep = sStep;
+
+	if (sStep == 0)
+	{
+		// Special case default value, 10 steps in whole bar.
+		SliderStep = (SliderMax - SliderMin) * 0.1f;
+	}
+
     SliderValue = ClampAndSnapValue(sMin, sMax, sStep, sValue);
 
+	// Need to calculate the above stats before calling to make sure UpdateDataSlider can compute step size.
     UpdateDataSlider(_Label, "", GetSliderPositionFromValue(SliderMin, SliderMax, SliderValue), , SliderChangedCallback);
 
     // Initially no filter.
@@ -114,6 +122,9 @@ simulated function UpdateDataSlider(string _Desc,
 		Slider.SetX(width - 420);
 	}
 
+	// Needed to make sure arrow buttons for increment/decrement work.
+	Slider.SetStepSize(PercentPerStep(SliderMin, SliderMax, SliderStep));
+
 	Slider.SetPercent(_SliderPosition);
 	Slider.SetText(_SliderLabel);
 	Slider.Show();
@@ -160,9 +171,18 @@ simulated function SetBounds(float min, float max, float step, float newValue, b
     SliderMin = min;
     SliderMax = max;
     SliderStep = step;
+	
+	if (step == 0)
+	{
+		// Special case default value, 10 steps in whole bar.
+		SliderStep = (SliderMax - SliderMin) * 0.1f;
+	}
+
     SliderValue = ClampAndSnapValue(min, max, step, newValue);
     
     SuppressEvent = _SuppressEvent;
+	// Update increment/decrement arrow button step sizes.
+	Slider.SetStepSize(PercentPerStep(SliderMin, SliderMax, SliderStep));
     Slider.SetPercent(GetSliderPositionFromValue(SliderMin, SliderMax, SliderValue));
     UpdateSliderValueDisplay();
     SuppressEvent = false;

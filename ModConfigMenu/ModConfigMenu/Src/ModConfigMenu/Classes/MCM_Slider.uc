@@ -47,7 +47,7 @@ simulated function MCM_Slider InitSlider(name _SettingName, MCM_API_Setting _Par
 	if (sStep == 0)
 	{
 		// Special case default value, 10 steps in whole bar.
-		SliderStep = (SliderMax - SliderMin) * 0.1f;
+		SliderStep = (SliderMax - SliderMin) * 0.01f;
 	}
 
     SliderValue = ClampAndSnapValue(sMin, sMax, sStep, sValue);
@@ -175,7 +175,7 @@ simulated function SetBounds(float min, float max, float step, float newValue, b
 	if (step == 0)
 	{
 		// Special case default value, 10 steps in whole bar.
-		SliderStep = (SliderMax - SliderMin) * 0.1f;
+		SliderStep = (SliderMax - SliderMin) * 0.01f;
 	}
 
     SliderValue = ClampAndSnapValue(min, max, step, newValue);

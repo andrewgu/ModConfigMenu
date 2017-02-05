@@ -104,10 +104,10 @@ function string DefaultDisplayFilter(float _value)
 // =============================================== Patching some unhelpful stuff that UpdateDataSlider does.
 
 simulated function UpdateDataSlider(string _Desc,
-                                     String _SliderLabel,
-                                     optional int _SliderPosition,
-                                     optional delegate<OnClickDelegate> _OnClickDelegate = none,
-                                     optional delegate<OnSliderChangedCallback> _OnSliderChangedDelegate = none)
+                                    string _SliderLabel,
+                                    optional int _SliderPosition,
+                                    optional delegate<OnClickDelegate> _OnClickDelegate = none,
+                                    optional delegate<OnSliderChangedCallback> _OnSliderChangedDelegate = none)
 {
     SetWidgetType(EUILineItemType_Slider);
 

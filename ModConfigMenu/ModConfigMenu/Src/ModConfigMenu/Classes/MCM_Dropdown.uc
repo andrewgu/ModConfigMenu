@@ -74,10 +74,10 @@ function DropdownChangedCallback(UIDropdown DropdownControl)
 // Need to tweak text boundary limits
 
 simulated function UIMechaListItem UpdateDataDropdown(string _Desc, 
-                                       array<String> Data, 
-                                       int SelectedIndex,
-                                       delegate<OnDropdownSelectionChangedCallback> _OnSelectionChange,
-                                       optional delegate<OnClickDelegate> _OnClickDelegate = none)
+                                                      array<String> Data, 
+                                                      int SelectedIndex,
+                                                      delegate<OnDropdownSelectionChangedCallback> _OnSelectionChange,
+                                                      optional delegate<OnClickDelegate> _OnClickDelegate = none)
 {
     local int i;
 

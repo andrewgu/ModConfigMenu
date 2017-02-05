@@ -29,11 +29,17 @@ simulated function MCM_Button InitButton(name _SettingName, MCM_API_Setting _Par
 
 function ButtonClickedCallback(UIButton ButtonSource)
 {
-    ClickHandler(ParentFacade);
+    if(ClickHandler != none)
+    {
+        ClickHandler(ParentFacade);
+    }
 }
 
 // MCM_API_Button implementation
 function SimulateClick()
 {
-    ClickHandler(ParentFacade);
+    if(ClickHandler != none)
+    {
+        ClickHandler(ParentFacade);
+    }
 }

@@ -17,6 +17,7 @@ var UIList SettingsList;
 
 var MCM_UISettingSeparator TitleLine;
 var UIButton ResetButton;
+var string Title;
 
 var array<MCM_SettingGroup> SettingGroups;
 //var float SettingItemStartY;
@@ -118,9 +119,13 @@ function int GetPageId()
 }
 
 // To do : probably add description to this function too ? Super d
-function SetPageTitle(string title)
+function SetPageTitle(string newTitle)
 {
-    TitleLine.UpdateTitle(title);
+    if(TitleLine != none)
+    {
+        TitleLine.UpdateTitle(newTitle);
+    }
+    Title = newTitle;
 }
 
 function SetSaveHandler(delegate<SaveStateHandler> _SaveHandler)
@@ -210,7 +215,7 @@ function ShowSettings()
 
     TitleLine = Spawn(class'MCM_UISettingSeparator', SettingsList.itemContainer);
     TitleLine.InitSeparator();
-    TitleLine.UpdateTitle("Mod Settings");
+    TitleLine.UpdateTitle(Title != "" ? Title : "Mod Settings");
     TitleLine.SetY(0);
     TitleLine.Show();
     TitleLine.EnableNavigation();

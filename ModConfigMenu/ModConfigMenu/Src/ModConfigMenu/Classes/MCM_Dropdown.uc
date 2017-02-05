@@ -65,7 +65,7 @@ function DropdownChangedCallback(UIDropdown DropdownControl)
 {
     DropdownSelection = DropdownControl.SelectedItem;
 
-    if (!TmpSuppressEvent)
+    if (ChangeHandler != none && !TmpSuppressEvent)
     {
         ChangeHandler(ParentFacade, DropdownControl.GetSelectedItemText());
     }

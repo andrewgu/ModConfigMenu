@@ -35,7 +35,7 @@ Example mod rendered in the MCM UI:
 
 ### Credits
 
-In addition to our two contributors, many thanks to two collaborators who have been critical to this project:
+In addition to our two contributors, many thanks to three collaborators who have contributed code and have otherwise been critical to this project:
 
 * Superd22
 * BlueRaja

@@ -1,6 +1,7 @@
 class MCM_OptionsScreen extends UIScreen implements(MCM_API, MCM_API_Instance) 
     config(ModConfigMenu) dependson(UIDialogueBox);
 
+
 var config int PANEL_X;
 var config int PANEL_Y;
 var config int TABLIST_WIDTH;
@@ -14,6 +15,16 @@ var config int FOOTER_HEIGHT;
 // If false, then hide soldier during Options menu in order to improve visibility and avoid blocking
 // Save and Exit button. Allows for bigger menu.
 var config bool SHOW_SOLDIER;
+
+// 
+struct CustomSettingsPage
+{
+	var string TabLabel;
+	var string ScreenClass;
+	var eGameMode ShowInGameMode;
+	var int PageID; // PageID will be overwritten when initializing tabs, so don't assign one in config
+};
+var config array<CustomSettingsPage> CustomPages;
 
 // Needs major version match and requested minor version needs to be <= actual minor version.
 var config int API_MAJOR_VERSION;
@@ -91,6 +102,7 @@ simulated function UpdateGameMode()
 
 simulated function OnInit()
 {
+    local CustomSettingsPage TmpSetting;
     super.OnInit();
 
     `log("MCM Core: On Init Called.");
@@ -100,6 +112,16 @@ simulated function OnInit()
         `log("MCM Core: hiding soldier guy on main menu for visibility.");
         HideSoldierIfMainMenu();
     }
+
+	// Iterate through all custom settings
+    foreach CustomPages(TmpSetting)
+    {
+		if (TmpSetting.ShowInGameMode == CurrentGameMode)
+		{
+			NewConfigSettingsPage(TmpSetting);
+		}
+	}
+
 }
 
 simulated function OnRemoved()
@@ -439,6 +461,58 @@ function bool RegisterClientMod(int major, int minor, delegate<ClientModCallback
     {
         return false;
     }
+}
+
+// Config-based custom settings pages=============================================================
+
+simulated function CustomScreenTabClickedHandler(MCM_SettingsTab Caller, int PageID)
+{
+	local MCM_SettingsTab TmpButton;
+    local CustomSettingsPage TmpSetting;
+	local class<UIScreen> ScreenClass;
+    `log("MCM Tab clicked: " $ string(PageID));
+
+	Caller.SetChecked(false);
+        
+    // Now choose the panel.
+    foreach CustomPages(TmpSetting)
+    {
+        if (TmpSetting.PageID == PageID)
+        {
+            `log("MCM: Found correct panel, showing screen" @ TmpSetting.ScreenClass);
+            ScreenClass = class<UIScreen>(DynamicLoadObject(TmpSetting.ScreenClass, class'Class'));
+			if (ScreenClass != none)
+			{
+				Movie.Stack.Push(PC.Pres.Spawn(ScreenClass, PC.Pres));
+			}
+        }
+    }
+
+    // Refresh the button. This is important if we're cancelling a tab change.
+    foreach SettingsTabs(TmpButton)
+    {
+        if (TmpButton.SettingsPageID == SelectedPageID)
+        {
+            TmpButton.SetChecked(true);
+        }
+        else
+        {
+            TmpButton.SetChecked(false);
+        }
+    }
+}
+
+function int NewConfigSettingsPage(out CustomSettingsPage CustomSetting)
+{
+    local MCM_SettingsTab Item; 
+
+    CustomSetting.PageID = SettingsPageCounter;
+    SettingsPageCounter++;
+
+    Item = Spawn(class'MCM_SettingsTab', TabsList.ItemContainer).InitSettingsTab(CustomSetting.PageID, CustomSetting.TabLabel);
+    Item.OnClickHandler = CustomScreenTabClickedHandler;
+
+    return CustomSetting.PageID;
 }
 
 // Defaults ======================================================================================

@@ -120,6 +120,10 @@ simulated function OnInit()
 		{
 			NewConfigSettingsPage(TmpSetting);
 		}
+		else
+		{
+			TmpSetting.PageID = -1;
+		}
 	}
 
 }

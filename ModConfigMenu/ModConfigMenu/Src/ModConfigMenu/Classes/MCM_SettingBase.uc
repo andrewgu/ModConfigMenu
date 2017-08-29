@@ -8,7 +8,7 @@ var string DisplayTooltip;
 
 
 // Force different init pattern.
-simulated function UIMechaListItem InitListItem()
+simulated function UIMechaListItem InitListItem(optional name InitName, optional int defaultWidth = -1)
 {
     `log("Don't use this.");
     // Intentionally make this break stuff.

@@ -4,6 +4,8 @@ event OnInit(UIScreen Screen)
 {
     local MCM_OptionsMenuListener listener;
 
+	//`log("Mod Options Hook.");
+
     if (UIOptionsPCSCreen(Screen) != none)
     {
         // By using a transient class instance to execute the actual code,
@@ -17,4 +19,5 @@ event OnInit(UIScreen Screen)
 defaultproperties
 {
     ScreenClass = none;
+	//ScreenClass = 'UIOptionsPCSCreen';
 }

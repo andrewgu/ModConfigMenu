@@ -2,13 +2,13 @@
 <Project ToolsVersion="12.0" DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Guid>b4964577-d6c1-40ae-bc7d-0fc25fad985f</Guid>
-    <Name>Mod Config Menu</Name>
+    <Name>Mod Config Menu Legacy</Name>
     <Description>This mod (MCM) is an optional prerequisite for certain mods that enable in-game config options.
 
 For full details on using this mod, troubleshooting, or even building your own mods to use this menu, visit: https://github.com/andrewgu/ModConfigMenu</Description>
     <SteamPublishID>0</SteamPublishID>
-    <AssemblyName>ExampleClassOverride</AssemblyName>
-    <RootNamespace>ExampleClassOverride</RootNamespace>
+    <AssemblyName>ModConfigMenuLegacy</AssemblyName>
+    <RootNamespace>ModConfigMenuLegacy</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <OutputPath>bin\Debug\</OutputPath>
@@ -25,7 +25,7 @@ For full details on using this mod, troubleshooting, or even building your own m
     <Content Include="Content\MCM.upk">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Localization\ModConfigMenu.int">
+    <Content Include="Localization\ModConfigMenuLegacy.int">
       <SubType>Content</SubType>
     </Content>
     <Content Include="ModPreview.jpg" />
@@ -69,91 +69,91 @@ For full details on using this mod, troubleshooting, or even building your own m
     <Content Include="Src\ModConfigMenuAPI\MCM_API_Includes.uci">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\ModConfigMenu\Classes\MCM_Button.uc">
+    <Content Include="Src\ModConfigMenuLegacy\Classes\MCM_Button.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\ModConfigMenu\Classes\MCM_ButtonFacade.uc">
+    <Content Include="Src\ModConfigMenuLegacy\Classes\MCM_ButtonFacade.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\ModConfigMenu\Classes\MCM_Checkbox.uc">
+    <Content Include="Src\ModConfigMenuLegacy\Classes\MCM_Checkbox.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\ModConfigMenu\Classes\MCM_CheckboxFacade.uc">
+    <Content Include="Src\ModConfigMenuLegacy\Classes\MCM_CheckboxFacade.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\ModConfigMenu\Classes\MCM_CustomPageTest.uc">
+    <Content Include="Src\ModConfigMenuLegacy\Classes\MCM_CustomPageTest.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\ModConfigMenu\Classes\MCM_CustomPageTestUI.uc">
+    <Content Include="Src\ModConfigMenuLegacy\Classes\MCM_CustomPageTestUI.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\ModConfigMenu\Classes\MCM_Dropdown.uc">
+    <Content Include="Src\ModConfigMenuLegacy\Classes\MCM_Dropdown.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\ModConfigMenu\Classes\MCM_DropdownFacade.uc">
+    <Content Include="Src\ModConfigMenuLegacy\Classes\MCM_DropdownFacade.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\ModConfigMenu\Classes\MCM_GroupLabel.uc">
+    <Content Include="Src\ModConfigMenuLegacy\Classes\MCM_GroupLabel.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\ModConfigMenu\Classes\MCM_GroupLabelSeparator.uc">
+    <Content Include="Src\ModConfigMenuLegacy\Classes\MCM_GroupLabelSeparator.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\ModConfigMenu\Classes\MCM_Label.uc">
+    <Content Include="Src\ModConfigMenuLegacy\Classes\MCM_Label.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\ModConfigMenu\Classes\MCM_LabelFacade.uc">
+    <Content Include="Src\ModConfigMenuLegacy\Classes\MCM_LabelFacade.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\ModConfigMenu\Classes\MCM_OptionsMenuListener.uc">
+    <Content Include="Src\ModConfigMenuLegacy\Classes\MCM_OptionsMenuListener.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\ModConfigMenu\Classes\MCM_OptionsMenuListenerHook.uc">
+    <Content Include="Src\ModConfigMenuLegacy\Classes\MCM_OptionsMenuListenerHook.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\ModConfigMenu\Classes\MCM_OptionsScreen.uc">
+    <Content Include="Src\ModConfigMenuLegacy\Classes\MCM_OptionsScreen.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\ModConfigMenu\Classes\MCM_SettingBase.uc">
+    <Content Include="Src\ModConfigMenuLegacy\Classes\MCM_SettingBase.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\ModConfigMenu\Classes\MCM_SettingFacade.uc">
+    <Content Include="Src\ModConfigMenuLegacy\Classes\MCM_SettingFacade.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\ModConfigMenu\Classes\MCM_SettingGroup.uc">
+    <Content Include="Src\ModConfigMenuLegacy\Classes\MCM_SettingGroup.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\ModConfigMenu\Classes\MCM_SettingsPanel.uc">
+    <Content Include="Src\ModConfigMenuLegacy\Classes\MCM_SettingsPanel.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\ModConfigMenu\Classes\MCM_SettingsTab.uc">
+    <Content Include="Src\ModConfigMenuLegacy\Classes\MCM_SettingsTab.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\ModConfigMenu\Classes\MCM_Slider.uc">
+    <Content Include="Src\ModConfigMenuLegacy\Classes\MCM_Slider.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\ModConfigMenu\Classes\MCM_SliderFacade.uc">
+    <Content Include="Src\ModConfigMenuLegacy\Classes\MCM_SliderFacade.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\ModConfigMenu\Classes\MCM_Spinner.uc">
+    <Content Include="Src\ModConfigMenuLegacy\Classes\MCM_Spinner.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\ModConfigMenu\Classes\MCM_SpinnerFacade.uc">
+    <Content Include="Src\ModConfigMenuLegacy\Classes\MCM_SpinnerFacade.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\ModConfigMenu\Classes\MCM_TestConfigStore.uc">
+    <Content Include="Src\ModConfigMenuLegacy\Classes\MCM_TestConfigStore.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\ModConfigMenu\Classes\MCM_TestHarness.uc">
+    <Content Include="Src\ModConfigMenuLegacy\Classes\MCM_TestHarness.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\ModConfigMenu\Classes\MCM_TestHarnessListener.uc">
+    <Content Include="Src\ModConfigMenuLegacy\Classes\MCM_TestHarnessListener.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\ModConfigMenu\Classes\MCM_UISettingSeparator.uc">
+    <Content Include="Src\ModConfigMenuLegacy\Classes\MCM_UISettingSeparator.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\ModConfigMenu\Classes\MCM_XCOM2_UISlider.uc">
+    <Content Include="Src\ModConfigMenuLegacy\Classes\MCM_XCOM2_UISlider.uc">
       <SubType>Content</SubType>
     </Content>
   </ItemGroup>
@@ -163,9 +163,9 @@ For full details on using this mod, troubleshooting, or even building your own m
     <Folder Include="Localization\" />
     <Folder Include="Src\" />
     <Folder Include="Src\ModConfigMenuAPI" />
-    <Folder Include="Src\ModConfigMenu" />
+    <Folder Include="Src\ModConfigMenuLegacy" />
     <Folder Include="Src\ModConfigMenuAPI\Classes" />
-    <Folder Include="Src\ModConfigMenu\Classes" />
+    <Folder Include="Src\ModConfigMenuLegacy\Classes" />
   </ItemGroup>
   <Import Project="$(MSBuildLocalExtensionPath)\XCOM2.targets" />
 </Project>

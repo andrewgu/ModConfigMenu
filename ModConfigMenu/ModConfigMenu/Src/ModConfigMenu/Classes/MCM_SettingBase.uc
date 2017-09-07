@@ -8,12 +8,12 @@ var string DisplayTooltip;
 
 
 // Force different init pattern.
-simulated function UIMechaListItem InitListItem(optional name InitName, optional int defaultWidth = -1)
-{
-    `log("Don't use this.");
-    // Intentionally make this break stuff.
-    return none;
-}
+//simulated function UIMechaListItem InitListItem(optional name InitName, optional int defaultWidth = -1)
+//{
+//    `log("Don't use this.");
+//    // Intentionally make this break stuff.
+//    return none;
+//}
 
 // This is the real initializer.
 simulated function MCM_SettingBase InitSettingsItem(name _Name, eSettingType _Type, optional string _Label = "", optional string _Tooltip = "")

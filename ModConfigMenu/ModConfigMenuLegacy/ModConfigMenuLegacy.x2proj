@@ -156,9 +156,6 @@ For full details on using this mod, troubleshooting, or even building your own m
     <Content Include="Src\ModConfigMenuLegacy\Classes\MCM_XCOM2_UISlider.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\ModConfigMenu\Classes\MCM_LegacyStub.uc">
-      <SubType>Content</SubType>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Config\" />
@@ -169,8 +166,6 @@ For full details on using this mod, troubleshooting, or even building your own m
     <Folder Include="Src\ModConfigMenuLegacy" />
     <Folder Include="Src\ModConfigMenuAPI\Classes" />
     <Folder Include="Src\ModConfigMenuLegacy\Classes" />
-    <Folder Include="Src\ModConfigMenu" />
-    <Folder Include="Src\ModConfigMenu\Classes" />
   </ItemGroup>
   <Import Project="$(MSBuildLocalExtensionPath)\XCOM2.targets" />
 </Project>

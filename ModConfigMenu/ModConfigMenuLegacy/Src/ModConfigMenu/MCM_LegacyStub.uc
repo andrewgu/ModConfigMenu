@@ -1,1 +1,0 @@
-// This is a stub to preserve the old namespace for launcher compatibility.

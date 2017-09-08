@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # XCOM ModBuddy Solution File, Format Version 11.00
 VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{5DAE07AF-E217-45C1-8DE7-FF99D6011E8A}") = "ModConfigMenuLegacy", "ModConfigMenuLegacy\ModConfigMenuLegacy.x2proj", "{00CEA5F7-CCD4-46ED-BF86-48E783F35F57}"
+Project("{5DAE07AF-E217-45C1-8DE7-FF99D6011E8A}") = "ModConfigMenuLegacy", "ModConfigMenuLegacy\ModConfigMenuLegacy.x2proj", "{F423EB19-CCD7-4E71-AD14-1D899CE3826D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Default|XCOM 2 = Default|XCOM 2
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{00CEA5F7-CCD4-46ED-BF86-48E783F35F57}.Debug|XCOM 2.ActiveCfg = Debug|XCOM 2
-		{00CEA5F7-CCD4-46ED-BF86-48E783F35F57}.Debug|XCOM 2.Build.0 = Debug|XCOM 2
-		{00CEA5F7-CCD4-46ED-BF86-48E783F35F57}.Default|XCOM 2.ActiveCfg = Default|XCOM 2
-		{00CEA5F7-CCD4-46ED-BF86-48E783F35F57}.Default|XCOM 2.Build.0 = Default|XCOM 2
+		{F423EB19-CCD7-4E71-AD14-1D899CE3826D}.Debug|XCOM 2.ActiveCfg = Debug|XCOM 2
+		{F423EB19-CCD7-4E71-AD14-1D899CE3826D}.Debug|XCOM 2.Build.0 = Debug|XCOM 2
+		{F423EB19-CCD7-4E71-AD14-1D899CE3826D}.Default|XCOM 2.ActiveCfg = Default|XCOM 2
+		{F423EB19-CCD7-4E71-AD14-1D899CE3826D}.Default|XCOM 2.Build.0 = Default|XCOM 2
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,7 +1,7 @@
 //class MCM_CustomPageTest extends UIScreenListener config(ModConfigMenuTestHarness);
 class MCM_CustomPageTest extends Object config(ModConfigMenuTestHarness);
 
-`include(ModConfigMenuLegacy/Src/ModConfigMenuAPI/MCM_API_Includes.uci)
+`include(ModConfigMenu/Src/ModConfigMenuAPI/MCM_API_Includes.uci)
 
 delegate CustomSettingsPageCallback(UIScreen ParentScreen, int PageID);
 

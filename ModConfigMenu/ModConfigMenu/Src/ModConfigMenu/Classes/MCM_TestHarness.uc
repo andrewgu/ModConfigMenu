@@ -1,8 +1,8 @@
 //class MCM_TestHarness extends UIScreenListener config(ModConfigMenuTestHarness);
 class MCM_TestHarness extends Object config(ModConfigMenuTestHarness);
 
-`include(ModConfigMenuLegacy/Src/ModConfigMenuAPI/MCM_API_Includes.uci)
-`include(ModConfigMenuLegacy/Src/ModConfigMenuAPI/MCM_API_CfgHelpers.uci)
+`include(ModConfigMenu/Src/ModConfigMenuAPI/MCM_API_Includes.uci)
+`include(ModConfigMenu/Src/ModConfigMenuAPI/MCM_API_CfgHelpers.uci)
 
 var config bool CFG_CLICKED;
 var config bool CFG_CHECKBOX;

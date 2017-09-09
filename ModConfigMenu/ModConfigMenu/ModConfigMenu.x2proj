@@ -156,6 +156,9 @@ For full details on using this mod, troubleshooting, or even building your own m
     <Content Include="Src\ModConfigMenu\Classes\MCM_XCOM2_UISlider.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\ModConfigMenu\Classes\X2DownloadableContentInfo_MCMLegacy.uc">
+      <SubType>Content</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Config\" />

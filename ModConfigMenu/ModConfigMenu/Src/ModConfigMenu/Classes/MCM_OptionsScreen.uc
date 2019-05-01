@@ -135,14 +135,20 @@ simulated function CreateSkeleton()
     
     // Save and exit button    
     SaveAndExitButton = Spawn(class'UIButton', Container);
-    SaveAndExitButton.InitButton(, m_strSaveAndExit, OnSaveAndExit);
+	SaveAndExitButton.bAnimateOnInit = false;
+    SaveAndExitButton.InitButton(, m_strSaveAndExit, OnSaveAndExit, eUIButtonStyle_HOTLINK_BUTTON);
+	SaveAndExitButton.SetGamepadIcon(class'UIUtilities_Input'.const.ICON_X_SQUARE);
     SaveAndExitButton.SetPosition(Container.width - 190, Container.height - 40); //Relative to this screen panel
-    SaveAndExitButton.AnimateIn(0);
+	SaveAndExitButton.DisableNavigation();
 
-    CancelButton = Spawn(class'UIButton', Container);
-    CancelButton.InitButton(, m_strCancel, OnCancel);
-    CancelButton.SetPosition(Container.width - 190 - 170, Container.height - 40); //Relative to this screen panel
-    CancelButton.AnimateIn(0);
+	if(!`ISCONTROLLERACTIVE)
+	{
+		CancelButton = Spawn(class'UIButton', Container);
+		SaveAndExitButton.bAnimateOnInit = false;
+		CancelButton.InitButton(, m_strCancel, OnCancel);
+		CancelButton.SetPosition(Container.width - 190 - 170, Container.height - 40); //Relative to this screen panel
+		CancelButton.DisableNavigation();
+	}
 
     TitleHeader = Spawn(class'UIX2PanelHeader', Container);
     TitleHeader.InitPanelHeader('', m_strTitle, m_strSubtitle);
@@ -200,8 +206,12 @@ simulated function bool OnUnrealCommand(int cmd, int arg)
     {
         case class'UIUtilities_Input'.const.FXS_BUTTON_B:
         case class'UIUtilities_Input'.const.FXS_KEY_ESCAPE:
+		case class'UIUtilities_Input'.const.FXS_R_MOUSE_DOWN:
             OnCancel(none);
-            break; 
+            return true;
+        case class'UIUtilities_Input'.const.FXS_BUTTON_X:
+			OnSaveAndExit(none);
+			return true;
     }
 
     return super.OnUnrealCommand(cmd, arg);

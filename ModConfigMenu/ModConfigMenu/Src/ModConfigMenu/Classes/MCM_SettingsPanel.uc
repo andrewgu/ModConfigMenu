@@ -55,8 +55,9 @@ simulated function UIPanel InitPanel(optional name InitName, optional name InitL
     //SettingItemStartY = TitleLine.Height;
 
     ResetButton = Spawn(class'UIButton', self);
-    ResetButton.InitButton(, m_strResetButton, OnResetClicked);
+    ResetButton.InitButton(, m_strResetButton, OnResetClicked, eUIButtonStyle_HOTLINK_BUTTON);
     ResetButton.SetPosition(RESET_BUTTON_X, PANEL_HEIGHT - FOOTER_HEIGHT + 3); //Relative to this screen panel
+	ResetButton.SetGamepadIcon(class'UIUtilities_Input'.const.ICON_BACK_SELECT);
     ResetButton.Hide();
 
     ResetHandler = none;
@@ -88,6 +89,26 @@ simulated function Show()
     {
         iter.AfterParentPageDisplayed();
     }
+}
+
+simulated function bool OnUnrealCommand(int cmd, int arg)
+{
+    if( !CheckInputIsReleaseOrDirectionRepeat(cmd, arg) )
+        return false;
+
+    switch( cmd )
+    {
+        case class'UIUtilities_Input'.const.FXS_BUTTON_B:
+        //case class'UIUtilities_Input'.const.FXS_KEY_ESCAPE:
+		//case class'UIUtilities_Input'.const.FXS_R_MOUSE_DOWN:
+            //OnCancel(none);
+            //return true;
+        case class'UIUtilities_Input'.const.FXS_BUTTON_SELECT:
+			OnResetClicked(none);
+			return true;
+    }
+
+    return super.OnUnrealCommand(cmd, arg);
 }
 
 // Helpers for MCM_OptionsScreen ================================================================

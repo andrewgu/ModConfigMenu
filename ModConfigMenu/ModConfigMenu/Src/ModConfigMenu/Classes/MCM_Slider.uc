@@ -1,7 +1,7 @@
 class MCM_Slider extends MCM_SettingBase implements(MCM_API_Slider) config(ModConfigMenu);
 
 var MCM_API_Setting ParentFacade;
-var delegate<FloatSettingHandler> ChangeHandler;
+var delegate<MCM_API_SettingsGroup.FloatSettingHandler> ChangeHandler;
 
 var float SliderMin;
 var float SliderMax;
@@ -15,7 +15,6 @@ var bool SuppressEvent;
 var delegate<SliderValueDisplayFilter> DisplayFilter;
 
 delegate string SliderValueDisplayFilter(float _value);
-delegate FloatSettingHandler(MCM_API_Setting Setting, float _SettingValue);
 
 simulated function MCM_SettingBase InitSettingsItem(name _Name, eSettingType _Type, optional string _Label = "", optional string _Tooltip = "")
 {
@@ -26,14 +25,14 @@ simulated function MCM_SettingBase InitSettingsItem(name _Name, eSettingType _Ty
 
 // Fancy init process
 simulated function MCM_Slider InitSlider(name _SettingName, MCM_API_Setting _ParentFacade, string _Label, string _Tooltip, 
-    float sMin, float sMax, float sStep, float sValue, delegate<FloatSettingHandler> _OnChange)
+    float sMin, float sMax, float sStep, float sValue, delegate<MCM_API_SettingsGroup.FloatSettingHandler> _OnChange)
 {
     super.InitSettingsItem(_SettingName, eSettingType_Slider, _Label, _Tooltip);
 
     SliderValueDisplay = Spawn(class'UIScrollingText', self);
     SliderValueDisplay.bIsNavigable = false;
     SliderValueDisplay.bAnimateOnInit = bAnimateOnInit;
-    SliderValueDisplay.InitScrollingText('SliderValueTextControl',,90,260);
+    SliderValueDisplay.InitScrollingText('SliderValueTextControl',,90,260, 3);
 
     SuppressEvent = false;
 
@@ -271,4 +270,17 @@ static function string DefaultFormatValueForDisplay(float sMin, float sMax, floa
     }
     
     return retstring;
+}
+
+// Mr. Nice: need to keep value label visible when control is selected.
+simulated function OnReceiveFocus()
+{
+	Super.OnReceiveFocus();
+	SliderValueDisplay.MC.ChildFunctionBool("text", "highlight", true);
+}
+
+simulated function OnLoseFocus()
+{
+	Super.OnLoseFocus();
+	SliderValueDisplay.MC.ChildFunctionBool("text", "highlight", false);
 }

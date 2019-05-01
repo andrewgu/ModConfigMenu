@@ -58,4 +58,5 @@ defaultproperties
     DESC_Y  = 10;
 
     bProcessesMouseEvents = true;
+	bShouldPlayGenericUIAudioEvents = false;
 }

@@ -6,6 +6,7 @@ m_strSaveAndExit="Save and Exit"
 m_strCancel="Cancel"
 m_strTitle="Mod Settings"
 m_strSubtitle=""
+m_strScroll="SCROLL"
 
 [MCM_SettingsPanel]
 m_strResetButton="Reset"

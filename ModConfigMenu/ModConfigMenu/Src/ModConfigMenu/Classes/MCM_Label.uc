@@ -19,3 +19,9 @@ simulated function MCM_Label InitLabel(name _SettingName, MCM_API_Setting _Paren
 }
 
 // No special methods in MCM_API_Label.
+
+defaultproperties
+{
+	bIsNavigable = false
+	bShouldPlayGenericUIAudioEvents = false
+}

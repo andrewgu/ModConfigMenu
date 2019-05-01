@@ -14,9 +14,6 @@ delegate BoolSettingHandler(MCM_API_Setting Setting, bool SettingValue);
 delegate FloatSettingHandler(MCM_API_Setting Setting, float SettingValue);
 delegate StringSettingHandler(MCM_API_Setting Setting, string SettingValue);
 
-//delegate ListItemHandler(UIMechaListItem item);
-delegate ListItemHandler(UIPanel item);
-
 function MCM_SettingGroup InitSettingGroup(name _GroupName, string Label, MCM_SettingsPanel _ParentPanel)
 {
     GroupName = _GroupName;
@@ -40,7 +37,7 @@ function TriggerSaveEvents()
 
 function AddSetting(MCM_SettingFacade Instance)
 {
-    if (UiInstantiated)
+    if (ParentPanel.ShowStatus != 0 || UiInstantiated)
     {
         `log("MCM: Error: Cannot add more settings after ShowSettings() has been called.");
     }
@@ -51,24 +48,40 @@ function AddSetting(MCM_SettingFacade Instance)
 }
 
 // This is a signal to actually create the UI items.
-function InstantiateItems(delegate<ListItemHandler> handler, UIList Parent)
+function InstantiateItems(UIList Parent, out float DropAllowance, out int DropIndexOffSet, out byte bFoundDropdown)
 {
     local int iter;
     local MCM_SettingFacade TmpItem;
+	local UIPanel tmpUI;
 
     if (UiInstantiated)
         return;
 
-    // now items in reverse order.
+
     for (iter = Settings.Length-1; iter >= 0; iter--)
     {
         TmpItem = Settings[iter];
-        handler(TmpItem.InstantiateUI(Parent));
+        tmpUI = TmpItem.InstantiateUI(Parent);
+		if(bFoundDropdown == 0)
+		{
+			if(MCM_Dropdown(tmpUI) != none)
+			{
+				bFoundDropdown = 1;
+			}
+			else
+			{
+				DropAllowance -= tmpUI.Height;
+				DropIndexOffSet++;
+			}
+		}
     }
 
-    // Group header last.
-    handler(GroupLabel.InstantiateUI(Parent));
-
+	TmpUI = GroupLabel.InstantiateUI(Parent);
+	if(bFoundDropdown == 0)
+	{
+		DropAllowance -= tmpUI.Height;
+		DropIndexOffSet++;
+	}
     UiInstantiated = true;
 }
 

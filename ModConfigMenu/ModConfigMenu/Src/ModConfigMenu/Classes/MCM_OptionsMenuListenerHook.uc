@@ -1,4 +1,4 @@
-class MCM_OptionsMenuListenerHook extends UIScreenListener;
+class MCM_OptionsMenuListenerHook extends Object;//UIScreenListener;
 
 event OnInit(UIScreen Screen)
 {
@@ -18,6 +18,6 @@ event OnInit(UIScreen Screen)
 
 defaultproperties
 {
-    ScreenClass = none;
+    //ScreenClass = none;
 	//ScreenClass = 'UIOptionsPCSCreen';
 }

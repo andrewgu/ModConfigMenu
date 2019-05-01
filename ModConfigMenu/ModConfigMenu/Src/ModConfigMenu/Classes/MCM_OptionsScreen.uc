@@ -23,6 +23,7 @@ var localized string m_strTitle;
 var localized string m_strSubtitle;
 var localized string m_strSaveAndExit;
 var localized string m_strCancel;
+var localized string m_strScroll;
 
 var MCM_OptionsMenuListener ParentListener;
 
@@ -32,14 +33,19 @@ var UIImage VSeparator;
 var UIX2PanelHeader TitleHeader;
 
 var UIList TabsList;
-var int SettingsPageCounter;
-var int SelectedPageID;
 var array<MCM_SettingsTab> SettingsTabs;
 var array<MCM_SettingsPanel> SettingsPanels;
+var MCM_SettingsPanel CurrentPanel;
 var UIButton SaveAndExitButton;
 var UIButton CancelButton;
+var UITextTooltip ActiveTooltip;
+var float SBOffset, ScrollHeight;
 
 var int CurrentGameMode;
+var UINavigationHelp NavHelp;
+var ConsoleOptionAttentionType AttentionType;
+var UIMechaListItem MechaListItem;
+var int MechaListItemType; //enum EUILineItemType found in UIMechaListItem;
 
 // Pawn hiding code thanks to Patrick-Seymour
 var bool SoldierVisible;
@@ -50,8 +56,6 @@ struct PawnAndComponents {
 var array<PawnAndComponents> PawnAndComps;
 
 delegate ClientModCallback(MCM_API_Instance ConfigAPI, int GameMode);
-delegate OnClickedDelegate(UIButton Button);
-delegate SettingsTabDelegate(MCM_SettingsTab Caller, int PageID);
 delegate CustomSettingsPageCallback(UIScreen ParentScreen, int PageID);
 
 simulated function InitScreen(XComPlayerController InitController, UIMovie InitMovie, optional name InitName)
@@ -100,6 +104,9 @@ simulated function OnInit()
         `log("MCM Core: hiding soldier guy on main menu for visibility.");
         HideSoldierIfMainMenu();
     }
+
+	NavHelp = Spawn(class'UINavigationHelp',self).InitNavHelp();
+	UpdateNavHelp();
 }
 
 simulated function OnRemoved()
@@ -121,11 +128,15 @@ simulated function CreateSkeleton()
 {
     local int TotalWidth;
     local int TotalHeight;
+	local bool MouseActive;
 
     TotalWidth = TABLIST_WIDTH + OPTIONS_WIDTH;
     TotalHeight = HEADER_HEIGHT + OPTIONS_HEIGHT + FOOTER_HEIGHT;
-    
-    Container = Spawn(class'UIPanel', self).InitPanel('').SetPosition(PANEL_X, PANEL_Y).SetSize(TotalWidth, TotalHeight);
+    MouseActive =!`ISCONTROLLERACTIVE;
+
+    Container = Spawn(class'UIPanel', self);
+	Container.bCascadeFocus = false;
+	Container.InitPanel('').SetPosition(PANEL_X, PANEL_Y).SetSize(TotalWidth, TotalHeight);
     
     BG = Spawn(class'UIImage', Container).InitImage(,"img:///MCM.gfx.MainBackground");
     BG.SetPosition(0,0).SetSize(TotalWidth, TotalHeight);
@@ -135,30 +146,144 @@ simulated function CreateSkeleton()
     
     // Save and exit button    
     SaveAndExitButton = Spawn(class'UIButton', Container);
-    SaveAndExitButton.InitButton(, m_strSaveAndExit, OnSaveAndExit);
+	SaveAndExitButton.bAnimateOnInit = false;
+    SaveAndExitButton.InitButton(, class'UIOptionsPCScreen'.default.m_strSaveAndExit, OnSaveAndExit, eUIButtonStyle_HOTLINK_BUTTON);
+	SaveAndExitButton.SetGamepadIcon(class'UIUtilities_Input'.const.ICON_X_SQUARE);
     SaveAndExitButton.SetPosition(Container.width - 190, Container.height - 40); //Relative to this screen panel
-    SaveAndExitButton.AnimateIn(0);
+	SaveAndExitButton.DisableNavigation();
 
-    CancelButton = Spawn(class'UIButton', Container);
-    CancelButton.InitButton(, m_strCancel, OnCancel);
-    CancelButton.SetPosition(Container.width - 190 - 170, Container.height - 40); //Relative to this screen panel
-    CancelButton.AnimateIn(0);
+	if(MouseActive)
+	{
+		CancelButton = Spawn(class'UIButton', Container);
+		SaveAndExitButton.bAnimateOnInit = false;
+		CancelButton.InitButton(, class'UIUtilities_Text'.default.m_strGenericCancel, OnCancel);
+		CancelButton.SetPosition(Container.width - 190 - 170, Container.height - 40); //Relative to this screen panel
+		CancelButton.DisableNavigation();
+	}
 
     TitleHeader = Spawn(class'UIX2PanelHeader', Container);
     TitleHeader.InitPanelHeader('', m_strTitle, m_strSubtitle);
     TitleHeader.SetHeaderWidth(Container.width - 20);
     TitleHeader.SetPosition(10, 10);
     
-    TabsList = Spawn(class'UIList', Container).InitList('ModTabSelectList', 10, HEADER_HEIGHT + TABS_LIST_TOP_PADDING, TABLIST_WIDTH - 30, OPTIONS_HEIGHT);
+    TabsList = Spawn(class'UIList', Container).InitList('ModTabSelectList', 10, HEADER_HEIGHT + TABS_LIST_TOP_PADDING, TABLIST_WIDTH - 30, OPTIONS_HEIGHT,, true); // Mr. Nice: addBG to stop mouse scrolling "dead spots"
+	TabsList.BG.SetAlpha(0);
     TabsList.SetSelectedNavigation();
-    TabsList.Navigator.LoopSelection = true;
+	if (MouseActive)
+	{
+		TabsList.bSelectFirstAvailable = false;
+	}
+}
 
-    //Container.Navigator.AddControl(SaveAndExitButton);
-    //Container.Navigator.AddControl(CancelButton);
+simulated function UpdateNavHelp( bool bWipeButtons = false )
+{
+	local UIScrollbar SB;
+	NavHelp.ClearButtonHelp();
+	NavHelp.bIsVerticalHelp = true; //bsg-hlee (05.05.17): Stacking the B button at the bottom left nav help to match the rest of the main menu screens.
+	NavHelp.AddBackButton(GoBack);
 
-    // Start with nothing selected.
-    Container.Navigator.SetSelected(none);
-    //TabsList.Navigator.SelectFirstAvailable();
+	if (`ISCONTROLLERACTIVE)
+	{
+		//determines if focus is on the RIGHT column
+		if (AttentionType == COAT_DETAILS)
+		{
+			switch(MechaListItemType)
+			{
+				case EUILineItemType_Slider:
+					NavHelp.AddLeftHelp(class'UIUtilities_Text'.default.m_strGenericAdjust, class'UIUtilities_Input'.const.ICON_DPAD_HORIZONTAL);
+					break;
+				case EUILineItemType_Checkbox:
+					NavHelp.AddLeftHelp(class'UIUtilities_Text'.default.m_strGenericToggle, class'UIUtilities_Input'.static.GetAdvanceButtonIcon());
+					break;
+				case EUILineItemType_Spinner:
+					NavHelp.AddLeftHelp(class'UIUtilities_Text'.default.m_strGenericSelect, class'UIUtilities_Input'.const.ICON_DPAD_HORIZONTAL);
+					break;
+				case EUILineItemType_Dropdown:
+				case EUILineItemType_Button:
+					NavHelp.AddSelectNavHelp();
+					break;
+			}
+			// </workshop>
+			SB = CurrentPanel.SettingsList.Scrollbar;
+		}
+		else //COAT_CATEGORIES
+		{
+			SB = TabsList.ScrollBar;
+			NavHelp.AddSelectNavHelp();
+		}
+		if(SB != none)
+		{
+			NavHelp.AddLeftHelp(m_strScroll, class'UIUtilities_Input'.const.ICON_RSTICK);
+		}
+	}
+}
+
+simulated function OnSelectionChanged(UIList ContainerList, int ItemIndex)
+{
+	UpdateMechItemNavHelp(ContainerList, ItemIndex); //INS: - JTA 2016/3/18
+
+	if(`ISCONTROLLERACTIVE)
+	{
+		if (ActiveTooltip != none)
+		{
+			if (`PRES.m_eUIMode != eUIMode_Shell)
+			{
+				ActiveTooltip.HideTooltip();
+			}
+
+			XComPresentationLayerBase(Owner).m_kTooltipMgr.DeactivateTooltip(ActiveTooltip, true);
+			ActiveTooltip = none;
+		}
+
+		if (MechaListItem != none)
+		{
+			if (MechaListItem.BG.bHasTooltip)
+			{
+				ActiveTooltip = UITextTooltip(Movie.Pres.m_kTooltipMgr.GetTooltipByID(MechaListItem.BG.CachedTooltipId));
+				if (ActiveTooltip != none)
+				{
+					ActiveTooltip.SetFollowMouse(false);
+					ActiveTooltip.SetTooltipPosition(950.0, MechaListItem.Y - SBOffset);
+					ActiveTooltip.SetDelay(0);
+					ActiveTooltip.ShowTooltip();
+					XComPresentationLayerBase(Owner).m_kTooltipMgr.ActivateTooltip(ActiveTooltip);
+				}
+			}
+		}
+	}
+}
+
+function OnScrollPercentChanged( float newPercent )
+{
+	SBOffset = newPercent * ScrollHeight + default.SBOffset;
+	if (ActiveTooltip != none)
+	{
+		ActiveTooltip.SetTooltipPosition(950.0, MechaListItem.Y - SBOffset);
+	}
+}
+
+//Determines if a change is necessary in the Navhelp
+//Mr. Nice: Also stash MechaListItem in properties, useful elsewhere!
+simulated function UpdateMechItemNavHelp(UIList ContainerList, int Index)
+{
+	local int NewMechaListItemType; //enum EUILineItemType found in UIMechaListItem;
+
+	// Checks to see if the selected list item is the same as the previously selected list item (to determine if we need to refresh the navhelp)
+	MechaListItem = UIMechaListItem(ContainerList.GetSelectedItem());
+	if(MechaListItem != None)
+	{
+		NewMechaListItemType = int(MechaListItem.Type);
+		if(NewMechaListItemType != MechaListItemType)
+		{
+			MechaListItemType = NewMechaListItemType;
+			UpdateNavHelp();
+		}
+	}
+	else
+	{
+		MechaListItemType = -1;
+		UpdateNavHelp();
+	}
 }
 
 // Special button handlers ========================================================================
@@ -166,14 +291,17 @@ simulated function CreateSkeleton()
 simulated function OnSaveAndExit(UIButton kButton)
 {
     local MCM_SettingsPanel TmpPage;
-    
+
+    Movie.Pres.PlayUISound(eSUISound_MenuSelect);
     // Save all.
     foreach SettingsPanels(TmpPage)
     {
-        TmpPage.TriggerSaveEvent();
+		if(TmpPage != none)
+		{
+			TmpPage.TriggerSaveEvent();
+		}
     }
-
-    Movie.Stack.Pop(self);
+	CloseScreen();
 }
 
 simulated function OnCancel(UIButton kButton)
@@ -183,25 +311,119 @@ simulated function OnCancel(UIButton kButton)
     // Cancel all.
     foreach SettingsPanels(TmpPage)
     {
-        TmpPage.TriggerCancelEvent();
+		if(TmpPage != none)
+		{
+	        TmpPage.TriggerCancelEvent();
+		}
     }
+	CloseScreen();
+}
 
-    Movie.Stack.Pop(self);
+function GoBack()
+{
+	switch(AttentionType)
+	{
+	case COAT_CATEGORIES:
+		OnCancel(none);
+		return;
+
+	case COAT_DETAILS:
+		AttentionType = COAT_CATEGORIES;
+		TabsList.SetSelectedNavigation();
+		MechaListItem.OnLoseFocus();
+		CurrentPanel.SettingsList.SetSelectedIndex(-1);
+		if (CurrentPanel.SettingsList.Scrollbar !=none)
+		{
+			CurrentPanel.SettingsList.Scrollbar.SetThumbAtPercent(0);
+		}
+		Movie.Pres.PlayUISound(eSUISound_MenuClose); //bsg-crobinson (5.9.17): Add close menu sound on back
+	}
+}
+
+simulated function CloseScreen()
+{
+	Super.CloseScreen();
+	// Mr. Nice: UIOptionsPCScreen isn't used to being revealed from the stack,needs a prompt to update NavHelp
+	UIOptionsPCScreen(Movie.Stack.GetCurrentScreen()).UpdateNavHelp();
 }
 
 // Keyboard input ============================================================================
 
 simulated function bool OnUnrealCommand(int cmd, int arg)
 {
+	local UIScrollBar SB;
+
     if( !CheckInputIsReleaseOrDirectionRepeat(cmd, arg) )
         return false;
+	
+	if(!`SCREENSTACK.IsTopScreen(self))
+	{
+		// Mr. Nice Ok we're getting unhandled input from a Custom Settings Screen,
+		// We should therefore do nothing, *except* handle the "B" button to allow controllers
+		// to escape custom screens with absolutely no controller support!
+		if ( cmd == class'UIUtilities_Input'.const.FXS_BUTTON_B && `ISCONTROLLERACTIVE)
+		{
+			`SCREENSTACK.PopUntil(self);
+			Movie.Pres.PlayUISound(eSUISound_MenuClose);
+			return true;
+		}
+		return false;
+	}
+
+	if(AttentionType == COAT_DETAILS && MechaListItem != none && MechaListItem.OnUnrealCommand(cmd, arg))
+	{
+		return true;
+	}
 
     switch( cmd )
     {
+		case class'UIUtilities_Input'.const.FXS_R_MOUSE_DOWN: // Mr. Nice: Rmouse is flipped to escape somewhere, so no point pretending we can treat it differently...
         case class'UIUtilities_Input'.const.FXS_BUTTON_B:
         case class'UIUtilities_Input'.const.FXS_KEY_ESCAPE:
-            OnCancel(none);
-            break; 
+			GoBack();
+	        return true;
+
+		case class'UIUtilities_Input'.const.FXS_ARROW_DOWN:
+		case class'UIUtilities_Input'.const.FXS_DPAD_DOWN:
+		case class'UIUtilities_Input'.const.FXS_VIRTUAL_LSTICK_DOWN:
+		case class'UIUtilities_Input'.const.FXS_ARROW_UP:
+		case class'UIUtilities_Input'.const.FXS_DPAD_UP:
+		case class'UIUtilities_Input'.const.FXS_VIRTUAL_LSTICK_UP:
+			// Mr. Nice: Stop Navigator getting confused...
+			if (AttentionType == COAT_DETAILS && CurrentPanel.SettingsList.Navigator.NavigableControls.Length == 1)
+			{
+				PlaySound( SoundCue'SoundUI.MenuScrollCue', true );
+				CurrentPanel.SettingsList.NavigatorSelectionChanged(0);
+				return true;
+			}
+			break;
+
+		case class'UIUtilities_Input'.const.FXS_VIRTUAL_RSTICK_DOWN:
+		case class'UIUtilities_Input'.const.FXS_KEY_PAGEDN:
+			SB = AttentionType == COAT_CATEGORIES ? TabsList.ScrollBar : CurrentPanel.SettingsList.Scrollbar;
+			if (SB != none)
+			{
+				SB.OnMouseScrollEvent(-1);
+			}
+			return true;
+		case class'UIUtilities_Input'.const.FXS_VIRTUAL_RSTICK_UP:
+		case class'UIUtilities_Input'.const.FXS_KEY_PAGEUP:
+			SB = AttentionType == COAT_CATEGORIES ? TabsList.ScrollBar : CurrentPanel.SettingsList.Scrollbar;
+			if (SB != none)
+			{
+				SB.OnMouseScrollEvent(1);
+			}
+			return true;
+
+        case class'UIUtilities_Input'.const.FXS_BUTTON_X:
+			OnSaveAndExit(none);
+			return true;
+        case class'UIUtilities_Input'.const.FXS_BUTTON_SELECT:
+			if(CurrentPanel != none)
+			{
+				CurrentPanel.OnResetClicked(none);
+			}
+			return true;
     }
 
     return super.OnUnrealCommand(cmd, arg);
@@ -285,85 +507,34 @@ simulated function ShowSoldierIfMainMenu()
 
 simulated function MCM_SettingsPanel GetPanelByPageID(int PageID)
 {
-    local MCM_SettingsPanel TmpPage;
-
-    foreach SettingsPanels(TmpPage)
-    {
-        if (TmpPage.GetPageID() == PageID)
-            return TmpPage;
-    }
-
-    return None;
+	return SettingsPanels[PageID];
 }
 
-simulated function ChoosePanelByPageID(int PageID)
-{
-    //local MCM_SettingsPanel CurrentSettingsPage;
-    local MCM_SettingsTab TmpButton;
-    local MCM_SettingsPanel TmpPage;
-
-    // Are we changing pages? Do nothing if not changing pages.
-    if (PageID != SelectedPageID)
-    {
-        SelectedPageID = PageID;
-        
-        // Now choose the panel.
-        foreach SettingsPanels(TmpPage)
-        {
-            if (TmpPage.GetPageID() != SelectedPageID)
-            {
-                TmpPage.Hide();
-            }
-            else
-            {
-                `log("MCM: Found correct panel, showing.");
-                TmpPage.Show();
-            }
-        }
-
-        // Refresh the button. This is important if we're cancelling a tab change.
-        foreach SettingsTabs(TmpButton)
-        {
-            if (TmpButton.SettingsPageID == SelectedPageID)
-            {
-                TmpButton.SetChecked(true);
-            }
-            else
-            {
-                TmpButton.SetChecked(false);
-            }
-        }
-    }
-}
-
-simulated function TabClickedHandler(MCM_SettingsTab Caller, int PageID)
-{
-    `log("MCM Tab clicked: " $ string(PageID));
-    //TabsList.SetSelectedItem(kButton, true);
-    ChoosePanelByPageID(PageID);
-}
-
-simulated function AddTabsListButton(string TabLabel, int PageID)
+simulated function AddTabsListButton(string TabLabel)
 {
     local MCM_SettingsTab Item; 
-    Item = Spawn(class'MCM_SettingsTab', TabsList.ItemContainer).InitSettingsTab(PageID, TabLabel);
-    Item.OnClickHandler = TabClickedHandler;
+    Item = Spawn(class'MCM_SettingsTab', TabsList.ItemContainer).InitSettingsTab(SettingsTabs.Length, TabLabel);
+	if(TabsList.bSelectFirstAvailable && TabsList.ItemCount == 1)
+	{
+		Item.SetSelectedNavigation();
+	}
+	Item.OptionsScreen = self;
+	Item.SettingsPanel = SettingsPanels[Item.SettingsPageID];
 
     SettingsTabs.AddItem(Item);
 }
 
-function MCM_API_SettingsPage MakeSettingsPage(string TabLabel, int PageID)
+function MCM_API_SettingsPage MakeSettingsPage(string TabLabel)
 {
     local MCM_SettingsPanel SP;
-    SP = Spawn(class'MCM_SettingsPanel', Container);
-    SP.InitPanel();
-    SP.SettingsPageID = PageID;
-    SP.SetPosition(TABLIST_WIDTH + OPTIONS_MARGIN, HEADER_HEIGHT);
-    
-    SP.SetPageTitle(TabLabel);
 
-    // By default do not show the panel.
-    SP.Hide();
+	SP = Spawn(class'MCM_SettingsPanel', Container);
+    SP.OptionsScreen = self;
+    SP.InitPanel();
+    SP.SettingsPageID = SettingsPanels.Length;
+    SP.SetPosition(TABLIST_WIDTH + OPTIONS_MARGIN, HEADER_HEIGHT);
+
+    SP.SetPageTitle(TabLabel);
 
     // Register panel.
     SettingsPanels.AddItem(SP);
@@ -371,58 +542,39 @@ function MCM_API_SettingsPage MakeSettingsPage(string TabLabel, int PageID)
     return SP;
 }
 
-simulated function CustomTabClickedHandler(MCM_SettingsTab Caller, int PageID)
-{
-    `log("MCM Custom Screen Tab clicked");
-    if (Caller.CustomPageCallback != none)
-    {
-        Caller.SetChecked(false);
-        Caller.CustomPageCallback(self, PageID);
-    }
-}
-
 // MCM_API_Instance implementation ===============================================================
 
 function MCM_API_SettingsPage NewSettingsPage(string TabLabel)
 {
-    local int PageID;
+	local MCM_API_SettingsPage NewPage;
 
-    PageID = SettingsPageCounter;
-    SettingsPageCounter++;
+    NewPage = MakeSettingsPage(TabLabel);
+    AddTabsListButton(TabLabel);
 
-    AddTabsListButton(TabLabel, PageID);
-
-    return MakeSettingsPage(TabLabel, PageID);
+	return NewPage;
 }
 
 function int NewCustomSettingsPage(string TabLabel, delegate<CustomSettingsPageCallback> Handler)
 {
     local MCM_SettingsTab Item; 
-    local int PageID;
 
-    PageID = SettingsPageCounter;
-    SettingsPageCounter++;
-
-    Item = Spawn(class'MCM_SettingsTab', TabsList.ItemContainer).InitSettingsTab(PageID, TabLabel);
+    Item = Spawn(class'MCM_SettingsTab', TabsList.ItemContainer).InitSettingsTab(SettingsTabs.Length, TabLabel);
+	if(TabsList.bSelectFirstAvailable && TabsList.ItemCount == 1)
+	{
+		Item.SetSelectedNavigation();
+	}
     Item.CustomPageCallback = Handler;
-    Item.OnClickHandler = CustomTabClickedHandler;
+	Item.OptionsScreen = self;
 
-    return PageID;
+	SettingsTabs.AddItem(Item);
+	SettingsPanels.AddItem(none);
+
+    return Item.SettingsPageID;
 }
 
 function MCM_API_SettingsPage GetSettingsPageByID(int PageID)
 {
-    local MCM_SettingsPanel TmpPage;
-
-    foreach SettingsPanels(TmpPage)
-    {
-        if (TmpPage.GetPageID() == PageID)
-        {
-            return TmpPage;
-        }
-    }
-
-    return None;
+	return SettingsPanels[PageID];
 }
 
 
@@ -446,8 +598,6 @@ function bool RegisterClientMod(int major, int minor, delegate<ClientModCallback
 defaultproperties
 {
     ParentListener = None;
-    SettingsPageCounter = 0;
-    SelectedPageID = -1;
 
     SoldierVisible = true;
 
@@ -455,4 +605,5 @@ defaultproperties
 
     bAlwaysTick = true
     bConsumeMouseEvents=true
+	SBOffset = -180
 }

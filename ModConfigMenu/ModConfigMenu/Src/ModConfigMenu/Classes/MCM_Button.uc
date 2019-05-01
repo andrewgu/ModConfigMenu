@@ -1,10 +1,9 @@
 class MCM_Button extends MCM_SettingBase implements(MCM_API_Button) config(ModConfigMenu);
 
-var delegate<VoidSettingHandler> ClickHandler;
+var delegate<MCM_API_SettingsGroup.VoidSettingHandler> ClickHandler;
 
 var MCM_API_Setting ParentFacade;
 
-delegate VoidSettingHandler(MCM_API_Setting Setting);
 
 simulated function MCM_SettingBase InitSettingsItem(name _Name, eSettingType _Type, optional string _Label = "", optional string _Tooltip = "")
 {
@@ -14,7 +13,7 @@ simulated function MCM_SettingBase InitSettingsItem(name _Name, eSettingType _Ty
 }
 
 // Fancy init process
-simulated function MCM_Button InitButton(name _SettingName, MCM_API_Setting _ParentFacade, string _Label, string _Tooltip, string _ButtonLabel, delegate<VoidSettingHandler> _OnClick)
+simulated function MCM_Button InitButton(name _SettingName, MCM_API_Setting _ParentFacade, string _Label, string _Tooltip, string _ButtonLabel, delegate<MCM_API_SettingsGroup.VoidSettingHandler> _OnClick)
 {
     super.InitSettingsItem(_SettingName, eSettingType_Button, _Label, _Tooltip);
 
@@ -42,4 +41,9 @@ function SimulateClick()
     {
         ClickHandler(ParentFacade);
     }
+}
+
+simulated function bool OnUnrealCommand(int cmd, int arg)
+{
+	return Super(UIMechaListItem).OnUnrealCommand(cmd, arg);
 }

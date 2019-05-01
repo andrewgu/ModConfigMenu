@@ -27,7 +27,6 @@ simulated function MCM_GroupLabelSeparator InstantiateUI(UIList Parent)
     // Smaller text too.
     Instance.UpdateTitle(GetFormattedLabel());
     Instance.Show();
-    Instance.EnableNavigation();
 
     return Instance;
 }

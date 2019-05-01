@@ -151,6 +151,12 @@ For full details on using this mod, troubleshooting, or even building your own m
     <Content Include="Src\ModConfigMenu\Classes\MCM_TestHarnessListener.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\ModConfigMenu\Classes\MCM_UIButton.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenu\Classes\MCM_UIListItemSpinner.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\ModConfigMenu\Classes\MCM_UISettingSeparator.uc">
       <SubType>Content</SubType>
     </Content>

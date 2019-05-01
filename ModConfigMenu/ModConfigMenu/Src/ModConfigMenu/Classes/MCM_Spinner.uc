@@ -1,13 +1,11 @@
 class MCM_Spinner extends MCM_SettingBase implements(MCM_API_Spinner) config(ModConfigMenu);
 
-var delegate<StringSettingHandler> ChangeHandler;
+var delegate<MCM_API_SettingsGroup.StringSettingHandler> ChangeHandler;
 
 var MCM_API_Setting ParentFacade;
 var array<string> SpinnerOptions;
 var int SpinnerSelection;
 var bool TmpSuppressEvent;
-
-delegate StringSettingHandler(MCM_API_Setting Setting, string _SettingValue);
 
 simulated function MCM_SettingBase InitSettingsItem(name _Name, eSettingType _Type, optional string _Label = "", optional string _Tooltip = "")
 {
@@ -17,16 +15,25 @@ simulated function MCM_SettingBase InitSettingsItem(name _Name, eSettingType _Ty
 }
 
 // Fancy init process
-simulated function MCM_Spinner InitSpinner(name _SettingName, MCM_API_Setting _ParentFacade, string _Label, string _Tooltip, array<string> _Options, string _Selection, 
-    delegate<StringSettingHandler> _OnChange)
+simulated function MCM_Spinner InitSpinner(name _SettingName, MCM_API_Setting _ParentFacade, string _Label, string _Tooltip, out array<string> _Options, string _Selection, 
+    delegate<MCM_API_SettingsGroup.StringSettingHandler> _OnChange)
 {
     super.InitSettingsItem(_SettingName, eSettingType_Checkbox, _Label, _Tooltip);
+	Spinner.Remove();
+	Spinner = Spawn(class'MCM_UIListItemSpinner', self);
+	Spinner.bAnimateOnInit = false;
+	Spinner.bIsNavigable = false;
+	Spinner.MCName = 'SpinnerMC';
+	Spinner.InitSpinner(,, OnSpinnerChangeDelegate);
+	Spinner.Navigator.HorizontalNavigation = true;
+	Spinner.SetX(width - 330);
+	Spinner.SetValueWidth(250, true);
 
     ChangeHandler = _OnChange;
     ParentFacade = _ParentFacade;
 
-    CloneOptionsList(_Options);
-    SpinnerSelection = GetSelectionIndex(_Options, _Selection);
+    SpinnerOptions = _Options;
+    SpinnerSelection = _Options.find(_Selection);
 
     TmpSuppressEvent = true;
     UpdateDataSpinner(_Label, "", SpinnerChangedCallback);
@@ -39,28 +46,6 @@ simulated function MCM_Spinner InitSpinner(name _SettingName, MCM_API_Setting _P
 }
 
 // Helpers
-
-function CloneOptionsList(array<string> OptionsList)
-{
-    local int iter;
-    SpinnerOptions.Length = 0;
-    for (iter = 0; iter < OptionsList.Length; iter++)
-    {
-        SpinnerOptions.AddItem(OptionsList[iter]);
-    }
-}
-
-function int GetSelectionIndex(array<string> OptionsList, string SelectedOption)
-{
-    local int iter;
-    for (iter = 0; iter < OptionsList.Length; iter++)
-    {
-        if (SelectedOption == OptionsList[iter])
-            return iter;
-    }
-
-    return -1;
-}
 
 function SpinnerChangedCallback(UIListItemSpinner SpinnerControl, int Direction)
 {
@@ -90,7 +75,7 @@ function SetValue(string Selection, bool SuppressEvent)
 {
     local int index;
 
-    index = GetSelectionIndex(SpinnerOptions, Selection);
+    index = SpinnerOptions.find(Selection);
     // If found.
     if (index >= 0)
     {
@@ -108,10 +93,10 @@ function SetValue(string Selection, bool SuppressEvent)
     }
 }
 
-function SetOptions(array<string> NewOptions, string InitialSelection, bool SuppressEvent)
+function SetOptions(out array<string> NewOptions, string InitialSelection, bool SuppressEvent)
 {
-    CloneOptionsList(NewOptions);
-    SpinnerSelection = GetSelectionIndex(NewOptions, InitialSelection);
+    SpinnerOptions = NewOptions;
+    SpinnerSelection = NewOptions.find(InitialSelection);
 
     TmpSuppressEvent = SuppressEvent;
     Spinner.SetValue(InitialSelection);
@@ -140,4 +125,9 @@ simulated function SetEditable(bool IsEditable)
     {
         Spinner.Hide();
     }
+}
+
+defaultproperties
+{
+	NavSound = "Play_MenuSelect"
 }

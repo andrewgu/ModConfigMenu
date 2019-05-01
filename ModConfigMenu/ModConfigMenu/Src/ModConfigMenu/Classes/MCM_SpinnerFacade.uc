@@ -10,16 +10,14 @@ var int SelectionIndex;
 
 var MCM_SettingGroup ParentGroup;
 
-var delegate<StringSettingHandler> ChangeHandler;
-var delegate<StringSettingHandler> SaveHandler;
+var delegate<MCM_API_SettingsGroup.StringSettingHandler> ChangeHandler;
+var delegate<MCM_API_SettingsGroup.StringSettingHandler> SaveHandler;
 
 var MCM_Spinner uiInstance;
 
-delegate StringSettingHandler(MCM_API_Setting Setting, string _SettingValue);
-
 simulated function MCM_SpinnerFacade InitSpinnerFacade(name _Name, string _Label, string _Tooltip, 
     array<string> _Options, string _Selection,
-    delegate<StringSettingHandler> _OnChange, delegate<StringSettingHandler> _OnSave,
+    delegate<MCM_API_SettingsGroup.StringSettingHandler> _OnChange, delegate<MCM_API_SettingsGroup.StringSettingHandler> _OnSave,
     MCM_SettingGroup _ParentGroup)
 {
     SettingName = _Name;
@@ -69,7 +67,6 @@ function UIMechaListItem InstantiateUI(UIList Parent)
 {
     uiInstance = Spawn(class'MCM_Spinner', parent.itemContainer).InitSpinner(SettingName, self, Label, Tooltip, Options, Options[SelectionIndex], ChangeHandler);
     uiInstance.Show();
-    uiInstance.EnableNavigation();
     uiInstance.SetEditable(Editable);
 
     return uiInstance;

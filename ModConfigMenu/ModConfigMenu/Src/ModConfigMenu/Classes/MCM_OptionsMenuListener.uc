@@ -8,8 +8,8 @@
 // itself. Since the GC graph looks like that, we can safely keep a reference to UI objects here
 // instead of the actual screen listener.
 
-//class MCM_OptionsMenuListener extends UIScreenListener config(ModConfigMenu);
-class MCM_OptionsMenuListener extends Object config(ModConfigMenu);
+class MCM_OptionsMenuListener extends UIScreenListener config(ModConfigMenu);
+//class MCM_OptionsMenuListener extends Object config(ModConfigMenu);
 
 var config bool ENABLE_MENU;
 var config bool USE_FLAT_DISPLAY_STYLE;
@@ -19,27 +19,47 @@ var localized string m_strModMenuButton;
 //var UIOptionsPCScreen ParentScreen;
 //var UIButton ModOptionsButton;
 
-//event OnInit(UIScreen Screen)
-function OnInit(UIOptionsPCSCreen Screen)
+event OnInit(UIScreen Screen)
+//function OnInit(UIOptionsPCSCreen Screen)
 {    
     //if(UIOptionsPCSCreen(Screen) != none)
     //{
         //ParentScreen = Screen;
-    
+
         if (ENABLE_MENU)
         {
-            InjectModOptionsButton(Screen);
+            InjectModOptionsButton(UIOptionsPCSCreen(Screen));
         }
     //}
 }
 
+event OnRemoved(UIScreen Screen)
+{
+	MCM_UIButton(Screen.GetChildByName('ModOptionsButton')).StopInputListener();
+}
+
+event OnReceiveFocus(UIScreen Screen)
+{
+	MCM_UIButton(Screen.GetChildByName('ModOptionsButton')).StartInputListener();
+}
+
+event OnLoseFocus(UIScreen Screen)
+{
+	MCM_UIButton(Screen.GetChildByName('ModOptionsButton')).StopInputListener();
+}
+
 simulated function InjectModOptionsButton(UIOptionsPCSCreen ParentScreen)
 {
-    local UIButton ModOptionsButton;
-    ModOptionsButton = ParentScreen.Spawn(class'UIButton', ParentScreen);
-    ModOptionsButton.InitButton(, m_strModMenuButton, ShowModOptionsDialog);
+    local MCM_UIButton ModOptionsButton;
+
+    ModOptionsButton = ParentScreen.Spawn(class'MCM_UIButton', ParentScreen);
+	ModOptionsButton.bAnimateOnInit = false;
+    ModOptionsButton.InitButton('ModOptionsButton', m_strModMenuButton, ShowModOptionsDialog, eUIButtonStyle_HOTLINK_BUTTON);
+	ModOptionsButton.StartInputListener(class'UIUtilities_Input'.const.FXS_BUTTON_Y);
+	ModOptionsButton.SetGamepadIcon(class'UIUtilities_Input'.const.ICON_Y_TRIANGLE);
+	ModOptionsButton.DisableNavigation();
     ModOptionsButton.SetPosition(500, 850); //Relative to this screen panel
-    ModOptionsButton.AnimateIn(0);
+	ModOptionsButton.SetHeight(30);
 }
 
 simulated function ShowModOptionsDialog(UIButton kButton)
@@ -50,7 +70,7 @@ simulated function ShowModOptionsDialog(UIButton kButton)
     `log("Mod Options Dialog Called.");
 
     ParentScreen = UIOptionsPCScreen(kButton.ParentPanel);
-    
+
     if (USE_FLAT_DISPLAY_STYLE)
         TargetMovie = None;
     else
@@ -63,6 +83,6 @@ defaultproperties
 {
     //ParentScreen = none;
     //ModOptionsButton = none;
-    //ScreenClass = none;
+    ScreenClass = class'UIOptionsPCSCreen';
 }
 

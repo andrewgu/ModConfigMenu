@@ -16,6 +16,7 @@ simulated function UIButton InitButton(optional name InitName, optional string I
 	PlayerInput = XComInputBase(`LOCALPLAYERCONTROLLER.PlayerInput);
 	return Super.InitButton(InitName, InitLabel, InitOnClicked, InitStyle, InitLibID);
 }
+
 function StartInputListener(optional int kButton)
 {
 	if (kButton != 0)
@@ -24,12 +25,14 @@ function StartInputListener(optional int kButton)
 	}
 	PlayerInput.Subscribe(iButton, 7*24*60*60, ResetPrevfTime);
 	prevfTime = 0;
+	SetTickIsDisabled(false);
 }
 
 function StopInputListener()
 {
 	PlayerInput.Unsubscribe(ResetPrevfTime);
 	prevfTime = -1;
+	SetTickIsDisabled(true);
 }
 
 function ResetPrevfTime()
@@ -52,4 +55,10 @@ simulated event Tick(float DeltaTime)
 	}
 
 	Super.Tick(DeltaTime);
+}
+
+defaultproperties
+{
+	bTickIsDisabled = true;
+	bAlwaysTick = true;
 }

@@ -98,7 +98,7 @@ simulated function bool OnUnrealCommand(int cmd, int arg)
 
     switch( cmd )
     {
-        case class'UIUtilities_Input'.const.FXS_BUTTON_B:
+        //case class'UIUtilities_Input'.const.FXS_BUTTON_B:
         //case class'UIUtilities_Input'.const.FXS_KEY_ESCAPE:
 		//case class'UIUtilities_Input'.const.FXS_R_MOUSE_DOWN:
             //OnCancel(none);
@@ -215,7 +215,15 @@ function OnSettingsLineInitialized(UIPanel NextItem)
     SettingsList.MoveItemToTop(NextItem);
 }
 
+// Mr. Nice: Instantiating all the UI can be quite slow, so defer
+// Note this does mean that not adding controls after calling ShowSettings() is no longer strictly enforced.
+// Does this matter? Can do some flagging so the SettingGroups don't accept more controls immediately if it does....
 function ShowSettings()
+{
+	MCM_OptionsScreen(ParentPanel.ParentPanel).ShowQueue.AddItem(self);
+}
+
+function RealShowSettings()
 {
     // This is where magic happens.
     local int groupIndex;

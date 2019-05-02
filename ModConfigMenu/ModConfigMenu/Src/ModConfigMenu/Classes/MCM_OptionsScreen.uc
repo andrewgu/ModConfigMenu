@@ -36,6 +36,7 @@ var int SettingsPageCounter;
 var int SelectedPageID;
 var array<MCM_SettingsTab> SettingsTabs;
 var array<MCM_SettingsPanel> SettingsPanels;
+var array<MCM_SettingsPanel> ShowQueue;
 var UIButton SaveAndExitButton;
 var UIButton CancelButton;
 
@@ -156,15 +157,30 @@ simulated function CreateSkeleton()
     TitleHeader.SetPosition(10, 10);
     
     TabsList = Spawn(class'UIList', Container).InitList('ModTabSelectList', 10, HEADER_HEIGHT + TABS_LIST_TOP_PADDING, TABLIST_WIDTH - 30, OPTIONS_HEIGHT);
-    TabsList.SetSelectedNavigation();
-    TabsList.Navigator.LoopSelection = true;
+    //TabsList.SetSelectedNavigation();
+    //TabsList.Navigator.LoopSelection = true;
 
     //Container.Navigator.AddControl(SaveAndExitButton);
     //Container.Navigator.AddControl(CancelButton);
 
     // Start with nothing selected.
-    Container.Navigator.SetSelected(none);
+    //Container.Navigator.SetSelected(none);
     //TabsList.Navigator.SelectFirstAvailable();
+}
+
+// Mr. Nice: Originally all the ShowSettings() would get handled in one tick, since they ultimately
+// Get called from the OnInit() in the mods UISL, all of which get called in the same tick after the panel itself is Innited.
+// Smooth it out by handling one per tick...
+// In principle could also smooth out the SetupHandler() calls instead of calling back immediately in RegisterClientMod(), but not
+// sure there's much benefit there...
+event Tick(float DeltaTime)
+{
+	if (ShowQueue.Length!=0)
+	{
+		ShowQueue[0].RealShowSettings();
+		ShowQueue.Remove(0, 1);
+	}
+	Super.Tick(DeltaTime);
 }
 
 // Special button handlers ========================================================================

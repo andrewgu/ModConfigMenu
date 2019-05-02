@@ -98,11 +98,6 @@ simulated function bool OnUnrealCommand(int cmd, int arg)
 
     switch( cmd )
     {
-        //case class'UIUtilities_Input'.const.FXS_BUTTON_B:
-        //case class'UIUtilities_Input'.const.FXS_KEY_ESCAPE:
-		//case class'UIUtilities_Input'.const.FXS_R_MOUSE_DOWN:
-            //OnCancel(none);
-            //return true;
         case class'UIUtilities_Input'.const.FXS_BUTTON_SELECT:
 			OnResetClicked(none);
 			return true;
@@ -254,4 +249,5 @@ function RealShowSettings()
 defaultproperties
 {
     bProcessesMouseEvents = false;
+	bCascadeFocus = false;
 }

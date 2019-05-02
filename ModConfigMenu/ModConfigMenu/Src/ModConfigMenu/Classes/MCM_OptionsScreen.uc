@@ -223,7 +223,14 @@ simulated function bool OnUnrealCommand(int cmd, int arg)
         case class'UIUtilities_Input'.const.FXS_BUTTON_B:
         case class'UIUtilities_Input'.const.FXS_KEY_ESCAPE:
 		case class'UIUtilities_Input'.const.FXS_R_MOUSE_DOWN:
-            OnCancel(none);
+			if(TabsList.bIsFocused)
+			{
+				OnCancel(none);
+			}
+			else
+			{
+				TabsList.SetSelectedNavigation();
+			}
             return true;
         case class'UIUtilities_Input'.const.FXS_BUTTON_X:
 			OnSaveAndExit(none);
@@ -343,7 +350,9 @@ simulated function ChoosePanelByPageID(int PageID)
             else
             {
                 `log("MCM: Found correct panel, showing.");
+				TmpPage.SetSelectedNavigation();
                 TmpPage.Show();
+				TabsList.OnLoseFocus();
             }
         }
 
@@ -360,6 +369,19 @@ simulated function ChoosePanelByPageID(int PageID)
             }
         }
     }
+	else
+	{
+		// Mr. Nice: although no hide/show to do, move navigation into the tab for controller/keyboard support
+		foreach SettingsPanels(TmpPage)
+        {
+            if (TmpPage.GetPageID() == SelectedPageID)
+			{
+                `log("MCM: Found correct panel, navigating.");
+				TmpPage.SetSelectedNavigation();
+				TabsList.OnLoseFocus();
+            }
+        }
+	}
 }
 
 simulated function TabClickedHandler(MCM_SettingsTab Caller, int PageID)

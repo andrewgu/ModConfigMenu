@@ -43,7 +43,6 @@ simulated function UIMechaListItem InstantiateUI(UIList parent)
 {
     uiInstance = Spawn(class'MCM_Checkbox', parent.itemContainer).InitCheckbox(SettingName, self, Label, Tooltip, Checked, ChangeHandler);
     uiInstance.Show();
-    uiInstance.EnableNavigation();
     uiInstance.SetEditable(Editable);
 
     return uiInstance;

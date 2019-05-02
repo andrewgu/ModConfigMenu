@@ -67,7 +67,6 @@ function UIMechaListItem InstantiateUI(UIList Parent)
     uiInstance = Spawn(class'MCM_Slider', parent.itemContainer).InitSlider(SettingName, self, Label, Tooltip, 
         SliderMin, SliderMax, SliderStep, SliderValue, ChangeHandler);
     uiInstance.Show();
-    uiInstance.EnableNavigation();
     uiInstance.SetEditable(Editable);
     // Always have one implemented.
     uiInstance.SetValueDisplayFilter(InnerDisplayFilter);

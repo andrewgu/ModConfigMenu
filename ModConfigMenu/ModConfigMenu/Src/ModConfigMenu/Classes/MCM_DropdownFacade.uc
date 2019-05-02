@@ -77,7 +77,6 @@ function UIMechaListItem InstantiateUI(UIList Parent)
 {
     uiInstance = Spawn(class'MCM_Dropdown', parent.itemContainer).InitDropdown(SettingName, self, Label, Tooltip, Options, Options[SelectionIndex], ChangeHandler);
     uiInstance.Show();
-    uiInstance.EnableNavigation();
     uiInstance.SetEditable(Editable);
 
     return uiInstance;

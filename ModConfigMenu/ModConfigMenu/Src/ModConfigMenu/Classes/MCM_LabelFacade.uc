@@ -30,7 +30,6 @@ simulated function UIMechaListItem InstantiateUI(UIList parent)
 {
     uiInstance = Spawn(class'MCM_Label', parent.itemContainer).InitLabel(SettingName, self, Label, Tooltip);
     uiInstance.Show();
-    uiInstance.EnableNavigation();
     uiInstance.SetEditable(Editable);
 
     return uiInstance;

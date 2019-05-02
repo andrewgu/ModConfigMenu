@@ -69,7 +69,6 @@ function UIMechaListItem InstantiateUI(UIList Parent)
 {
     uiInstance = Spawn(class'MCM_Spinner', parent.itemContainer).InitSpinner(SettingName, self, Label, Tooltip, Options, Options[SelectionIndex], ChangeHandler);
     uiInstance.Show();
-    uiInstance.EnableNavigation();
     uiInstance.SetEditable(Editable);
 
     return uiInstance;

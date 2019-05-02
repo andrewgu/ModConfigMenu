@@ -122,11 +122,15 @@ simulated function CreateSkeleton()
 {
     local int TotalWidth;
     local int TotalHeight;
+	local bool MouseActive;
 
     TotalWidth = TABLIST_WIDTH + OPTIONS_WIDTH;
     TotalHeight = HEADER_HEIGHT + OPTIONS_HEIGHT + FOOTER_HEIGHT;
-    
-    Container = Spawn(class'UIPanel', self).InitPanel('').SetPosition(PANEL_X, PANEL_Y).SetSize(TotalWidth, TotalHeight);
+    MouseActive =!`ISCONTROLLERACTIVE;
+
+    Container = Spawn(class'UIPanel', self);
+	Container.bCascadeFocus = false;
+	Container.InitPanel('').SetPosition(PANEL_X, PANEL_Y).SetSize(TotalWidth, TotalHeight);
     
     BG = Spawn(class'UIImage', Container).InitImage(,"img:///MCM.gfx.MainBackground");
     BG.SetPosition(0,0).SetSize(TotalWidth, TotalHeight);
@@ -142,7 +146,7 @@ simulated function CreateSkeleton()
     SaveAndExitButton.SetPosition(Container.width - 190, Container.height - 40); //Relative to this screen panel
 	SaveAndExitButton.DisableNavigation();
 
-	if(!`ISCONTROLLERACTIVE)
+	if(MouseActive)
 	{
 		CancelButton = Spawn(class'UIButton', Container);
 		SaveAndExitButton.bAnimateOnInit = false;
@@ -157,7 +161,11 @@ simulated function CreateSkeleton()
     TitleHeader.SetPosition(10, 10);
     
     TabsList = Spawn(class'UIList', Container).InitList('ModTabSelectList', 10, HEADER_HEIGHT + TABS_LIST_TOP_PADDING, TABLIST_WIDTH - 30, OPTIONS_HEIGHT);
-    //TabsList.SetSelectedNavigation();
+    TabsList.SetSelectedNavigation();
+	if (MouseActive)
+	{
+		TabsList.bSelectFirstAvailable = false;
+	}
     //TabsList.Navigator.LoopSelection = true;
 
     //Container.Navigator.AddControl(SaveAndExitButton);
@@ -194,8 +202,7 @@ simulated function OnSaveAndExit(UIButton kButton)
     {
         TmpPage.TriggerSaveEvent();
     }
-
-    Movie.Stack.Pop(self);
+	CloseScreen();
 }
 
 simulated function OnCancel(UIButton kButton)
@@ -207,8 +214,14 @@ simulated function OnCancel(UIButton kButton)
     {
         TmpPage.TriggerCancelEvent();
     }
+	CloseScreen();
+}
 
-    Movie.Stack.Pop(self);
+simulated function CloseScreen()
+{
+	Super.CloseScreen();
+	// Mr. Nice: UIOptionsPCScreen isn't used to being revealed from the stack,needs a prompt to update NavHelp
+	UIOptionsPCScreen(Movie.Stack.GetCurrentScreen()).UpdateNavHelp();
 }
 
 // Keyboard input ============================================================================
@@ -229,6 +242,7 @@ simulated function bool OnUnrealCommand(int cmd, int arg)
 			}
 			else
 			{
+				Movie.Pres.PlayUISound(eSUISound_MenuClose);
 				TabsList.SetSelectedNavigation();
 			}
             return true;
@@ -350,6 +364,7 @@ simulated function ChoosePanelByPageID(int PageID)
             else
             {
                 `log("MCM: Found correct panel, showing.");
+				Movie.Pres.PlayUISound(eSUISound_MenuSelect);
 				TmpPage.SetSelectedNavigation();
                 TmpPage.Show();
 				TabsList.OnLoseFocus();
@@ -377,6 +392,7 @@ simulated function ChoosePanelByPageID(int PageID)
             if (TmpPage.GetPageID() == SelectedPageID)
 			{
                 `log("MCM: Found correct panel, navigating.");
+				Movie.Pres.PlayUISound(eSUISound_MenuSelect);
 				TmpPage.SetSelectedNavigation();
 				TabsList.OnLoseFocus();
             }
@@ -395,6 +411,10 @@ simulated function AddTabsListButton(string TabLabel, int PageID)
 {
     local MCM_SettingsTab Item; 
     Item = Spawn(class'MCM_SettingsTab', TabsList.ItemContainer).InitSettingsTab(PageID, TabLabel);
+	if(TabsList.bSelectFirstAvailable && TabsList.ItemCount == 1)
+	{
+		Item.SetSelectedNavigation();
+	}
     Item.OnClickHandler = TabClickedHandler;
 
     SettingsTabs.AddItem(Item);
@@ -452,6 +472,10 @@ function int NewCustomSettingsPage(string TabLabel, delegate<CustomSettingsPageC
     SettingsPageCounter++;
 
     Item = Spawn(class'MCM_SettingsTab', TabsList.ItemContainer).InitSettingsTab(PageID, TabLabel);
+	if(TabsList.bSelectFirstAvailable && TabsList.ItemCount == 1)
+	{
+		Item.SetSelectedNavigation();
+	}
     Item.CustomPageCallback = Handler;
     Item.OnClickHandler = CustomTabClickedHandler;
 

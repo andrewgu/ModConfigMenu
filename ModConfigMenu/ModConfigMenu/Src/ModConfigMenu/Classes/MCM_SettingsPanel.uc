@@ -242,7 +242,6 @@ function RealShowSettings()
     TitleLine.UpdateTitle(Title != "" ? Title : "Mod Settings");
     TitleLine.SetY(0);
     TitleLine.Show();
-    TitleLine.EnableNavigation();
     SettingsList.MoveItemToTop(TitleLine);
 }
 

@@ -57,5 +57,5 @@ defaultproperties
     DESC_X  = 0;
     DESC_Y  = 10;
 
-    bProcessesMouseEvents = true;
+    //bProcessesMouseEvents = true;
 }

@@ -14,7 +14,11 @@ var localized string m_strApplyButton;
 var int SettingsPageID;
 
 var UIList SettingsList;
-
+var MCM_OptionsScreen OptionsScreen;
+var bool NavSortEnabled; // Mr. Nice: When controls are made editable *after* the page has instantiated,
+						// then the Navigation Order must be sorted to match the list (ie visual) order.
+var bool ShowCalled;
+						
 var MCM_UISettingSeparator TitleLine;
 var UIButton ResetButton;
 var string Title;
@@ -40,7 +44,8 @@ simulated function UIPanel InitPanel(optional name InitName, optional name InitL
     // Necessary to make sure dropdowns don't run past the bottom.
     //SettingsList.ScrollbarPadding = 500;
     SettingsList.SetSelectedNavigation();
-    SettingsList.Navigator.LoopSelection = true;
+	SettingsList.OnSelectionChanged = OptionsScreen.OnSelectionChanged;
+    //SettingsList.Navigator.LoopSelection = true;
 
     // Delay spawning of title line to make sure topmost "line" is also last layer.
     // See ShowSettings();
@@ -55,7 +60,7 @@ simulated function UIPanel InitPanel(optional name InitName, optional name InitL
     //SettingItemStartY = TitleLine.Height;
 
     ResetButton = Spawn(class'UIButton', self);
-    ResetButton.InitButton(, m_strResetButton, OnResetClicked, eUIButtonStyle_HOTLINK_BUTTON);
+    ResetButton.InitButton(, Caps(class'UIPhotoboothBase'.default.m_CategoryReset), OnResetClicked, eUIButtonStyle_HOTLINK_BUTTON);
     ResetButton.SetPosition(RESET_BUTTON_X, PANEL_HEIGHT - FOOTER_HEIGHT + 3); //Relative to this screen panel
 	ResetButton.SetGamepadIcon(class'UIUtilities_Input'.const.ICON_BACK_SELECT);
     ResetButton.Hide();
@@ -102,8 +107,7 @@ simulated function bool OnUnrealCommand(int cmd, int arg)
 			OnResetClicked(none);
 			return true;
     }
-
-    return super.OnUnrealCommand(cmd, arg);
+	return false;
 }
 
 // Helpers for MCM_OptionsScreen ================================================================
@@ -215,7 +219,8 @@ function OnSettingsLineInitialized(UIPanel NextItem)
 // Does this matter? Can do some flagging so the SettingGroups don't accept more controls immediately if it does....
 function ShowSettings()
 {
-	MCM_OptionsScreen(ParentPanel.ParentPanel).ShowQueue.AddItem(self);
+	ShowCalled = true;
+	MCM_OptionsScreen(GetParent(class'MCM_OptionsScreen')).ShowQueue.AddItem(self);
 }
 
 function RealShowSettings()
@@ -226,7 +231,7 @@ function RealShowSettings()
 
     // Adds padding at bottom to make sure that bottom options are visisble.
     bottomPadding = Spawn(class'UIImage', SettingsList.itemContainer);
-    bottomPadding.bProcessesMouseEvents = true;
+    //bottomPadding.bProcessesMouseEvents = true;
     bottomPadding.InitImage('MCMBottomPadding',"img:///MCM.gfx.Transparent");
     bottomPadding.SetWidth(548);
     bottomPadding.SetHeight(150);
@@ -243,6 +248,24 @@ function RealShowSettings()
     TitleLine.SetY(0);
     TitleLine.Show();
     SettingsList.MoveItemToTop(TitleLine);
+	if (SettingsList.Scrollbar != none)
+	{
+		SettingsList.Scrollbar.NotifyPercentChange(OptionsScreen.OnScrollPercentChanged);
+	}
+	NavSortEnabled = true;
+}
+
+function NavSort()
+{
+	if(NavSortEnabled)
+	{
+		SettingsList.Navigator.NavigableControls.Sort(ListIndexOrder);
+	}
+}
+
+function int ListIndexOrder(UIPanel FirstItem, UIPanel SecondItem)
+{
+	return SettingsList.GetItemIndex(SecondItem) - SettingsList.GetItemIndex(FirstItem);
 }
 
 defaultproperties

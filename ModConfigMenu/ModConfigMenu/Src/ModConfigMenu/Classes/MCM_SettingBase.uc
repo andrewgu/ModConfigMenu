@@ -77,7 +77,17 @@ simulated function string GetHoverTooltip()
 // For example, if you don't want to allow tweaking during a mission.
 simulated function SetEditable(bool IsEditable)
 {
-    SetDisabled(!IsEditable);
+    // Mr. Nice: SetDisabled kills the tooltip unless you pass it again!
+    SetDisabled(!IsEditable, DisplayTooltip);
+	if(IsEditable)
+	{
+		EnableNavigation();
+		MCM_SettingsPanel(GetParent(class'MCM_SettingsPanel')).NavSort();
+	}
+	else
+	{
+		DisableNavigation();
+	}
 }
 
 // Retrieves underlying setting type. Defined as an int to make setting types more extensible to support

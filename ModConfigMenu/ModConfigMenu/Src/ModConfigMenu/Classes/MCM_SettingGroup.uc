@@ -40,7 +40,7 @@ function TriggerSaveEvents()
 
 function AddSetting(MCM_SettingFacade Instance)
 {
-    if (UiInstantiated)
+    if (ParentPanel.ShowCalled || UiInstantiated)
     {
         `log("MCM: Error: Cannot add more settings after ShowSettings() has been called.");
     }

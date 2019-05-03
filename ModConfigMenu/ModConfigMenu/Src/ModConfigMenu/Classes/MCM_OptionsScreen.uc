@@ -39,8 +39,14 @@ var array<MCM_SettingsPanel> SettingsPanels;
 var array<MCM_SettingsPanel> ShowQueue;
 var UIButton SaveAndExitButton;
 var UIButton CancelButton;
+var UITextTooltip ActiveTooltip;
+var float SBOffset, ScrollHeight;
 
 var int CurrentGameMode;
+var UINavigationHelp NavHelp;
+var ConsoleOptionAttentionType AttentionType;
+var UIMechaListItem MechaListItem;
+var int MechaListItemType; //enum EUILineItemType found in UIMechaListItem;
 
 // Pawn hiding code thanks to Patrick-Seymour
 var bool SoldierVisible;
@@ -101,6 +107,9 @@ simulated function OnInit()
         `log("MCM Core: hiding soldier guy on main menu for visibility.");
         HideSoldierIfMainMenu();
     }
+
+	NavHelp = Spawn(class'UINavigationHelp',self).InitNavHelp();
+	UpdateNavHelp();
 }
 
 simulated function OnRemoved()
@@ -141,7 +150,7 @@ simulated function CreateSkeleton()
     // Save and exit button    
     SaveAndExitButton = Spawn(class'UIButton', Container);
 	SaveAndExitButton.bAnimateOnInit = false;
-    SaveAndExitButton.InitButton(, m_strSaveAndExit, OnSaveAndExit, eUIButtonStyle_HOTLINK_BUTTON);
+    SaveAndExitButton.InitButton(, class'UIOptionsPCScreen'.default.m_strSaveAndExit, OnSaveAndExit, eUIButtonStyle_HOTLINK_BUTTON);
 	SaveAndExitButton.SetGamepadIcon(class'UIUtilities_Input'.const.ICON_X_SQUARE);
     SaveAndExitButton.SetPosition(Container.width - 190, Container.height - 40); //Relative to this screen panel
 	SaveAndExitButton.DisableNavigation();
@@ -150,7 +159,7 @@ simulated function CreateSkeleton()
 	{
 		CancelButton = Spawn(class'UIButton', Container);
 		SaveAndExitButton.bAnimateOnInit = false;
-		CancelButton.InitButton(, m_strCancel, OnCancel);
+		CancelButton.InitButton(, class'UIUtilities_Text'.default.m_strGenericCancel, OnCancel);
 		CancelButton.SetPosition(Container.width - 190 - 170, Container.height - 40); //Relative to this screen panel
 		CancelButton.DisableNavigation();
 	}
@@ -191,6 +200,105 @@ event Tick(float DeltaTime)
 	Super.Tick(DeltaTime);
 }
 
+simulated function UpdateNavHelp( bool bWipeButtons = false )
+{
+	NavHelp.ClearButtonHelp();
+	NavHelp.bIsVerticalHelp = true; //bsg-hlee (05.05.17): Stacking the B button at the bottom left nav help to match the rest of the main menu screens.
+	NavHelp.AddBackButton(GoBack);
+
+	if (`ISCONTROLLERACTIVE)
+	{
+		//determines if focus is on the RIGHT column
+		if (AttentionType == COAT_DETAILS)
+		{
+			switch(MechaListItemType)
+			{
+				case EUILineItemType_Slider:
+					NavHelp.AddLeftHelp(class'UIUtilities_Text'.default.m_strGenericAdjust, class'UIUtilities_Input'.const.ICON_DPAD_HORIZONTAL);
+					break;
+				case EUILineItemType_Checkbox:
+					NavHelp.AddLeftHelp(class'UIUtilities_Text'.default.m_strGenericToggle, class'UIUtilities_Input'.static.GetAdvanceButtonIcon());
+					break;
+				case EUILineItemType_Spinner:
+					NavHelp.AddLeftHelp(class'UIUtilities_Text'.default.m_strGenericSelect, class'UIUtilities_Input'.const.ICON_DPAD_HORIZONTAL);
+					break;
+				case EUILineItemType_Dropdown:
+				case EUILineItemType_Button:
+					NavHelp.AddSelectNavHelp();
+					break;
+			}
+			// </workshop>
+		}
+		else //COAT_CATEGORIES
+			NavHelp.AddSelectNavHelp();
+	}
+	
+}
+
+simulated function OnSelectionChanged(UIList ContainerList, int ItemIndex)
+{
+	UpdateMechItemNavHelp(ContainerList, ItemIndex); //INS: - JTA 2016/3/18
+
+	if(`ISCONTROLLERACTIVE)
+	{
+		if (ActiveTooltip != none)
+		{
+			if (`PRES.m_eUIMode != eUIMode_Shell)
+			{
+				ActiveTooltip.HideTooltip();
+			}
+
+			XComPresentationLayerBase(Owner).m_kTooltipMgr.DeactivateTooltip(ActiveTooltip, true);
+			ActiveTooltip = none;
+		}
+
+		if (MechaListItem != none)
+		{
+			if (MechaListItem.BG.bHasTooltip)
+			{
+				ActiveTooltip = UITextTooltip(Movie.Pres.m_kTooltipMgr.GetTooltipByID(MechaListItem.BG.CachedTooltipId));
+				if (ActiveTooltip != none)
+				{
+					ActiveTooltip.SetFollowMouse(false);
+					ActiveTooltip.SetTooltipPosition(950.0, MechaListItem.Y - SBOffset + 180);
+					ActiveTooltip.SetDelay(0);
+					ActiveTooltip.ShowTooltip();
+					XComPresentationLayerBase(Owner).m_kTooltipMgr.ActivateTooltip(ActiveTooltip);
+				}
+			}
+		}
+	}
+}
+
+function OnScrollPercentChanged( float newPercent )
+{
+	SBOffset = newPercent * ScrollHeight;
+	if (ActiveTooltip != none)
+	{
+		ActiveTooltip.SetTooltipPosition(950.0, MechaListItem.Y - SBOffset + 180);
+	}
+}
+
+//Determines if a change is necessary in the Navhelp
+//Mr. Nice: Also stash MechaListItem in properties, useful elsewhere!
+simulated function UpdateMechItemNavHelp(UIList ContainerList, int Index)
+{
+	local int NewMechaListItemType; //enum EUILineItemType found in UIMechaListItem;
+
+	if(AttentionType == COAT_CATEGORIES) return; // Mr. Nice: Will get "spurious" Update when backing out
+	//Checks to see if the selected list item is the same as the previously selected list item (to determine if we need to refresh the navhelp)
+	MechaListItem = UIMechaListItem(ContainerList.GetSelectedItem());
+	if(MechaListItem != None)
+	{
+		NewMechaListItemType = int(MechaListItem.Type);
+		if(NewMechaListItemType != MechaListItemType)
+		{
+			MechaListItemType = NewMechaListItemType;
+			UpdateNavHelp();
+		}
+	}
+}
+
 // Special button handlers ========================================================================
 
 simulated function OnSaveAndExit(UIButton kButton)
@@ -217,6 +325,44 @@ simulated function OnCancel(UIButton kButton)
 	CloseScreen();
 }
 
+function GoBack()
+{
+	local UIList List;
+
+	switch(AttentionType)
+	{
+	case COAT_CATEGORIES:
+		OnCancel(none);
+		break;
+
+	case COAT_DETAILS:
+		if(MechaListItemType == EUILineItemType_Dropdown && MechaListItem.Dropdown.isOpen)
+		{
+			MechaListItem.Dropdown.BackOut();
+		}
+		else
+		{
+			AttentionType = COAT_CATEGORIES;
+			TabsList.SetSelectedNavigation();
+			MechaListItem.OnLoseFocus();
+			List = UIList(MechaListItem.GetParent(class'UIList'));
+			List.SetSelectedIndex(0);
+			if (List.Scrollbar !=none)
+			{
+				List.Scrollbar.SetThumbAtPercent(0);
+			}
+			if (ActiveTooltip != none)
+			{
+				Movie.Pres.m_kTooltipMgr.DeactivateTooltip(ActiveTooltip, true);
+				ActiveTooltip = none;
+			}
+			UpdateNavHelp();
+		}
+		Movie.Pres.PlayUISound(eSUISound_MenuClose); //bsg-crobinson (5.9.17): Add close menu sound on back
+		break;
+	}
+}
+
 simulated function CloseScreen()
 {
 	Super.CloseScreen();
@@ -233,19 +379,28 @@ simulated function bool OnUnrealCommand(int cmd, int arg)
 
     switch( cmd )
     {
+		case class'UIUtilities_Input'.const.FXS_R_MOUSE_DOWN:
+			OnCancel(none);
+	        return true;
+
         case class'UIUtilities_Input'.const.FXS_BUTTON_B:
         case class'UIUtilities_Input'.const.FXS_KEY_ESCAPE:
-		case class'UIUtilities_Input'.const.FXS_R_MOUSE_DOWN:
-			if(TabsList.bIsFocused)
+			GoBack();
+	        return true;
+
+		case class'UIUtilities_Input'.const.FXS_ARROW_DOWN:
+		case class'UIUtilities_Input'.const.FXS_DPAD_DOWN:
+		case class'UIUtilities_Input'.const.FXS_VIRTUAL_LSTICK_DOWN:
+		case class'UIUtilities_Input'.const.FXS_ARROW_UP:
+		case class'UIUtilities_Input'.const.FXS_DPAD_UP:
+		case class'UIUtilities_Input'.const.FXS_VIRTUAL_LSTICK_UP:
+			if(MechaListItemType == EUILineItemType_Dropdown && MechaListItem.Dropdown.isOpen)
 			{
-				OnCancel(none);
+				// Mr. Nice: Let the dropdown handle it, will get consumed by the UIList otherwise
+				return MechaListItem.OnUnrealCommand(cmd, arg);
 			}
-			else
-			{
-				Movie.Pres.PlayUISound(eSUISound_MenuClose);
-				TabsList.SetSelectedNavigation();
-			}
-            return true;
+			break;
+
         case class'UIUtilities_Input'.const.FXS_BUTTON_X:
 			OnSaveAndExit(none);
 			return true;
@@ -364,10 +519,8 @@ simulated function ChoosePanelByPageID(int PageID)
             else
             {
                 `log("MCM: Found correct panel, showing.");
-				Movie.Pres.PlayUISound(eSUISound_MenuSelect);
-				TmpPage.SetSelectedNavigation();
                 TmpPage.Show();
-				TabsList.OnLoseFocus();
+				 SelectSettingsPanel(TmpPage);
             }
         }
 
@@ -392,12 +545,19 @@ simulated function ChoosePanelByPageID(int PageID)
             if (TmpPage.GetPageID() == SelectedPageID)
 			{
                 `log("MCM: Found correct panel, navigating.");
-				Movie.Pres.PlayUISound(eSUISound_MenuSelect);
-				TmpPage.SetSelectedNavigation();
-				TabsList.OnLoseFocus();
+				 SelectSettingsPanel(TmpPage);
             }
         }
 	}
+}
+
+simulated function SelectSettingsPanel(MCM_SettingsPanel Tab)
+{
+	Movie.Pres.PlayUISound(eSUISound_MenuSelect);
+	AttentionType = COAT_DETAILS;
+	Tab.SetSelectedNavigation();
+	UpdateMechItemNavHelp(Tab.SettingsList, 0);
+	ScrollHeight = Tab.SettingsList.TotalItemSize - Tab.SettingsList.Height - 55;
 }
 
 simulated function TabClickedHandler(MCM_SettingsTab Caller, int PageID)
@@ -424,10 +584,11 @@ function MCM_API_SettingsPage MakeSettingsPage(string TabLabel, int PageID)
 {
     local MCM_SettingsPanel SP;
     SP = Spawn(class'MCM_SettingsPanel', Container);
+    SP.OptionsScreen = self;
     SP.InitPanel();
     SP.SettingsPageID = PageID;
     SP.SetPosition(TABLIST_WIDTH + OPTIONS_MARGIN, HEADER_HEIGHT);
-    
+
     SP.SetPageTitle(TabLabel);
 
     // By default do not show the panel.

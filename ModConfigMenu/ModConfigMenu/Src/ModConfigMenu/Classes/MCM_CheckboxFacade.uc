@@ -9,15 +9,13 @@ var MCM_SettingGroup ParentGroup;
 
 var bool Checked;
 
-var delegate<BoolSettingHandler> ChangeHandler;
-var delegate<BoolSettingHandler> SaveHandler;
+var delegate<MCM_API_SettingsGroup.BoolSettingHandler> ChangeHandler;
+var delegate<MCM_API_SettingsGroup.BoolSettingHandler> SaveHandler;
 
 var MCM_Checkbox uiInstance;
 
-delegate BoolSettingHandler(MCM_API_Setting _Setting, bool _SettingValue);
-
 simulated function MCM_CheckboxFacade InitCheckboxFacade(name _Name, string _Label, string _Tooltip, bool _Checked, 
-    delegate<BoolSettingHandler> _OnChange, delegate<BoolSettingHandler> _OnSave,
+    delegate<MCM_API_SettingsGroup.BoolSettingHandler> _OnChange, delegate<MCM_API_SettingsGroup.BoolSettingHandler> _OnSave,
     MCM_SettingGroup _ParentGroup)
 {
     SettingName = _Name;

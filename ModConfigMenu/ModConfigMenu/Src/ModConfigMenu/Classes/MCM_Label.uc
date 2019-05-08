@@ -23,4 +23,5 @@ simulated function MCM_Label InitLabel(name _SettingName, MCM_API_Setting _Paren
 defaultproperties
 {
 	bIsNavigable = false
+	bShouldPlayGenericUIAudioEvents = false
 }

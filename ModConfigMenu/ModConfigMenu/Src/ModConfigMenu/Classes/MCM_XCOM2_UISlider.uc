@@ -27,3 +27,13 @@ simulated function UISlider SetStepSize(float newValue)
     }
     return self;
 }
+
+simulated function OnMouseEvent(int cmd, array<string> args)
+{
+	Super.OnMouseEvent(cmd, args);
+	
+	if(cmd == class'UIUtilities_Input'.const.FXS_L_MOUSE_UP)
+	{
+		PlaySound( SoundCue'SoundUI.MenuScrollCue', true );
+	}
+}

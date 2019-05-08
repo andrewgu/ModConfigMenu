@@ -7,7 +7,7 @@
 
 class MCM_UIButton extends UIButton;
 
-var int iButton;
+var int iButton, ShowTick;
 var XComInputBase PlayerInput;
 var float prevfTime;
 var bool bControllerActive;
@@ -57,17 +57,22 @@ simulated event Tick(float DeltaTime)
 	}
 
 	// Mr. Nice: "Blinks" when controller/mouse swapped to fit in with other buttons
-	if(!bIsVisible)
+	// Not entirely sure if the tick count it takes for the other buttons to be nuked then recreated
+	// Is entirely determinisitic, ShowTick set by observation...
+	if(ShowTick !=0)
 	{
+		if(--ShowTick == 0)
+		{
 		Show();
+		}
 	}
 	if (bControllerActive != `ISCONTROLLERACTIVE)
 	{
-		// Mr. Nice: Ok, the use has swapped interface type, need to refresh the button
-		// Is there a better way then this? Maybe, but at least I don't just assume the button is enabled!
-		// The other buttons get nuked and recreated, but this code is within the button, so less of an option...
+		// Mr. Nice: Ok, the use has swapped interface type, need to refresh the button appearance
 		Hide();
-		mc.FunctionVoid(IsDisabled ? "disable" : "enable");
+		ShowTick = 2;
+		mc.SetNum("state", 0);
+		mc.FunctionVoid("realize");
 		bControllerActive = !bControllerActive;
 	}
 

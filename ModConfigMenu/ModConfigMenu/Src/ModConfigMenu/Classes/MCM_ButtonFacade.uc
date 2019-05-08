@@ -9,14 +9,13 @@ var MCM_SettingGroup ParentGroup;
 
 var string ButtonLabel;
 
-var delegate<VoidSettingHandler> ClickHandler;
+var delegate<MCM_API_SettingsGroup.VoidSettingHandler> ClickHandler;
 
 var MCM_Button uiInstance;
 
-delegate VoidSettingHandler(MCM_API_Setting _Setting);
 
 simulated function MCM_ButtonFacade InitButtonFacade(name _Name, string _Label, string _Tooltip, string _ButtonLabel, 
-    delegate<VoidSettingHandler> _OnClick, MCM_SettingGroup _ParentGroup)
+    delegate<MCM_API_SettingsGroup.VoidSettingHandler> _OnClick, MCM_SettingGroup _ParentGroup)
 {
     SettingName = _Name;
     Label = _Label;

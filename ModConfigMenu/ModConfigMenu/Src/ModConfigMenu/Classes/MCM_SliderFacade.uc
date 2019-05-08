@@ -12,19 +12,18 @@ var float SliderMax;
 var float SliderStep;
 var float SliderValue;
 
-var delegate<FloatSettingHandler> ChangeHandler;
-var delegate<FloatSettingHandler> SaveHandler;
+var delegate<MCM_API_SettingsGroup.FloatSettingHandler> ChangeHandler;
+var delegate<MCM_API_SettingsGroup.FloatSettingHandler> SaveHandler;
 
 var delegate<SliderValueDisplayFilter> DisplayFilter;
 
 var MCM_Slider uiInstance;
 
-delegate FloatSettingHandler(MCM_API_Setting Setting, float _SettingValue);
 delegate string SliderValueDisplayFilter(float value);
 
 simulated function MCM_SliderFacade InitSliderFacade(name _Name, string _Label, string _Tooltip, 
     float sMin, float sMax, float sStep, float sValue,
-    delegate<FloatSettingHandler> _OnChange, delegate<FloatSettingHandler> _OnSave,
+    delegate<MCM_API_SettingsGroup.FloatSettingHandler> _OnChange, delegate<MCM_API_SettingsGroup.FloatSettingHandler> _OnSave,
     MCM_SettingGroup _ParentGroup)
 {
     SettingName = _Name;

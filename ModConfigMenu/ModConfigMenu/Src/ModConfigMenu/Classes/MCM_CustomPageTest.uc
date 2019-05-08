@@ -3,8 +3,6 @@ class MCM_CustomPageTest extends Object config(ModConfigMenuTestHarness);
 
 `include(ModConfigMenu/Src/ModConfigMenuAPI/MCM_API_Includes.uci)
 
-delegate CustomSettingsPageCallback(UIScreen ParentScreen, int PageID);
-
 //event OnInit(UIScreen Screen)
 function OnInit(UIScreen Screen)
 {

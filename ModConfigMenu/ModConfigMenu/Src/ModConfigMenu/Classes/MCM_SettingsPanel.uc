@@ -46,6 +46,7 @@ simulated function UIPanel InitPanel(optional name InitName, optional name InitL
 	SettingsList = Spawn(class'UIList', self).InitList('OptionsList', 0, 0, PANEL_WIDTH, PANEL_HEIGHT - FOOTER_HEIGHT + 29,, true); // Mr. Nice: addBG to stop mouse scrolling "dead spots"
     SettingsList.SetSelectedNavigation();
 	SettingsList.OnSelectionChanged = OptionsScreen.OnSelectionChanged;
+	SettingsList.BG.SetAlpha(0);
 
     return self;
 }

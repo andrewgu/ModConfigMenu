@@ -68,6 +68,10 @@ function OnSelect()
 				OptionsScreen.AttentionType = COAT_CATEGORIES;
 				MouseClick = false;
 			}
+			else
+			{
+				OnReceiveFocus(); // Mr. Nice: to update the appearance
+			}
 		}
 	}
 	else if (CustomPageCallback != none)

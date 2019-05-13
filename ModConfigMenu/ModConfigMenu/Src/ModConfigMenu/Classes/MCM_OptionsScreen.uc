@@ -167,6 +167,7 @@ simulated function CreateSkeleton()
     TitleHeader.SetPosition(10, 10);
     
     TabsList = Spawn(class'UIList', Container).InitList('ModTabSelectList', 10, HEADER_HEIGHT + TABS_LIST_TOP_PADDING, TABLIST_WIDTH - 30, OPTIONS_HEIGHT,, true); // Mr. Nice: addBG to stop mouse scrolling "dead spots"
+	TabsList.BG.SetAlpha(0);
     TabsList.SetSelectedNavigation();
 	if (MouseActive)
 	{

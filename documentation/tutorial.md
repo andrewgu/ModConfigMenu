@@ -260,7 +260,7 @@ class ExampleListener extends UIScreenListener config(NonexistentConfigName);
 `include(MCM_Tutorial/Src/ModConfigMenuAPI/MCM_API_CfgHelpers.uci)
 
 var config bool CHECKBOX_VALUE;
-var config bool CONFIG_VERSION;
+var config int CONFIG_VERSION;
 
 event OnInit(UIScreen Screen)
 {

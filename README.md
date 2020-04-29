@@ -10,6 +10,10 @@ XCOM 2 Mod Config Menu: a shared settings menu for Xcom 2 mods.
 * **Lots of useful features** - You can preview settings, dynamically change one setting based on another, even inject a custom settings UI.
 * **Built-in version control**: if your mod and the MCM versions are incompatible, MCM will handle it gracefully.
 
+### XCOM Chimera Squad: Will there be a Chimera Squad version?
+
+Yes. I will begin work to port MCM to Chimera Squad after I finish my first playthrough.
+
 ### Gamers: How do I use this?
 
 1. Install this mod via [Steam Workshop](http://steamcommunity.com/sharedfiles/filedetails/?id=667104300) or [Nexus](http://www.nexusmods.com/xcom2/mods/573/).

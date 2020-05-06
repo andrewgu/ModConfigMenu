@@ -13,6 +13,7 @@ function SetSaveHandler(delegate<SaveStateHandler> SaveHandler);
 function SetCancelHandler(delegate<SaveStateHandler> CancelHandler);
 
 // By default Reset button is not visible, you can choose to use it.
+// You can call this more than once to change the reset handler.
 function EnableResetButton(delegate<SaveStateHandler> ResetHandler);
 
 // Groups let you visually cluster settings. All settings belong to groups.

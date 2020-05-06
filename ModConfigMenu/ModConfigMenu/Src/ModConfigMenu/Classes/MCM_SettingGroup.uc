@@ -5,7 +5,7 @@ var name GroupName;
 var MCM_GroupLabel GroupLabel;
 var array<MCM_SettingFacade> Settings;
 
-var MCM_SettingsPanel ParentPanel;
+var MCM_SettingsPanelFacade ParentPanel;
 
 var bool UiInstantiated;
 
@@ -17,7 +17,7 @@ delegate StringSettingHandler(MCM_API_Setting Setting, string SettingValue);
 //delegate ListItemHandler(UIMechaListItem item);
 delegate ListItemHandler(UIPanel item);
 
-function MCM_SettingGroup InitSettingGroup(name _GroupName, string Label, MCM_SettingsPanel _ParentPanel)
+function MCM_SettingGroup InitSettingGroup(name _GroupName, string Label, MCM_SettingsPanelFacade _ParentPanel)
 {
     GroupName = _GroupName;
     ParentPanel = _ParentPanel;

@@ -150,19 +150,25 @@ function EnableResetButton(delegate<SaveStateHandler> _ResetHandler)
     ResetButton.Show();
 }
 
+// Technically these functions are now fronted by the SettingsPanelFacade, so this is no longer needed.
 // Groups let you visually cluster settings.
 function MCM_API_SettingsGroup AddGroup(name GroupName, string GroupLabel)
 {
-    local MCM_SettingGroup Grp;
+    /*
+	local MCM_SettingGroup Grp;
 
     Grp = Spawn(class'MCM_SettingGroup', self).InitSettingGroup(GroupName, GroupLabel, self);
     SettingGroups.AddItem(Grp);
 
     return Grp;
+	*/
+	return none;
 }
 
+// Technically these functions are now fronted by the SettingsPanelFacade, so this is no longer needed.
 function MCM_API_SettingsGroup GetGroupByName(name GroupName)
 {
+	/*
     local MCM_SettingGroup iter;
 
     foreach SettingGroups(iter)
@@ -170,21 +176,29 @@ function MCM_API_SettingsGroup GetGroupByName(name GroupName)
         if (iter.GroupName == GroupName)
             return iter;
     }
-
+	*/
     return none;
 }
 
+// Technically these functions are now fronted by the SettingsPanelFacade, so this is no longer needed.
 function MCM_API_SettingsGroup GetGroupByIndex(int Index)
 {
+	/*
     if (Index >= 0 && Index < SettingGroups.Length)
         return SettingGroups[Index];
     else
         return None;
+	*/
+	return none;
 }
 
+// Technically these functions are now fronted by the SettingsPanelFacade, so this is no longer needed.
 function int GetGroupCount()
 {
+	/*
     return SettingGroups.Length;
+	*/
+	return -1;
 }
 
 // Assumes that groups are iterated in reverse order and items in groups are inserted in reverse order.

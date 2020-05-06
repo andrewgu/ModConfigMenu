@@ -127,6 +127,9 @@ For full details on using this mod, troubleshooting, or even building your own m
     <Content Include="Src\ModConfigMenu\Classes\MCM_SettingsPanel.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\ModConfigMenu\Classes\MCM_SettingsPanelFacade.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\ModConfigMenu\Classes\MCM_SettingsTab.uc">
       <SubType>Content</SubType>
     </Content>

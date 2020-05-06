@@ -356,7 +356,7 @@ function MCM_API_SettingsPage MakeSettingsPage(string TabLabel, int PageID)
 {
     local MCM_SettingsPanelFacade SP;
     SP = Spawn(class'MCM_SettingsPanelFacade', self);
-	SP.InitSettingsPanelFacade(PageID, TabLabel, TABLIST_WIDTH + OPTIONS_MARGIN, HEADER_HEIGHT, Container);
+    SP.InitSettingsPanelFacade(PageID, TabLabel, TABLIST_WIDTH + OPTIONS_MARGIN, HEADER_HEIGHT, Container);
 
     // Register panel.
     SettingsPanels.AddItem(SP);

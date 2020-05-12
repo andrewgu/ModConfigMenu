@@ -35,7 +35,7 @@ var UIList TabsList;
 var int SettingsPageCounter;
 var int SelectedPageID;
 var array<MCM_SettingsTab> SettingsTabs;
-var array<MCM_SettingsPanel> SettingsPanels;
+var array<MCM_SettingsPanelFacade> SettingsPanels;
 var UIButton SaveAndExitButton;
 var UIButton CancelButton;
 
@@ -165,7 +165,7 @@ simulated function CreateSkeleton()
 
 simulated function OnSaveAndExit(UIButton kButton)
 {
-    local MCM_SettingsPanel TmpPage;
+    local MCM_SettingsPanelFacade TmpPage;
     
     // Save all.
     foreach SettingsPanels(TmpPage)
@@ -178,7 +178,7 @@ simulated function OnSaveAndExit(UIButton kButton)
 
 simulated function OnCancel(UIButton kButton)
 {
-    local MCM_SettingsPanel TmpPage;
+    local MCM_SettingsPanelFacade TmpPage;
     
     // Cancel all.
     foreach SettingsPanels(TmpPage)
@@ -283,13 +283,13 @@ simulated function ShowSoldierIfMainMenu()
 
 // Helpers for MCM_API_Instance ===================================================================
 
-simulated function MCM_SettingsPanel GetPanelByPageID(int PageID)
+simulated function MCM_SettingsPanelFacade GetPanelByPageID(int PageID)
 {
-    local MCM_SettingsPanel TmpPage;
+    local MCM_SettingsPanelFacade TmpPage;
 
     foreach SettingsPanels(TmpPage)
     {
-        if (TmpPage.GetPageID() == PageID)
+        if (TmpPage.GetPageId() == PageID)
             return TmpPage;
     }
 
@@ -300,7 +300,7 @@ simulated function ChoosePanelByPageID(int PageID)
 {
     //local MCM_SettingsPanel CurrentSettingsPage;
     local MCM_SettingsTab TmpButton;
-    local MCM_SettingsPanel TmpPage;
+    local MCM_SettingsPanelFacade TmpPage;
 
     // Are we changing pages? Do nothing if not changing pages.
     if (PageID != SelectedPageID)
@@ -310,7 +310,7 @@ simulated function ChoosePanelByPageID(int PageID)
         // Now choose the panel.
         foreach SettingsPanels(TmpPage)
         {
-            if (TmpPage.GetPageID() != SelectedPageID)
+            if (TmpPage.GetPageId() != SelectedPageID)
             {
                 TmpPage.Hide();
             }
@@ -354,16 +354,9 @@ simulated function AddTabsListButton(string TabLabel, int PageID)
 
 function MCM_API_SettingsPage MakeSettingsPage(string TabLabel, int PageID)
 {
-    local MCM_SettingsPanel SP;
-    SP = Spawn(class'MCM_SettingsPanel', Container);
-    SP.InitPanel();
-    SP.SettingsPageID = PageID;
-    SP.SetPosition(TABLIST_WIDTH + OPTIONS_MARGIN, HEADER_HEIGHT);
-    
-    SP.SetPageTitle(TabLabel);
-
-    // By default do not show the panel.
-    SP.Hide();
+    local MCM_SettingsPanelFacade SP;
+    SP = Spawn(class'MCM_SettingsPanelFacade', self);
+    SP.InitSettingsPanelFacade(PageID, TabLabel, TABLIST_WIDTH + OPTIONS_MARGIN, HEADER_HEIGHT, Container);
 
     // Register panel.
     SettingsPanels.AddItem(SP);
@@ -412,11 +405,11 @@ function int NewCustomSettingsPage(string TabLabel, delegate<CustomSettingsPageC
 
 function MCM_API_SettingsPage GetSettingsPageByID(int PageID)
 {
-    local MCM_SettingsPanel TmpPage;
+    local MCM_SettingsPanelFacade TmpPage;
 
     foreach SettingsPanels(TmpPage)
     {
-        if (TmpPage.GetPageID() == PageID)
+        if (TmpPage.GetPageId() == PageID)
         {
             return TmpPage;
         }

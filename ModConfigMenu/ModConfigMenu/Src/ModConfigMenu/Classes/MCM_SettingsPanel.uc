@@ -74,7 +74,10 @@ simulated function OnInit()
 simulated function OnResetClicked(UIButton kButton)
 {
     if (ResetHandler != none)
+    {
+        //`log("MCM: Reset button clicked");
         ResetHandler(self);
+    }
 }
 
 simulated function Show()

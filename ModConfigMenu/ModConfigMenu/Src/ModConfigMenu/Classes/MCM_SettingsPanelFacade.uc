@@ -45,6 +45,14 @@ simulated function MCM_SettingsPanel CreateUi()
     SP.SetPageTitle(Title);
     SP.SettingGroups = SettingGroups;
 
+    // Gotta make sure to forward handlers too
+    SP.SetSaveHandler(SaveHandler);
+    SP.SetCancelHandler(CancelHandler);
+    if (ResetHandler != none)
+    {
+        SP.EnableResetButton(ResetHandler);
+    }
+
     // This spawns all of the actual UI elements into the panel.
     SP.ShowSettings();
 
@@ -76,18 +84,22 @@ simulated function Hide()
 
 simulated function TriggerSaveEvent()
 {
+    //`log("MCM SettingsPanelFacade: triggered save event");
     // If they never actually opened the panel, then no need to start triggering any events.
     if (UiInstance != none)
     {
+        //`log("MCM SettingsPanelFacade: forwarding save event");
         UiInstance.TriggerSaveEvent();
     }
 }
 
 simulated function TriggerCancelEvent()
 {
+    //`log("MCM SettingsPanelFacade: triggered cancel event");
     // If they never actually opened the panel, then no need to start triggering any events.
     if (UiInstance != none)
     {
+        //`log("MCM SettingsPanelFacade: forwarding cancel event");
         UiInstance.TriggerCancelEvent();
     }
 }

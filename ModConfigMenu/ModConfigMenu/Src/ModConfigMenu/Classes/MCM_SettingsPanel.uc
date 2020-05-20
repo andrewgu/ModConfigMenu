@@ -13,6 +13,9 @@ var localized string m_strApplyButton;
 
 var int SettingsPageID;
 
+// Parent facade
+var MCM_SettingsPanelFacade Facade;
+
 var UIList SettingsList;
 
 var MCM_UISettingSeparator TitleLine;
@@ -76,7 +79,8 @@ simulated function OnResetClicked(UIButton kButton)
     if (ResetHandler != none)
     {
         //`log("MCM: Reset button clicked");
-        ResetHandler(self);
+        // Use the Facade object since it's the complete MCM_API_SettingsPage implementation.
+        ResetHandler(Facade);
     }
 }
 
@@ -105,13 +109,19 @@ simulated function TriggerSaveEvent()
     }
 
     if (SaveHandler != none)
-        SaveHandler(self);
+    {
+        // Use the Facade object since it's the complete MCM_API_SettingsPage implementation.
+        SaveHandler(Facade);
+    }
 }
 
 simulated function TriggerCancelEvent()
 {
     if (CancelHandler != none)
-        CancelHandler(self);
+    {
+        // Use the Facade object since it's the complete MCM_API_SettingsPage implementation.
+        CancelHandler(Facade);
+    }
 }
 
 // MCM_API_SettingsPage implementation ===========================================
@@ -153,55 +163,29 @@ function EnableResetButton(delegate<SaveStateHandler> _ResetHandler)
     ResetButton.Show();
 }
 
-// Technically these functions are now fronted by the SettingsPanelFacade, so this is no longer needed.
-// Groups let you visually cluster settings.
+// Function is implemented by the facade.
 function MCM_API_SettingsGroup AddGroup(name GroupName, string GroupLabel)
 {
-    /*
-    local MCM_SettingGroup Grp;
-
-    Grp = Spawn(class'MCM_SettingGroup', self).InitSettingGroup(GroupName, GroupLabel, self);
-    SettingGroups.AddItem(Grp);
-
-    return Grp;
-    */
+    `log("MCM: Cannot add settings group because the UI is already fixed and instantiated.");
     return none;
 }
 
-// Technically these functions are now fronted by the SettingsPanelFacade, so this is no longer needed.
+// Function is implemented by the facade.
 function MCM_API_SettingsGroup GetGroupByName(name GroupName)
 {
-    /*
-    local MCM_SettingGroup iter;
-
-    foreach SettingGroups(iter)
-    {
-        if (iter.GroupName == GroupName)
-            return iter;
-    }
-    */
-    return none;
+    return Facade.GetGroupByName(GroupName);
 }
 
-// Technically these functions are now fronted by the SettingsPanelFacade, so this is no longer needed.
+// Function is implemented by the facade.
 function MCM_API_SettingsGroup GetGroupByIndex(int Index)
 {
-    /*
-    if (Index >= 0 && Index < SettingGroups.Length)
-        return SettingGroups[Index];
-    else
-        return None;
-    */
-    return none;
+    return Facade.GetGroupByIndex(Index);
 }
 
-// Technically these functions are now fronted by the SettingsPanelFacade, so this is no longer needed.
+// Function is implemented by the facade.
 function int GetGroupCount()
 {
-    /*
-    return SettingGroups.Length;
-    */
-    return -1;
+    return Facade.GetGroupCount();
 }
 
 // Assumes that groups are iterated in reverse order and items in groups are inserted in reverse order.

@@ -79,7 +79,7 @@ simulated function OnResetClicked(UIButton kButton)
     if (ResetHandler != none)
     {
         //`log("MCM: Reset button clicked");
-		// Use the Facade object since it's the complete MCM_API_SettingsPage implementation.
+        // Use the Facade object since it's the complete MCM_API_SettingsPage implementation.
         ResetHandler(Facade);
     }
 }
@@ -109,19 +109,19 @@ simulated function TriggerSaveEvent()
     }
 
     if (SaveHandler != none)
-	{
-		// Use the Facade object since it's the complete MCM_API_SettingsPage implementation.
-		SaveHandler(Facade);
-	}
+    {
+        // Use the Facade object since it's the complete MCM_API_SettingsPage implementation.
+        SaveHandler(Facade);
+    }
 }
 
 simulated function TriggerCancelEvent()
 {
     if (CancelHandler != none)
-	{
-		// Use the Facade object since it's the complete MCM_API_SettingsPage implementation.
+    {
+        // Use the Facade object since it's the complete MCM_API_SettingsPage implementation.
         CancelHandler(Facade);
-	}
+    }
 }
 
 // MCM_API_SettingsPage implementation ===========================================
@@ -166,7 +166,7 @@ function EnableResetButton(delegate<SaveStateHandler> _ResetHandler)
 // Function is implemented by the facade.
 function MCM_API_SettingsGroup AddGroup(name GroupName, string GroupLabel)
 {
-	`log("MCM: Cannot add settings group because the UI is already fixed and instantiated.");
+    `log("MCM: Cannot add settings group because the UI is already fixed and instantiated.");
     return none;
 }
 

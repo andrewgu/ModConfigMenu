@@ -40,13 +40,13 @@ simulated function MCM_SettingsPanel CreateUi()
     local MCM_SettingsPanel SP;
     SP = Spawn(class'MCM_SettingsPanel', Container);
     SP.InitPanel();
-	SP.Facade = self;
+    SP.Facade = self;
     SP.SettingsPageID = PageID;
     SP.SetPosition(OffsetX, OffsetY);
     SP.SetPageTitle(Title);
     
-	// Inject the identical group list from the facade into the panel
-	SP.SettingGroups = SettingGroups;
+    // Inject the identical group list from the facade into the panel
+    SP.SettingGroups = SettingGroups;
 
     // Gotta make sure to forward handlers too
     SP.SetSaveHandler(SaveHandler);

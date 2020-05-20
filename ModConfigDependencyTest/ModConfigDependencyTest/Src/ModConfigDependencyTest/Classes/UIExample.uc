@@ -111,7 +111,7 @@ simulated function ResetButtonClicked(MCM_API_SettingsPage Page)
 {
     `log("MCM: Reset button clicked");
 
-    // Revert all of the settings.
+    // Revert all of the settings except the float slider labeled "Partial" which is not saved anywhere and is not a real setting.
     CFG_CLICKED = false;
     P1Checkbox.SetValue(CFG_CHECKBOX, true);
     P2Slider.SetValue(CFG_SLIDER, true);

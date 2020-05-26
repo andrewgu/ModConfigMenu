@@ -6,7 +6,7 @@ Instead of writing the mcm code the pages are completely generated from a json c
 Lets get right down to it and have a look at this example config:
 
 ```
-[MusashisModToolbox.MCM_Builder_Screen]
+[ModConfigMenuBuilder.MCM_Builder_Screen]
 +MCMBuilder="MCMBuilderClientTestMod"
 
 [MCMBuilderClientTestMod JsonConfig_MCM_Builder]
@@ -84,7 +84,7 @@ HUNGRY_TOOLTIP="Are you hungry?"
 
 ## Client Side Integration
 You will need to add the package
-**JsonConfigManagerInterfaces** from **Musashis Mod Toolbox** to your mod project
+**ModConfigMenuBuilderAPI_1_0_0** from **ModConfigMenu** to your mod project
 
 ![Screenshot](https://github.com/Musashi1584/MCMBuilderClientTestMod/blob/master/InterfacesPackage.jpg)
 
@@ -95,13 +95,13 @@ Then you need two config files and a localization file:
 
 - `Config/XComJsonConfigManager.ini`
 - `Config/XComMCMBuilder.ini`
-- `Localization/MusashisModToolbox.int`
+- `Localization/ModConfigMenu.int`
 
 Lets see there contents in detail:
 
 ##### `XComMCMBuilder.ini`
 ```
-[MusashisModToolbox.MCM_Builder_Screen]
+[ModConfigMenuBuilder.MCM_Builder_Screen]
 +MCMBuilder="YourModMCMPage1" ;can be any name but have to match below and in the localization file
 
 [YourModMCMPage1 JsonConfig_MCM_Builder]
@@ -129,7 +129,7 @@ Lets see there contents in detail:
 +ConfigProperties = {"HUNGER_SCALE_NERD":{"Value":"0.1"}}
 +ConfigProperties = {"FOOD":{"Value":"Apple"}}
 ```
-##### `MusashisModToolbox.int`
+##### `ModConfigMenuBuilder.int`
 ```
 [YourModMCMPage1 JsonConfig_MCM_Builder]
 
@@ -168,6 +168,6 @@ It will return the values that the user made in the mcm page or the default sett
 For more information about the config system see the [JsonConfigManager Documentation](https://github.com/Musashi1584/MusashisModToolbox/blob/master/JSONCONFIGMANAGER.md)
 
 ### Thats all!
-The MCMBuilder in Musashis Mod Toolbox will take care of the rest.
+The MCMBuilder in ModConfigMenu will take care of the rest.
 
 ![Screenshot](https://github.com/Musashi1584/MCMBuilderClientTestMod/blob/master/Screenshot.jpg)

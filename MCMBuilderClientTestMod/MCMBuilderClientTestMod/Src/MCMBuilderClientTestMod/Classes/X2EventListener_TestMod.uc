@@ -42,27 +42,32 @@ static function EventListenerReturn OnMCM_ButtonClick(Object EventData, Object E
 
 static function EventListenerReturn OnMCM_ChangeHandler(Object EventData, Object EventSource, XComGameState GameState, Name Event, Object CallbackData)
 {
-	local XComLWTuple Tuple;
+	local JsonObject Tuple;
 
-	Tuple = XComLWTuple(EventSource);
+	Tuple = JsonObject(EventSource);
 
-	if (Tuple.Data[0].o != none)
+	if (Tuple.GetObject("MCMBuilder") != none)
 	{
-		`LOG(default.class @ GetFuncName() @ Tuple.Data[0].o @ Tuple.Data[1].s,, 'MCMBuilderClientTestMod');
+		`LOG(default.class @ GetFuncName() @ Tuple.GetObject("MCMBuilder") @ Tuple.GetStringValue("SettingValue"),, 'MCMBuilderClientTestMod');
 	}
 
 	return ELR_NoInterrupt;
 }
 
+
 static function EventListenerReturn OnMCM_SaveHandler(Object EventData, Object EventSource, XComGameState GameState, Name Event, Object CallbackData)
 {
-	local XComLWTuple Tuple;
+	local JsonObject Tuple;
 
-	Tuple = XComLWTuple(EventSource);
+	Tuple = JsonObject(EventSource);
 
-	if (Tuple.Data[0].o != none)
+	if (Tuple.GetObject("MCMBuilder") != none)
 	{
-		`LOG(default.class @ GetFuncName() @ Tuple.Data[0].o @ Tuple.Data[1].s,, 'MCMBuilderClientTestMod');
+		`LOG(default.class @ GetFuncName() @
+			Tuple.GetObject("MCMBuilder") @
+			Tuple.GetStringValue("SettingValue") @
+			Tuple.GetBoolValue("bOverrideDefaultHandler")
+		,, 'MCMBuilderClientTestMod');
 	}
 
 	return ELR_NoInterrupt;
@@ -70,13 +75,18 @@ static function EventListenerReturn OnMCM_SaveHandler(Object EventData, Object E
 
 static function EventListenerReturn OnMCM_SaveButtonClicked(Object EventData, Object EventSource, XComGameState GameState, Name Event, Object CallbackData)
 {
-	local XComLWTuple Tuple;
+	local JsonObject Tuple;
 
-	Tuple = XComLWTuple(EventSource);
+	Tuple = JsonObject(EventSource);
+	
+	`LOG(default.class @ GetFuncName() @
+		Tuple.GetObject("MCMBuilder") @
+		Tuple.GetBoolValue("bOverrideDefaultHandler")
+	,, 'MCMBuilderClientTestMod');
 
-	if (Tuple.Data[0].o != none)
+	if (Tuple.GetObject("MCMBuilder") != none)
 	{
-		`LOG(default.class @ Tuple.Data[0].o @ GetFuncName(),, 'MCMBuilderClientTestMod');
+		Tuple.SetBoolValue("bOverrideDefaultHandler", false);
 	}
 
 	return ELR_NoInterrupt;
@@ -118,15 +128,15 @@ simulated static function MakePopup()
 	local TDialogueBoxData kDialogData;
 	local JsonConfig_ManagerInterface ConfigManager;
 
-	ConfigManager = class'ConfigFactory'.static.GetConfigManager("MCMBuilderClientTestModConfigManager");
+	ConfigManager = class'Helper'.static.GetConfig();
 
 	kDialogData.eType = eDialog_Warning;
 	kDialogData.strTitle = "MCM Settings Saved";
 	kDialogData.strText = 
-		ConfigManager.GetConfigBoolValue("A_BOOL_PROPERTY") $ "\n" $
-		ConfigManager.GetConfigIntValue("A_INT_PROPERTY") $ "\n" $
-		ConfigManager.GetConfigFloatValue("A_FLOAT_PROPERTY") $ "\n" $
-		ConfigManager.GetConfigStringValue("A_STRING_PROPERTY");
+		"HUNGRY:" @ ConfigManager.GetConfigBoolValue("HUNGRY") $ "\n" $
+		"HUNGER_SCALE:" @ ConfigManager.GetConfigIntValue("HUNGER_SCALE") $ "\n" $
+		"HUNGER_SCALE_NERD:" @ ConfigManager.GetConfigFloatValue("HUNGER_SCALE_NERD") $ "\n" $
+		"FOOD:" @ ConfigManager.GetConfigStringValue("FOOD");
 	//kDialogData.fnCallback = OKClickedGeneric;
 
 	kDialogData.strAccept = class'UIUtilities_Text'.default.m_strGenericContinue;

@@ -12,12 +12,9 @@ class X2DownloadableContentInfo_MCMBuilderClientTestMod extends X2DownloadableCo
 
 static function bool AbilityTagExpandHandler(string InString, out string OutString)
 {
-	local JsonConfig_ManagerInterface ConfigManager;
 	local string PossibleValue;
 
-	ConfigManager = class'ConfigFactory'.static.GetConfigManager("MCMBuilderClientTestModConfigManager");
-
-	PossibleValue = ConfigManager.GetConfigTagValue(InString);
+	PossibleValue = class'Helper'.static.GetConfig().GetConfigTagValue(InString);
 	if (PossibleValue != "")
 	{
 		OutString = PossibleValue;

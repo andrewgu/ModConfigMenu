@@ -1,7 +1,11 @@
 //-----------------------------------------------------------
 //	Class:	MCM_Builder_Screen
 //	Author: Musashi
-//	
+//	Here we marry the MCMBuilder with the MCM Api
+//	ATTENTION: The event api is experimental at the moment and doesnt work if the MCM Options are openend in the Shell screen
+//	This could be fixed in the Highlander (https://github.com/X2CommunityCore/X2WOTCCommunityHighlander/issues/297) but even then would need the highlander to work properly
+//	Maybe it would be better to replace it by an delegate based system.
+//	Note the event system isnt necessary for the basic functionality
 //-----------------------------------------------------------
 class MCM_Builder_Screen extends Object config(MCMBuilder);
 
@@ -16,12 +20,8 @@ var config array<string> MCMBuilder;
 
 var array<BuilderInstance> BuilderInstances;
 
-//`include(ModConfigMenu/Src/ModConfigMenuAPI/MCM_API_Includes.uci)
-//`include(ModConfigMenu/Src/ModConfigMenuAPI/MCM_API_CfgHelpers.uci)
-
 event OnInit(UIScreen Screen)
 {
-	//`MCM_API_Register(Screen, ClientModCallback);
 	if (MCM_API(Screen) != none)
 	{
 		MCM_API(Screen).RegisterClientMod(1, 0, ClientModCallback);
@@ -197,16 +197,12 @@ simulated function StringSaveHandler(MCM_API_Setting Setting, string SettingValu
 
 simulated function ElementChangeHandler(MCM_API_Setting Setting, coerce string SettingValue)
 {
-	local XComLWTuple Tuple;
+	local JsonObject Tuple;
 
-	Tuple = new class'XComLWTuple';
-	Tuple.Id = 'MCM_ChangeHandler';
-	Tuple.Data.Add(2);
-
-	Tuple.Data[0].kind = XComLWTVObject;
-	Tuple.Data[0].o = GetBuilder(Setting.GetParentGroup().GetParentPage().GetPageId());
-	Tuple.Data[1].kind = XComLWTVString;
-	Tuple.Data[1].s = SettingValue;
+	Tuple = new class'JsonObject';
+	Tuple.SetStringValue("Id", "MCM_ChangeHandler");
+	Tuple.SetObject("MCMBuilder", GetBuilder(Setting.GetParentGroup().GetParentPage().GetPageId()));
+	Tuple.SetStringValue("SettingValue", SettingValue);
 
 	`XEVENTMGR.TriggerEvent('MCM_ChangeHandler', Setting, Tuple, none);
 }
@@ -216,25 +212,20 @@ simulated function ElementSaveHandler(MCM_API_Setting Setting, coerce string Set
 	local JsonConfig_MCM_Page Page;
 	local JsonConfig_MCM_Group Group;
 	local JsonConfig_ManagerInterface SaveConfigManager;
-	local XComLWTuple Tuple;
+	local JsonObject Tuple;
 	local bool bOverrideDefaultHandler;
 	
 	bOverrideDefaultHandler = false;
 
-	Tuple = new class'XComLWTuple';
-	Tuple.Id = 'MCM_SaveHandler';
-	Tuple.Data.Add(3);
-
-	Tuple.Data[0].kind = XComLWTVObject;
-	Tuple.Data[0].o = GetBuilder(Setting.GetParentGroup().GetParentPage().GetPageId());
-	Tuple.Data[1].kind = XComLWTVString;
-	Tuple.Data[1].s = SettingValue;
-	Tuple.Data[2].kind = XComLWTVBool;
-	Tuple.Data[2].b = bOverrideDefaultHandler;
+	Tuple = new class'JsonObject';
+	Tuple.SetStringValue("Id", "MCM_SaveHandler");
+	Tuple.SetObject("MCMBuilder", GetBuilder(Setting.GetParentGroup().GetParentPage().GetPageId()));
+	Tuple.SetStringValue("SettingValue", SettingValue);
+	Tuple.SetBoolValue("bOverrideDefaultHandler", bOverrideDefaultHandler);
 
 	`XEVENTMGR.TriggerEvent('MCM_SaveHandler', Setting, Tuple, none);
 
-	if (!Tuple.Data[2].b)
+	if (!Tuple.GetBoolValue("bOverrideDefaultHandler"))
 	{
 		
 		Page = GetPage(Setting.GetParentGroup().GetParentPage().GetPageId());
@@ -253,23 +244,20 @@ simulated function SaveButtonClicked(MCM_API_SettingsPage Page)
 	local JsonConfig_MCM_Group ConfigGroup;
 	local JsonConfig_Manager SaveConfigManager;
 	local JsonConfig_ManagerInterface Temp;
-	local XComLWTuple Tuple;
+	local JsonObject Tuple;
 	local bool bOverrideDefaultHandler;
 	local int Index;
 
 	bOverrideDefaultHandler = false;
-		
-	Tuple = new class'XComLWTuple';
-	Tuple.Id = 'MCM_SaveButtonClicked';
-	Tuple.Data.Add(2);
 
-	Tuple.Data[0].kind = XComLWTVObject;
-	Tuple.Data[0].o = GetBuilder(Page.GetPageId());
-	Tuple.Data[1].kind = XComLWTVBool;
-	Tuple.Data[1].b = bOverrideDefaultHandler;
+	Tuple = new class'JsonObject';
+	Tuple.SetStringValue("Id", "MCM_SaveButtonClicked");
+	Tuple.SetBoolValue("bOverrideDefaultHandler", bOverrideDefaultHandler);
+	Tuple.SetObject("MCMBuilder", GetBuilder(Page.GetPageId()));
 
 	`XEVENTMGR.TriggerEvent('MCM_SaveButtonClicked', Page, Tuple, none);
-	if (!Tuple.Data[1].b)
+
+	if (!Tuple.GetBoolValue("bOverrideDefaultHandler"))
 	{
 		for (Index = 0; Index < Page.GetGroupCount(); Index++)
 		{
@@ -307,22 +295,18 @@ simulated function ResetButtonClicked(MCM_API_SettingsPage Page)
 	local MCM_API_Slider Slider;
 	local MCM_API_Spinner Spinner;
 	local MCM_API_Dropdown Dropdown;
-	local XComLWTuple Tuple;
+	local JsonObject Tuple;
 	local bool bOverrideDefaultHandler;
 
 	bOverrideDefaultHandler = false;
 		
-	Tuple = new class'XComLWTuple';
-	Tuple.Id = 'ResetButtonClicked';
-	Tuple.Data.Add(2);
-
-	Tuple.Data[0].kind = XComLWTVObject;
-	Tuple.Data[0].o = GetBuilder(Page.GetPageId());
-	Tuple.Data[1].kind = XComLWTVBool;
-	Tuple.Data[1].b = bOverrideDefaultHandler;
+	Tuple = new class'JsonObject';
+	Tuple.SetStringValue("Id", "ResetButtonClicked");
+	Tuple.SetObject("MCMBuilder", GetBuilder(Page.GetPageId()));
+	Tuple.SetBoolValue("bOverrideDefaultHandler", bOverrideDefaultHandler);
 
 	`XEVENTMGR.TriggerEvent('MCM_ResetButtonClicked', Page, Tuple, none);
-	if (!Tuple.Data[1].b)
+	if (!Tuple.GetBoolValue("bOverrideDefaultHandler"))
 	{
 		ConfigPage = GetPage(Page.GetPageId());
 		

@@ -86,9 +86,9 @@ HUNGRY_TOOLTIP="Are you hungry?"
 You will need to add the package
 **ModConfigMenuBuilderAPI_1_0_0** from **ModConfigMenu** to your mod project
 
-![Screenshot](https://github.com/Musashi1584/MCMBuilderClientTestMod/blob/master/InterfacesPackage.jpg)
+![Screenshot](img/mcmbuilder_api_package.jpg)
 
-![Screenshot](https://github.com/Musashi1584/MCMBuilderClientTestMod/blob/master/InterfacesPackageEngineIni.jpg)
+![Screenshot](img/mcmbuilder_xcomengine_ini.jpg)
 
 Then you need two config files and a localization file:
 (this example assumes you mod safe name is **YourMod**
@@ -165,9 +165,9 @@ ConfigManager.GetConfigBoolValue("HUNGRY")
 ```
 
 It will return the values that the user made in the mcm page or the default settings in case the user hasnt made any changes yet.
-For more information about the config system see the [JsonConfigManager Documentation](https://github.com/Musashi1584/MusashisModToolbox/blob/master/JSONCONFIGMANAGER.md)
+For more information about the config system see the [JsonConfigManager Documentation](jsonconfigmanager.md)
 
 ### Thats all!
 The MCMBuilder in ModConfigMenu will take care of the rest.
 
-![Screenshot](https://github.com/Musashi1584/MCMBuilderClientTestMod/blob/master/Screenshot.jpg)
+![Screenshot](img/mcmbuilder_screenshot.jpg)

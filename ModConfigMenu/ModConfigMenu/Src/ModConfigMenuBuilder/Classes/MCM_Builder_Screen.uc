@@ -25,7 +25,7 @@ event OnInit(UIScreen Screen)
 	if (MCM_API(Screen) != none)
 	{
 		MCM_API(Screen).RegisterClientMod(1, 0, ClientModCallback);
-	}
+	}Í
 }
 
 simulated function ClientModCallback(MCM_API_Instance ConfigAPI, int GameMode)

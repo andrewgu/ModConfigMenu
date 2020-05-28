@@ -90,6 +90,15 @@ You will need to add the package
 
 ![Screenshot](img/mcmbuilder_xcomengine_ini.jpg)
 
+```
+[Engine.ScriptPackages]
++NonNativePackages=ModConfigMenuBuilderAPI_1_0_0
++NonNativePackages=MCMBuilderClientTestMod
+
+[UnrealEd.EditorEngine]
++ModEditPackages=ModConfigMenuBuilderAPI_1_0_0
+```
+
 Then you need two config files and a localization file:
 (this example assumes you mod safe name is **YourMod**
 

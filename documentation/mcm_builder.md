@@ -138,7 +138,7 @@ Lets see there contents in detail:
 +ConfigProperties = {"HUNGER_SCALE_NERD":{"Value":"0.1"}}
 +ConfigProperties = {"FOOD":{"Value":"Apple"}}
 ```
-##### `ModConfigMenuBuilder.int`
+##### `ModConfigMenu.int`
 ```
 [YourModMCMPage1 JsonConfig_MCM_Builder]
 

@@ -53,7 +53,7 @@ There are two special config properties:
 
 `"SaveConfigManager": "MCMBuilderClientTestModConfigManager"`
 
-This references the config manager you want to use to get default config properties and thats responsible to save your properties to the user config directory.
+Use a unique name that will used to create a json config manager instance that will be used to get default config properties and thats responsible to save your properties to the user config directory.
 
 `"EnableResetButton": "true"`
 
@@ -109,6 +109,9 @@ Then you need two config files and a localization file:
 Lets see there contents in detail:
 
 ##### `XComMCMBuilder.ini`
+
+As explained in detail above this confi will be used to generate a MCM page
+
 ```
 [ModConfigMenuBuilder.MCM_Builder_Screen]
 +MCMBuilder="YourModMCMPage1" ;can be any name but have to match below and in the localization file
@@ -131,6 +134,9 @@ Lets see there contents in detail:
 }
 ```
 ##### `XComJsonConfigManager.ini`
+
+These are the *default* values you want your mcm elements to initialize with. They will be also used for resetting the values to the default if the Reset Button is clicked.
+
 ```
 [YourModConfigManager JsonConfig_ManagerDefault]
 +ConfigProperties = {"HUNGRY":{"Value":"true"}}
@@ -139,6 +145,9 @@ Lets see there contents in detail:
 +ConfigProperties = {"FOOD":{"Value":"Apple"}}
 ```
 ##### `ModConfigMenu.int`
+
+The localization of your page
+
 ```
 [YourModMCMPage1 JsonConfig_MCM_Builder]
 

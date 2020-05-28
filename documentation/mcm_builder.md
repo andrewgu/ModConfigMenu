@@ -98,6 +98,7 @@ You will need to add the package
 [UnrealEd.EditorEngine]
 +ModEditPackages=ModConfigMenuBuilderAPI_1_0_0
 ```
+### MCMBuilder config and localization
 
 Then you need two config files and a localization file:
 (this example assumes you mod safe name is **YourMod**

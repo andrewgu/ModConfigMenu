@@ -3,7 +3,7 @@
 //	Author: Musashi
 //	
 //-----------------------------------------------------------
-class MCM_Builder_SingletonFactory extends Actor implements(MCM_Builder_SingletonFactoryInterface) config(Game);
+class MCM_Builder_SingletonFactory extends Object implements(MCM_Builder_SingletonFactoryInterface) config(Null);
 
 struct ManagerInstanceCache
 {
@@ -17,11 +17,9 @@ struct MCMBuilderInstanceCache
 	var JsonConfig_MCM_Builder Builder;
 };
 
-var array<ManagerInstanceCache> ManagerInstances;
-var array<MCMBuilderInstanceCache> MCMBuilderInstances;
-
-var config string SINGLETON_PATH;
-
+// only config for fake singleton
+var config array<ManagerInstanceCache> ManagerInstances;
+var config array<MCMBuilderInstanceCache> MCMBuilderInstances;
 
 static function JsonConfig_ManagerInterface GetManagerInstance(string InstanceName, optional bool bHasDefaultConfig = true)
 {
@@ -29,55 +27,37 @@ static function JsonConfig_ManagerInterface GetManagerInstance(string InstanceNa
 	local JsonConfig_ManagerInterface JsonConfigManagerInterface;
 	local ManagerInstanceCache NewManagerInstance;
 	local int Index;
-	
-	Instance = MCM_Builder_SingletonFactory(FindObject(default.SINGLETON_PATH, default.Class));
 
-	if (Instance == none)
-	{
-		Instance = class'WorldInfo'.static.GetWorldInfo().Spawn(default.Class);
-		//`LOG(default.class @ GetFuncName() @ "Create new instance" @ default.SINGLETON_PATH,, 'ModConfigMenuBuilder');
-		default.SINGLETON_PATH = PathName(Instance);
-	}
-
-	Index = Instance.ManagerInstances.Find('InstanceName', InstanceName);
+	Index = default.ManagerInstances.Find('InstanceName', InstanceName);
 	if (Index == INDEX_NONE)
 	{
 		JsonConfigManagerInterface = class'JsonConfig_Manager'.static.GetConfigManager(InstanceName, bHasDefaultConfig);
 
+		`LOG(default.class @ GetFuncName() @ "create singleton instance" @ JsonConfigManagerInterface,, 'ModConfigMenuBuilder');
+
 		NewManagerInstance.InstanceName = InstanceName;
 		NewManagerInstance.Manager = JsonConfig_Manager(JsonConfigManagerInterface);
-		Instance.ManagerInstances.AddItem(NewManagerInstance);
-		
+		default.ManagerInstances.AddItem(NewManagerInstance);
 		return JsonConfig_ManagerInterface(NewManagerInstance.Manager);
 	}
 
-	return JsonConfig_ManagerInterface(Instance.ManagerInstances[Index].Manager);
+	return JsonConfig_ManagerInterface(default.ManagerInstances[Index].Manager);
 }
 
 static function JsonConfig_MCM_Builder GetMCMBuilderInstance(string InstanceName)
 {
-	local MCM_Builder_SingletonFactory Instance;
 	local MCMBuilderInstanceCache NewBuilderInstance;
 	local int Index;
-	
-	Instance = MCM_Builder_SingletonFactory(FindObject(default.SINGLETON_PATH, default.Class));
 
-	if (Instance == none)
-	{
-		Instance = class'WorldInfo'.static.GetWorldInfo().Spawn(default.Class);
-		//`LOG(default.class @ GetFuncName() @ "Create new instance" @ default.SINGLETON_PATH,, 'ModConfigMenuBuilder');
-		default.SINGLETON_PATH = PathName(Instance);
-	}
-
-	Index = Instance.MCMBuilderInstances.Find('InstanceName', InstanceName);
+	Index = default.MCMBuilderInstances.Find('InstanceName', InstanceName);
 	if (Index == INDEX_NONE)
 	{
 		NewBuilderInstance.InstanceName = InstanceName;
 		NewBuilderInstance.Builder = class'JsonConfig_MCM_Builder'.static.GetMCMBuilder(InstanceName);
-		Instance.MCMBuilderInstances.AddItem(NewBuilderInstance);
+		default.MCMBuilderInstances.AddItem(NewBuilderInstance);
 		
 		return NewBuilderInstance.Builder;
 	}
 
-	return Instance.MCMBuilderInstances[Index].Builder;
+	return default.MCMBuilderInstances[Index].Builder;
 }

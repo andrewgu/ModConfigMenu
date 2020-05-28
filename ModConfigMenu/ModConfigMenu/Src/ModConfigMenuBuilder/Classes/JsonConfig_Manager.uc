@@ -22,8 +22,6 @@ static public function JsonConfig_ManagerInterface GetConfigManager(string Insta
 {
 	local JsonConfig_Manager ConfigManager;
 
-	// ConfigManager = JsonConfig_Manager(class'Engine'.FindClassDefaultObject(ClassNameParam));
-
 	ConfigManager = new (none, InstanceName) default.class;
 	
 	//`LOG(default.class @ GetFuncName() @ `ShowVar(ConfigManager) @ `ShowVar(InstanceName) @ `ShowVar(default.class) @ `ShowVar(JsonConfig_ManagerInterface(ConfigManager)),, 'ModConfigMenuBuilder');

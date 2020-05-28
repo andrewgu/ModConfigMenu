@@ -1,6 +1,17 @@
 ## JsonConfig Manager
 The JsonConfig Manager introduces a new method of defining config values as json string.
 
+#### Integration
+You will need to add the package
+**ModConfigMenuBuilderAPI_1_0_0** from **ModConfigMenu** to your mod project
+
+![Screenshot](img/mcmbuilder_api_package.jpg)
+
+![Screenshot](img/mcmbuilder_xcomengine_ini.jpg)
+
+You mod will be dependend on the ModConfigMenu mod and the funtionality will only work if MCM is active.
+
+#### Usage
 ```
 [FancyModManagerName JsonConfig_ManagerDefault]
 +ConfigProperties = {"BAR":{"Value":"Foo"}}
@@ -15,7 +26,7 @@ ConfigManager.GetConfigStringValue("BAR")
 
 The advantage over regular config properties is that they can be accessed by string identifiers which makes automatic localization tag generation and mapping in the MCMBuilder possible.
 
-### Current type support
+#### Current type support
 currently supported accessors/types are
 
 ```
@@ -36,7 +47,7 @@ string GetConfigTagValue
 
 more support for common X2 structs is planned.
 
-### Tag generation
+#### Tag generation
 
 There are a whole bunch of meta attributes you can use for localization tag generation. Here are some example:
 
@@ -73,6 +84,7 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 	return false;
 }
 ```
+For the tag generation add the AbilityTagExpandHandler code snippet above to you DLCInfo file.
 
 #### Complete Example:
 
@@ -86,7 +98,7 @@ Config:
 Usage:
 ```unrealscript
 // Best to put this in a static helper class somewhere
-static function JsonConfig_ManagerInterface JsonConfig()
+static function JsonConfig_ManagerInterface GetJsonConfig()
 {
 	return class'ConfigFactory'.static.GetConfigManager("FancyModManagerName");
 }
@@ -98,14 +110,14 @@ static function X2AbilityTemplate Militia()
 	local X2Effect_PersistentStatChange		Effect;
 
 	RangeEffect = new class'X2Effect_RangeMultiplier';
-	RangeEffect.RangeMultiplier = JsonConfig().GetConfigFloatValue("MILITIA_RANGE_MULTIPLIER");
+	RangeEffect.RangeMultiplier = GetJsonConfig().GetConfigFloatValue("MILITIA_RANGE_MULTIPLIER");
 	RangeEffect.BuildPersistentEffect(1, true, false, false);
 
 	Template = Passive('APT_Militia', "img:///UILibrary_PerkIcons.UIPerk_Urban_Aim", true, RangeEffect);
 
 	Effect = new class'X2Effect_PersistentStatChange';
-	Effect.AddPersistentStatChange(eStat_Offense, class'RPGOAbilityConfigManager'.static.GetConfigIntValue("MILITIA_AIM"));
-	Effect.AddPersistentStatChange(eStat_SightRadius, class'RPGOAbilityConfigManager'.static.GetConfigIntValue("MILITIA_SIGHT_RADIUS"));
+	Effect.AddPersistentStatChange(eStat_Offense, GetJsonConfig().static.GetConfigIntValue("MILITIA_AIM"));
+	Effect.AddPersistentStatChange(eStat_SightRadius, GetJsonConfig.static.GetConfigIntValue("MILITIA_SIGHT_RADIUS"));
 
 	AddSecondaryEffect(Template, Effect);
 
@@ -135,34 +147,4 @@ usage for tag generation:
 `+ConfigProperties = {"MILITIA_RANGE_MULTIPLIER":{"Value":"0.5", "TagFunction":"TagValueToPercent"}}`
 
 usage for converting values in code:
-`ConeMultiTarget.ConeEndDiameter = class'RPGOAbilityConfigManager'.static.GetConfigIntValue("SPRAY_TILE_WIDTH", "TagValueTilesToUnits");`
-
-
-### Clientside Usage
-So how do you use this awesomeness in your mod?
-You need to compile you mod agains the Highlander.
-Then simply add two files:
-
-1. A mod manager derived from `JsonConfig_Manager`
-```
-class MyModSettingsConfigManager extends JsonConfig_Manager config(MyModSettings);
-```
-
-2. A config file with a valid json config
-```
-[Mod.MyModConfigManager]
-+ConfigProperties = {"BAR":{"Value":"Foo"}}
-```
-
-For the tag generation add the AbilityTagExpandHandler code snippet above to you DLCInfo file.
-
-Thats all!
-
-you can start using your config values like 
-```
-// in unreal code
-class'MyModSettingsConfigManager'.static.GetConfigStringValue("BAR");
-
-// in localization files
-LocLongDescription="Hello World <Ability:BAR/>=Bar"
-```
+`ConeMultiTarget.ConeEndDiameter = GetJsonConfig().static.GetConfigIntValue("SPRAY_TILE_WIDTH", "TagValueTilesToUnits");`

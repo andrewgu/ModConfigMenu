@@ -38,7 +38,7 @@ TESTMOD_SETTINGS_GROUP_1
 TESTMOD_SETTINGS_GROUP_2
 ```
 are mcm page or group identifiers that are used to for localization mapping:
-`MusashisModToolbox.int`
+`ModConfigMenu.int`
 ```
 [MCMBuilderClientTestMod JsonConfig_MCM_Builder]
 

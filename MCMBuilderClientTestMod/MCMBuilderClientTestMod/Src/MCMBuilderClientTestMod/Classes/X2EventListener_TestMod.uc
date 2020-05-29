@@ -30,7 +30,7 @@ static function CHEventListenerTemplate CreateListenerTemplate_MCMBuilderListene
 }
 
 
-static function EventListenerReturn OnMCM_ButtonClick(Object EventData, Object EventSource, XComGameState GameState, Name Event, Object CallbackData)
+static function EventListenerReturn OnMCM_ButtonClick(Object EventData, Object EventSource, XComGameState GameState, Name EventName, Object CallbackData)
 {
 	if (EventSource != none)
 	{
@@ -40,99 +40,129 @@ static function EventListenerReturn OnMCM_ButtonClick(Object EventData, Object E
 	return ELR_NoInterrupt;
 }
 
-static function EventListenerReturn OnMCM_ChangeHandler(Object EventData, Object EventSource, XComGameState GameState, Name Event, Object CallbackData)
+static function EventListenerReturn OnMCM_ChangeHandler(Object EventData, Object EventSource, XComGameState GameState, Name EventName, Object CallbackData)
 {
+	local MCM_Builder_Interface Builder;
 	local JsonObject Tuple;
 
 	Tuple = JsonObject(EventSource);
+	Builder = MCM_Builder_Interface(Tuple.GetObject("MCMBuilder"));
 
-	if (Tuple.GetObject("MCMBuilder") != none)
-	{
-		`LOG(default.class @ GetFuncName() @ Tuple.GetObject("MCMBuilder") @ Tuple.GetStringValue("SettingValue"),, 'MCMBuilderClientTestMod');
-	}
-
-	return ELR_NoInterrupt;
-}
-
-
-static function EventListenerReturn OnMCM_SaveHandler(Object EventData, Object EventSource, XComGameState GameState, Name Event, Object CallbackData)
-{
-	local JsonObject Tuple;
-
-	Tuple = JsonObject(EventSource);
-
-	if (Tuple.GetObject("MCMBuilder") != none)
+	if (Builder != none && Builder.GetBuilderName() == "MCMBuilderClientTestMod")
 	{
 		`LOG(default.class @ GetFuncName() @
 			Tuple.GetObject("MCMBuilder") @
+			Tuple.GetStringValue("SettingLabel") @
 			Tuple.GetStringValue("SettingValue") @
 			Tuple.GetBoolValue("bOverrideDefaultHandler")
 		,, 'MCMBuilderClientTestMod');
+
+		MakePopup(EventName, Tuple.GetStringValue("SettingLabel") $ "(" $ Tuple.GetStringValue("SettingName") $ ")" $ ":" @ Tuple.GetStringValue("SettingValue"));
 	}
 
 	return ELR_NoInterrupt;
 }
 
-static function EventListenerReturn OnMCM_SaveButtonClicked(Object EventData, Object EventSource, XComGameState GameState, Name Event, Object CallbackData)
+
+static function EventListenerReturn OnMCM_SaveHandler(Object EventData, Object EventSource, XComGameState GameState, Name EventName, Object CallbackData)
 {
+	local MCM_Builder_Interface Builder;
 	local JsonObject Tuple;
 
 	Tuple = JsonObject(EventSource);
+	Builder = MCM_Builder_Interface(Tuple.GetObject("MCMBuilder"));
+
+	if (Builder != none && Builder.GetBuilderName() == "MCMBuilderClientTestMod")
+	{
+		`LOG(default.class @ GetFuncName() @
+			Tuple.GetObject("MCMBuilder") @
+			Tuple.GetStringValue("SettingLabel") @
+			Tuple.GetStringValue("SettingValue") @
+			Tuple.GetBoolValue("bOverrideDefaultHandler")
+		,, 'MCMBuilderClientTestMod');
+
+		MakePopup(EventName, Tuple.GetStringValue("SettingLabel") $ "(" $ Tuple.GetStringValue("SettingName") $ ")" $ ":" @ Tuple.GetStringValue("SettingValue"));
+	}
+
+	return ELR_NoInterrupt;
+}
+
+static function EventListenerReturn OnMCM_SaveButtonClicked(Object EventData, Object EventSource, XComGameState GameState, Name EventName, Object CallbackData)
+{
+	local MCM_Builder_Interface Builder;
+	local JsonObject Tuple;
+
+	Tuple = JsonObject(EventSource);
+	Builder = MCM_Builder_Interface(Tuple.GetObject("MCMBuilder"));
 	
 	`LOG(default.class @ GetFuncName() @
-		Tuple.GetObject("MCMBuilder") @
+		Builder @
 		Tuple.GetBoolValue("bOverrideDefaultHandler")
 	,, 'MCMBuilderClientTestMod');
 
-	if (Tuple.GetObject("MCMBuilder") != none)
+	if (Builder != none && Builder.GetBuilderName() == "MCMBuilderClientTestMod")
 	{
-		Tuple.SetBoolValue("bOverrideDefaultHandler", false);
+		MakePopup(EventName, "bOverrideDefaultHandler:" @ Tuple.GetBoolValue("bOverrideDefaultHandler"));
 	}
 
 	return ELR_NoInterrupt;
 }
 
-static function EventListenerReturn OnMCM_ConfigSaved(Object EventData, Object EventSource, XComGameState GameState, Name Event, Object CallbackData)
+static function EventListenerReturn OnMCM_ConfigSaved(Object EventData, Object EventSource, XComGameState GameState, Name EventName, Object CallbackData)
 {
-	if (EventSource != none)
+	local MCM_Builder_Interface Builder;
+
+	Builder = MCM_Builder_Interface(EventSource);
+
+	if (Builder != none && Builder.GetBuilderName() == "MCMBuilderClientTestMod")
+	{
+		`LOG(default.class @ GetFuncName() @ Builder.GetBuilderName()  @ Builder,, 'MCMBuilderClientTestMod');
+		MakePopup(EventName);
+	}
+
+	return ELR_NoInterrupt;
+}
+
+static function EventListenerReturn OnMCM_ResetButtonClicked(Object EventData, Object EventSource, XComGameState GameState, Name EventName, Object CallbackData)
+{
+	local MCM_Builder_Interface Builder;
+
+	Builder = MCM_Builder_Interface(EventSource);
+
+	if (Builder != none && Builder.GetBuilderName() == "MCMBuilderClientTestMod")
 	{
 		`LOG(default.class @ GetFuncName() @ EventSource,, 'MCMBuilderClientTestMod');
-		MakePopup();
+		MakePopup(EventName);
 	}
 
 	return ELR_NoInterrupt;
 }
 
-static function EventListenerReturn OnMCM_ResetButtonClicked(Object EventData, Object EventSource, XComGameState GameState, Name Event, Object CallbackData)
+static function EventListenerReturn OnMCM_ConfigResetted(Object EventData, Object EventSource, XComGameState GameState, Name EventName, Object CallbackData)
 {
-	if (EventSource != none)
+	local MCM_Builder_Interface Builder;
+
+	Builder = MCM_Builder_Interface(EventSource);
+
+	if (Builder != none && Builder.GetBuilderName() == "MCMBuilderClientTestMod")
 	{
 		`LOG(default.class @ GetFuncName() @ EventSource,, 'MCMBuilderClientTestMod');
+		MakePopup(EventName);
 	}
 
 	return ELR_NoInterrupt;
 }
 
-static function EventListenerReturn OnMCM_ConfigResetted(Object EventData, Object EventSource, XComGameState GameState, Name Event, Object CallbackData)
-{
-	if (EventSource != none)
-	{
-		`LOG(default.class @ GetFuncName() @ EventSource,, 'MCMBuilderClientTestMod');
-	}
-
-	return ELR_NoInterrupt;
-}
-
-simulated static function MakePopup()
+simulated static function MakePopup(Name EventName, optional string Text = "")
 {
 	local TDialogueBoxData kDialogData;
 	local JsonConfig_ManagerInterface ConfigManager;
 
 	ConfigManager = class'Helper'.static.GetConfig();
 
-	kDialogData.eType = eDialog_Warning;
-	kDialogData.strTitle = "MCM Settings Saved";
-	kDialogData.strText = 
+	kDialogData.eType = eDialog_Normal;
+	kDialogData.strTitle = string(EventName);
+	kDialogData.strText = Text != "" ? Text :
 		"HUNGRY:" @ ConfigManager.GetConfigBoolValue("HUNGRY") $ "\n" $
 		"HUNGER_SCALE:" @ ConfigManager.GetConfigIntValue("HUNGER_SCALE") $ "\n" $
 		"HUNGER_SCALE_NERD:" @ ConfigManager.GetConfigFloatValue("HUNGER_SCALE_NERD") $ "\n" $

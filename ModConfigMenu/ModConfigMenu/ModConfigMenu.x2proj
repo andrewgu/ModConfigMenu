@@ -79,6 +79,9 @@ For full details on using this mod, troubleshooting, or even building your own m
     <Content Include="Src\ModConfigMenuBuilderAPI_1_0_0\Classes\JsonConfig_ManagerInterface.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\ModConfigMenuBuilderAPI_1_0_0\Classes\MCM_Builder_Interface.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\ModConfigMenuBuilderAPI_1_0_0\Classes\MCM_Builder_SingletonFactoryInterface.uc">
       <SubType>Content</SubType>
     </Content>
@@ -86,9 +89,6 @@ For full details on using this mod, troubleshooting, or even building your own m
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\ModConfigMenuBuilder\Classes\JsonConfig_Array.uc">
-      <SubType>Content</SubType>
-    </Content>
-    <Content Include="Src\ModConfigMenuBuilder\Classes\JsonConfig_Clients.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\ModConfigMenuBuilder\Classes\JsonConfig_Interface.uc">

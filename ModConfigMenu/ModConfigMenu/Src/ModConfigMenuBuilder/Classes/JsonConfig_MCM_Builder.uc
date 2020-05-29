@@ -1,4 +1,4 @@
-class JsonConfig_MCM_Builder extends JsonConfig config(MCMBuilder) perobjectconfig perobjectlocalized;
+class JsonConfig_MCM_Builder extends JsonConfig implements(MCM_Builder_Interface) config(MCMBuilder) perobjectconfig perobjectlocalized;
 
 struct MCMConfigMapEntry
 {
@@ -16,17 +16,23 @@ public function array<string> GetConfig()
 	return MCMPages;
 }
 
-static public function JsonConfig_MCM_Builder GetMCMBuilder(string InstanceName)
+static public function MCM_Builder_Interface GetMCMBuilder(string InstanceName)
 {
 	local JsonConfig_MCM_Builder MCMBuilder;
 
 	MCMBuilder = new (none, InstanceName) default.class;
 	MCMBuilder.DeserializeConfig();
+	MCMBuilder.BuilderName = InstanceName;
 
-	return MCMBuilder;
+	return MCM_Builder_Interface(MCMBuilder);
 }
 
-function string LocalizeItem(string Key)
+public function string GetBuilderName()
+{
+	return BuilderName;
+}
+
+public function string LocalizeItem(string Key)
 {
 	local string Locale;
 

@@ -23,7 +23,6 @@ var config array<MCMBuilderInstanceCache> MCMBuilderInstances;
 
 static function JsonConfig_ManagerInterface GetManagerInstance(string InstanceName, optional bool bHasDefaultConfig = true)
 {
-	local MCM_Builder_SingletonFactory Instance;
 	local JsonConfig_ManagerInterface JsonConfigManagerInterface;
 	local ManagerInstanceCache NewManagerInstance;
 	local int Index;
@@ -44,20 +43,25 @@ static function JsonConfig_ManagerInterface GetManagerInstance(string InstanceNa
 	return JsonConfig_ManagerInterface(default.ManagerInstances[Index].Manager);
 }
 
-static function JsonConfig_MCM_Builder GetMCMBuilderInstance(string InstanceName)
+static function MCM_Builder_Interface GetMCMBuilderInstance(string InstanceName)
 {
+	local MCM_Builder_Interface BuilderInterface;
 	local MCMBuilderInstanceCache NewBuilderInstance;
 	local int Index;
 
 	Index = default.MCMBuilderInstances.Find('InstanceName', InstanceName);
 	if (Index == INDEX_NONE)
 	{
+		BuilderInterface = class'JsonConfig_MCM_Builder'.static.GetMCMBuilder(InstanceName);
+
+		`LOG(default.class @ GetFuncName() @ "create singleton instance" @ BuilderInterface,, 'ModConfigMenuBuilder');
+
 		NewBuilderInstance.InstanceName = InstanceName;
-		NewBuilderInstance.Builder = class'JsonConfig_MCM_Builder'.static.GetMCMBuilder(InstanceName);
+		NewBuilderInstance.Builder = JsonConfig_MCM_Builder(BuilderInterface);
 		default.MCMBuilderInstances.AddItem(NewBuilderInstance);
 		
-		return NewBuilderInstance.Builder;
+		return MCM_Builder_Interface(NewBuilderInstance.Builder);
 	}
 
-	return default.MCMBuilderInstances[Index].Builder;
+	return MCM_Builder_Interface(default.MCMBuilderInstances[Index].Builder);
 }

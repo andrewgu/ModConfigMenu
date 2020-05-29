@@ -1,5 +1,5 @@
 //-----------------------------------------------------------
-//	Class:	JsonConfig_ManagerInterface
+//	Interface:	JsonConfig_ManagerInterface
 //	Author: Musashi
 //	DO NOT MAKE ANY CHANGES TO THIS CLASS
 //-----------------------------------------------------------

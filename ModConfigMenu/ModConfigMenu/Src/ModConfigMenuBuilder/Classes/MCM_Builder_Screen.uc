@@ -48,6 +48,7 @@ simulated function BuildMCM(
 	int GameMode
 )
 {
+	local MCM_Builder_Interface BuilderInterface;
 	local BuilderInstance Instance;
 	local MCMConfigMapEntry MapEntry;
 	local JsonConfig_MCM_Page MCMPageConfig;
@@ -58,7 +59,9 @@ simulated function BuildMCM(
 	local MCM_API_SettingsGroup Group;
 	local name SetttingName;
 	
-	Instance.Builder = class'MCM_Builder_SingletonFactory'.static.GetMCMBuilderInstance(BuilderName);
+	BuilderInterface = class'ConfigFactory'.static.GetMCMBuilder(BuilderName);
+	// BuilderInterface = class'MCM_Builder_SingletonFactory'.static.GetMCMBuilderInstance(BuilderName);
+	Instance.Builder = JsonConfig_MCM_Builder(BuilderInterface);
 
 	foreach Instance.Builder.DeserialzedPagesMap(MapEntry)
 	{
@@ -203,6 +206,10 @@ simulated function ElementChangeHandler(MCM_API_Setting Setting, coerce string S
 	Tuple.SetStringValue("Id", "MCM_ChangeHandler");
 	Tuple.SetObject("MCMBuilder", GetBuilder(Setting.GetParentGroup().GetParentPage().GetPageId()));
 	Tuple.SetStringValue("SettingValue", SettingValue);
+	Tuple.SetStringValue("SettingName", string(Setting.GetName()));
+	Tuple.SetStringValue("SettingLabel", Setting.GetLabel());
+
+	`LOG(default.class @ GetFuncName() @ Setting @ Setting.GetName() @ Setting.GetLabel() @ Setting.GetSettingType(),, 'ModConfigMenuBuilder');
 
 	`XEVENTMGR.TriggerEvent('MCM_ChangeHandler', Setting, Tuple, none);
 }
@@ -222,6 +229,8 @@ simulated function ElementSaveHandler(MCM_API_Setting Setting, coerce string Set
 	Tuple.SetObject("MCMBuilder", GetBuilder(Setting.GetParentGroup().GetParentPage().GetPageId()));
 	Tuple.SetStringValue("SettingValue", SettingValue);
 	Tuple.SetBoolValue("bOverrideDefaultHandler", bOverrideDefaultHandler);
+	Tuple.SetStringValue("SettingName", string(Setting.GetName()));
+	Tuple.SetStringValue("SettingLabel",Setting.GetLabel());
 
 	`XEVENTMGR.TriggerEvent('MCM_SaveHandler', Setting, Tuple, none);
 

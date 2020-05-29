@@ -99,6 +99,9 @@ simulated function OnInit()
     {
         `log("MCM Core: hiding soldier guy on main menu for visibility.");
         HideSoldierIfMainMenu();
+
+        `LOG(default.class @ GetFuncName() @ "RegisterStrategyListeners",, 'ModConfigMenuBuilder');
+        class'X2EventListenerTemplateManager'.static.RegisterStrategyListeners();
     }
 }
 
@@ -108,6 +111,9 @@ simulated function OnRemoved()
     {
         `log("MCM Core: unhiding soldier guy on main menu for visibility.");
         ShowSoldierIfMainMenu();
+
+        `LOG(default.class @ GetFuncName() @ "UnRegisterAllListeners",, 'ModConfigMenuBuilder');
+        class'X2EventListenerTemplateManager'.static.UnRegisterAllListeners();
     }
 }
 

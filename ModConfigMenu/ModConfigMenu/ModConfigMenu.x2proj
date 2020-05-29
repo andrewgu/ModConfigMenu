@@ -17,6 +17,9 @@ For full details on using this mod, troubleshooting, or even building your own m
   <ItemGroup>
     <Content Include="Config\XComEditor.ini" />
     <Content Include="Config\XComEngine.ini" />
+    <Content Include="Config\XComMCMBuilder.ini">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Config\XComModConfigMenu.ini">
       <SubType>Content</SubType>
     </Content>
@@ -68,6 +71,66 @@ For full details on using this mod, troubleshooting, or even building your own m
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\ModConfigMenuAPI\MCM_API_Includes.uci">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenuBuilderAPI_1_0_0\Classes\ConfigFactory.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenuBuilderAPI_1_0_0\Classes\JsonConfig_ManagerInterface.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenuBuilderAPI_1_0_0\Classes\MCM_Builder_Interface.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenuBuilderAPI_1_0_0\Classes\MCM_Builder_SingletonFactoryInterface.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenuBuilder\Classes\JsonConfig.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenuBuilder\Classes\JsonConfig_Array.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenuBuilder\Classes\JsonConfig_Interface.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenuBuilder\Classes\JsonConfig_Manager.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenuBuilder\Classes\JsonConfig_ManagerDefault.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenuBuilder\Classes\JsonConfig_MCM_Builder.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenuBuilder\Classes\JsonConfig_MCM_Element.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenuBuilder\Classes\JsonConfig_MCM_Group.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenuBuilder\Classes\JsonConfig_MCM_Page.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenuBuilder\Classes\JsonConfig_TaggedConfigProperty.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenuBuilder\Classes\JsonConfig_Vector.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenuBuilder\Classes\JsonConfig_WeaponDamageValue.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenuBuilder\Classes\MCM_Builder_SingletonFactory.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenuBuilder\Classes\MCM_Builder_Defaults.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenuBuilder\Classes\MCM_Builder_Screen.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModConfigMenuBuilder\Classes\MCM_Builder_ScreenListener.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\ModConfigMenu\Classes\MCM_Button.uc">
@@ -169,7 +232,11 @@ For full details on using this mod, troubleshooting, or even building your own m
     <Folder Include="Src\ModConfigMenuAPI" />
     <Folder Include="Src\ModConfigMenu" />
     <Folder Include="Src\ModConfigMenuAPI\Classes" />
+    <Folder Include="Src\ModConfigMenuBuilderAPI_1_0_0\Classes" />
+    <Folder Include="Src\ModConfigMenuBuilder\Classes" />
     <Folder Include="Src\ModConfigMenu\Classes" />
+    <Folder Include="Src\ModConfigMenuBuilder" />
+    <Folder Include="Src\ModConfigMenuBuilderAPI_1_0_0" />
   </ItemGroup>
   <Import Project="$(MSBuildLocalExtensionPath)\XCOM2.targets" />
 </Project>

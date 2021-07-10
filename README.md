@@ -39,15 +39,15 @@ Example mod rendered in the MCM UI:
 
 ### Credits
 
-In addition to our two contributors, many thanks to three collaborators who have contributed code and have otherwise been critical to this project:
+Many thanks to everyone who has contributed code to this project! Specifically:
 
 * Superd22
 * BlueRaja
 * Patrick-Seymour
-
-As well as various others who have contributed to this project's ongoing development:
-
 * RealityMachina
+
+And also many thanks to others who have contributed to this project's ongoing development:
+
 * CMDBob
 * korgano
 * robojumper
@@ -77,3 +77,14 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+If you publish or release any work based on the code in this project, you must 
+include attribution of credit to myself (Andrew Gu) as well as all contributors:
+
+* Superd22
+* BlueRaja
+* Patrick-Seymour
+* RealityMachina
+* CMDBob
+* korgano
+* robojumper

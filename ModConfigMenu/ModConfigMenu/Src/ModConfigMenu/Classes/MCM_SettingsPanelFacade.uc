@@ -31,6 +31,7 @@ simulated function MCM_SettingsPanelFacade InitSettingsPanelFacade(int _PageID, 
     Container = _Container;
     UiInstance = none;
 
+    return self;
 }
 
 // Internal

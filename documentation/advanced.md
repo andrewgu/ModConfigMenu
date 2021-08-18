@@ -103,6 +103,20 @@ your custom settings page. You will have to implement your own saving/cancelling
 An example of how to use `NewCustomSettingsPage` can be found in the `MCM_CustomPageTest.uc` and `MC_CustomPageTestUI.uc` 
 files in the `ModConfigMenu` project.
 
+### Custom Settings Pages by ini config
+
+You may also add new custom settings pages through ini config without using MCM_API. 
+
+To add a custom page entry, create the file `XComModConfigMenu.ini` with the following contents:
+
+```
+[ModConfigMenu.MCM_OptionsScreen]
++CustomPages=(TabLabel="Mod Name", ScreenClass="YourMod.YourOptionsScreen", ShowInGameMode=eGameMode_MainMenu)
+```
+
+Where `TabLabel` will be the name that appears on the left of the menu. `ScreenClass` will be the class of your custom options screen (Note that you need to include your mod package name to avoid class name conflicts). And `ShowInGameMode` will be the options menu screen your custom page will show up in, the available values can be found in the next section, you will need to repeat the line for each menu you want the custom page to show up on.
+
+
 ### Limit options for main menu / Avenger screen / In-mission screen
 
 MCM will tell you about the game mode through the handler you passed into the version check. You can see an example in 

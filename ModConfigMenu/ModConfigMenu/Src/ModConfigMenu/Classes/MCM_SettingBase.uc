@@ -36,6 +36,28 @@ simulated function MCM_SettingBase InitSettingsItem(name _Name, eSettingType _Ty
 simulated function AfterParentPageDisplayed()
 {
     // Apparently you have to set it once the screen element is actually visible.
+    ApplyTooltip();
+}
+
+// Puts DisplayTooltip on the BG panel, where the mouse events of the row originate from.
+// The tooltip can only be registered once the BG exists on the flash side (bIsInited): until then it is set from the BG's OnInit callback.
+// It must also be (re)applied after UIMechaListItem.SetDisabled, which removes the BG tooltip when no "disabled reason" is given
+// (see SetEditable): the tooltip was lost right after having been set the first time a page was displayed.
+simulated function ApplyTooltip()
+{
+    if (BG.bIsInited)
+    {
+        BG.SetTooltipText(DisplayTooltip);
+    }
+    else
+    {
+        // AddOnInitDelegate does not add the same delegate twice.
+        BG.AddOnInitDelegate(OnBGInited);
+    }
+}
+
+simulated function OnBGInited(UIPanel Panel)
+{
     BG.SetTooltipText(DisplayTooltip);
 }
 
@@ -65,7 +87,7 @@ simulated function SetHoverTooltip(string Tooltip)
     // Doesn't inherently store Tooltip text so we'll remember it.
     DisplayTooltip = Tooltip;
 
-    BG.SetTooltipText(Tooltip);
+    ApplyTooltip();
 }
 
 simulated function string GetHoverTooltip()
@@ -78,6 +100,9 @@ simulated function string GetHoverTooltip()
 simulated function SetEditable(bool IsEditable)
 {
     SetDisabled(!IsEditable);
+
+    // SetDisabled removed the BG tooltip: put it back.
+    ApplyTooltip();
 }
 
 // Retrieves underlying setting type. Defined as an int to make setting types more extensible to support
